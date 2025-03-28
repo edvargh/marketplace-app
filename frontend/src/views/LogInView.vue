@@ -1,11 +1,10 @@
 <template>
-  <div class = "logInWrapper">
-  <div class="logInPage">
-    <h1>Log In</h1>
-    <form @submit.prevent="handleLogin">
-      <label for="email">email</label>
-      <InputBox>
-        <input
+  <div class="logInWrapper">
+    <div class="logInPage">
+      <h1>Log In</h1>
+      <form @submit.prevent="handleLogin">
+        <label for="email">Email</label>
+        <InputBox
           type="email"
           id="email"
           name="email"
@@ -14,11 +13,9 @@
           placeholder="Enter your email"
           :disabled="isSubmitting"
         />
-      </InputBox>
 
-      <label for="password">Password</label>
-      <InputBox>
-        <input
+        <label for="password">Password</label>
+        <InputBox
           type="password"
           id="password"
           name="password"
@@ -27,22 +24,22 @@
           placeholder="Enter your password"
           :disabled="isSubmitting"
         />
-      </InputBox>
 
-      <button type="submit" :disabled = "isSubmitting">
-        {{ isSubmitting ? 'Logging in...' : 'Log In' }}
-      </button>
-      <div v-if="errorMessage" class="error-message">
-        {{ errorMessage }}
-       </div> 
-    </form>
+        <button type="submit" :disabled="isSubmitting">
+          {{ isSubmitting ? 'Logging in...' : 'Log In' }}
+        </button>
+        
+        <div v-if="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </div>
+      </form>
 
-    <div>
-      <p class="noAccountText">
-        Don't have an account? <router-link to="/register">Sign Up</router-link>
-      </p>
+      <div>
+        <p class="noAccountText">
+          Don't have an account? <router-link to="/register">Sign Up</router-link>
+        </p>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 

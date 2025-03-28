@@ -1,65 +1,57 @@
 <template>
-    <div class="RegisterPage">
-      <h1>Register new account</h1>
-      <form @submit.prevent="RegistrationLogic">
-        <label for="email">Email</label>
-        <InputBox>
-          <input
-            type="email"
-            id="email"
-            v-model="email"
-            required
-            placeholder="Enter your email"
-            :disabled="isSubmitting"
-          />
-        </InputBox>
-  
-        <label for="telephonenumber">Telephone Number</label>
-        <InputBox>
-          <input
-            type="tel"
-            id="telephonenumber"
-            v-model="telephonenumber"
-            required
-            placeholder="Enter your telephone number"
-            :disabled="isSubmitting"
-          />
-        </InputBox>
-  
-        <label for="password">Password</label>
-        <InputBox>
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            required
-            placeholder="Enter your password"
-            :disabled="isSubmitting"
-          />
-        </InputBox>
-  
-        <label for="confirmPassword">Confirm Password</label>
-        <InputBox>
-          <input
-            type="password"
-            id="confirmPassword"
-            v-model="confirmPassword"
-            required
-            placeholder="Confirm your password"
-            :disabled="isSubmitting"
-          />
-        </InputBox>
-  
-        <button type="submit" :disabled="isSubmitting">
-          {{ isSubmitting ? 'Registering...' : 'Register' }}
-        </button>
-  
-        <div v-if="errorMessage" class="error-message">
-          {{ errorMessage }}
-        </div>
-      </form>
-    </div>
-  </template>
+  <div class="RegisterPage">
+    <h1>Register new account</h1>
+    <form @submit.prevent="RegistrationLogic">
+      <label for="email">Email</label>
+      <InputBox
+        type="email"
+        id="email"
+        v-model="email"
+        placeholder="Enter your email"
+        :disabled="isSubmitting"
+        required
+      />
+
+      <label for="telephonenumber">Telephone Number</label>
+      <InputBox
+        type="tel"
+        id="telephonenumber"
+        v-model="telephonenumber"
+        placeholder="Enter your telephone number"
+        :disabled="isSubmitting"
+        required
+      />
+
+      <label for="password">Password</label>
+      <InputBox
+        type="password"
+        id="password"
+        v-model="password"
+        placeholder="Enter your password"
+        :disabled="isSubmitting"
+        required
+      />
+
+      <label for="confirmPassword">Confirm Password</label>
+      <InputBox
+        type="password"
+        id="confirmPassword"
+        v-model="confirmPassword"
+        placeholder="Confirm your password"
+        :disabled="isSubmitting"
+        required
+      />
+
+      <button type="submit" :disabled="isSubmitting">
+        {{ isSubmitting ? 'Registering...' : 'Register' }}
+      </button>
+
+      <div v-if="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+    </form>
+  </div>
+</template>
   
   <script setup>
   import { ref } from 'vue'
