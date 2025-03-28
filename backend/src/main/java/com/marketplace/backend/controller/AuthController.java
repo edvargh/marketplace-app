@@ -33,11 +33,12 @@ public class AuthController {
    * @return a JWT token
    */
   @PostMapping("/register")
-  public String register(@RequestBody User user) {
+  public Map<String, String> register(@RequestBody User user) {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     user.setRole(Role.USER);
     userRepo.save(user);
-    return jwtService.generateToken(user.getEmail());
+    String token = jwtService.generateToken(user.getEmail());
+    return Map.of("token", token);
   }
 
   /**
@@ -54,5 +55,4 @@ public class AuthController {
 
     return Map.of("token", token);  // ✅ JSON object like: { "token": "..." }
   }
-
 }
