@@ -64,3 +64,9 @@
 .noAccountText a:hover {
   text-decoration: underline;
 }
+
+.error-message {
+  color: red;
+  margin-top: 1rem;
+  min-height: 1.5rem;
+}
