@@ -1,3 +1,4 @@
+
 <template>
   <div class="home-container">
     <div class="search-bar">
@@ -27,16 +28,25 @@
       <div class="section-header">
         <h2>Market</h2>
       </div>
-      <div class="market-grid">
-        <p>Market here</p>
+      <div class="nft-cards-container">
+        <ItemCard
+            v-for="item in items"
+            :key="item.id"
+            :item="item"
+        />
       </div>
     </section>
   </div>
 </template>
 
 
+
+
+
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
+import ItemCard from '@/components/ItemCard.vue'
+
 
 // Mock data for categories
 const categories = ref([
@@ -44,8 +54,8 @@ const categories = ref([
   { id: 2, name: 'Cars' },
   { id: 3, name: 'Computers' },
   { id: 4, name: 'Sports' },
-  { id: 5, name: 'Houses' },
-])
+  { id: 5, name: 'Houses' }
+]);
 
 // Mock data for item
 const items = ref([
@@ -53,15 +63,15 @@ const items = ref([
     id: 1,
     title: 'Flower',
     price: 495,
-    location: 'Zombie Lab',
-    category: 'NFT',
-    subCategory: 'Art',
-    description:
-      'Zombie Lab is a collection of 10,000 animated NFTs. Each NFT is unique and resides on the Ethereum blockchain. Your Zombie Lab NFT will...',
+    location: 'Trondheim',
+    category: 'Garden',
+    subCategory: 'Flower',
+    description: 'This is a description used for a mock data of an item. Should not display more than tree lines of the description, if it is longer. Hope this works. ',
     imageUrl: '/path/to/flower-image.jpg', // Replace with actual image path
-    reservedStatus: false,
+    reservedStatus: false
   },
 ])
+
 </script>
 
 
