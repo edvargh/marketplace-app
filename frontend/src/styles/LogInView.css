@@ -3,8 +3,6 @@
   margin: 4rem auto;
   padding: 2rem;
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .logInPage h1 {
@@ -18,8 +16,19 @@
   display: block;
   margin: 1rem 0 0.25rem;
   font-weight: 500;
-  color: #444;
 }
+
+.logInWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 75vw;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+
 
 .logInPage button[type='submit'] {
   width: 100%;

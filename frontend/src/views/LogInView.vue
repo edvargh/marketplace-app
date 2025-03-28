@@ -1,4 +1,5 @@
 <template>
+  <div class = "logInWrapper">
   <div class="logInPage">
     <h1>Log In</h1>
     <form>
@@ -34,6 +35,7 @@
         Don't have an account? <router-link to="/signup">Sign Up</router-link>
       </p>
     </div>
+  </div>
   </div>
 </template>
 
