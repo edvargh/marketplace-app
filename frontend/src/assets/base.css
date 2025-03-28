@@ -60,7 +60,14 @@
 body {
   min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-background);
+  background: radial-gradient(circle at 30% 30%, rgba(173, 216, 230, 0.4), transparent 40%),
+  radial-gradient(circle at 70% 70%, rgba(221, 160, 221, 0.4), transparent 40%),
+  radial-gradient(circle at 50% 50%, rgba(144, 238, 144, 0.4), transparent 40%),
+  #fefefe;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+
   transition:
     color 0.5s,
     background-color 0.5s;
