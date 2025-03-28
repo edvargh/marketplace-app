@@ -4,6 +4,7 @@
   gap: 50px;
 }
 
+
 .categories {
   margin-bottom: 30px;
 }
@@ -47,3 +48,13 @@
 .categories li:hover {
   transform: scale(1.05);
 }
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+}
+
+
