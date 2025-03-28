@@ -2,8 +2,11 @@
   display: flex;
   flex-direction: column;
   gap: 50px;
+  min-height: 100vh;
+  overflow-y: auto;
+  margin-top: 150px;
+  margin-bottom: 200px;
 }
-
 
 .categories {
   margin-bottom: 30px;
@@ -49,9 +52,17 @@
   transform: scale(1.05);
 }
 
-.cards-container {
+.detailed-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.compact-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   width: 100%;
   max-width: 100%;

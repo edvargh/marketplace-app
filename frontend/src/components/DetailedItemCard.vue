@@ -1,5 +1,9 @@
 <template>
   <div class="item-card">
+    <div v-if="item.status" class="status-banner">
+      {{ item.status }}
+    </div>
+
     <div class="card-image-container">
       <img :src="item.imageUrl" alt="Image" class="card-image" />
 
@@ -39,7 +43,7 @@ const props = defineProps({
 
 
 <style scoped>
-@import '../styles/ItemCard.css';
+@import '../styles/DetailedItemCard.css';
 </style>
 
 
