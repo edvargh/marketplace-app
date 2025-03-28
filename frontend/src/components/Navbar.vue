@@ -8,18 +8,10 @@
             Contact (Coming Soon)
           </router-link>
         </li>
+        <li><router-link to="/login">Log In</router-link></li>
       </ul>
-  
-      <div class="nav-buttons">
-        <button class="button">Sign Up</button>
-        <button class="button">Log In</button>
-      </div>
     </nav>
   
-    <main>
-      <h1>Page Content</h1>
-      <p>...</p>
-    </main>
   </template>
 
 <style scoped>
