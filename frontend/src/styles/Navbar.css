@@ -1,12 +1,12 @@
 .nav {
-  position: fixed;     
-  top: 0;              
-  left: 0;            
-  width: 100%;         
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   padding: 1rem;
   background: #f0f0f0;
   border-bottom: 1px solid #ccc;
-  z-index: 999;       
+  z-index: 999;
 }
 
 .button {
@@ -15,7 +15,7 @@
 }
 .disabled-link {
   color: gray;
-  pointer-events: none; 
+  pointer-events: none;
   cursor: default;
   margin: 0 0.5rem;
 }
