@@ -2,7 +2,7 @@
   <div class = "logInWrapper">
   <div class="logInPage">
     <h1>Log In</h1>
-    <form>
+    <form @submit.prevent="handleLogin">
       <label for="email">email</label>
       <InputBox>
         <input
@@ -27,7 +27,12 @@
         />
       </InputBox>
 
-      <button type="submit">Log In</button>
+      <button type="submit" :disabled = "isSubmitting">
+        {{ isSubmitting ? 'Logging in...' : 'Log In' }}
+      </button>
+      <div v-if="errorMessage" class="error-message">
+        {{ errorMessage }}
+       </div> 
     </form>
 
     <div>
@@ -39,14 +44,31 @@
   </div>
 </template>
 
-
 <script setup>
 import InputBox from '@/components/InputBox.vue'
 import { ref } from 'vue'
+import { userAuth } from '@/composables/userAuth'
 
 const email = ref('')
 const password = ref('')
+const errorMessage = ref('')
+const isSubmitting = ref(false)
+
+const { login } = userAuth()
+
+const handleLogin = async () => {
+  isSubmitting.value = true
+  errorMessage.value = ''
+  try {
+    await login(email.value, password.value)
+  } catch (err) {
+    errorMessage.value = err.message
+  } finally {
+    isSubmitting.value = false
+  }
+}
 </script>
+
 
 
 <style scoped>
