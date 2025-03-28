@@ -4,6 +4,7 @@ import com.marketplace.backend.model.User;
 import com.marketplace.backend.model.Role;
 import com.marketplace.backend.repository.UserRepository;
 import com.marketplace.backend.security.JwtService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,9 +47,12 @@ public class AuthController {
    * @return a JWT token
    */
   @PostMapping("/login")
-  public String login(@RequestBody User loginReq) {
+  public Map<String, String> login(@RequestBody User loginReq) {
     authManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
-    return jwtService.generateToken(loginReq.getEmail());
+    String token = jwtService.generateToken(loginReq.getEmail());
+
+    return Map.of("token", token);  // ✅ JSON object like: { "token": "..." }
   }
+
 }
