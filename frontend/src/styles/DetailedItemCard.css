@@ -1,3 +1,17 @@
+.status-banner {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background-color: #cccccc;
+    z-index: 2;
+}
+
 .item-card {
     width: 300px;
     border-radius: 16px;
@@ -28,6 +42,7 @@
     object-fit: contain;
     border-radius: 16px;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.1);
+    background: #f5f5f5;
 }
 
 .profile-badge {
