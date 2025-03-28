@@ -50,6 +50,9 @@
 import InputBox from '@/components/InputBox.vue'
 import { ref } from 'vue'
 import { userAuth } from '@/composables/userAuth'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const email = ref('')
 const password = ref('')
@@ -63,6 +66,7 @@ const handleLogin = async () => {
   errorMessage.value = ''
   try {
     await login(email.value, password.value)
+    await router.push('/HomeView')
   } catch (err) {
     errorMessage.value = err.message
   } finally {
