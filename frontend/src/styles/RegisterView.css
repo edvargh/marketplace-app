@@ -1,0 +1,60 @@
+.RegisterPage {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 6rem 2rem 2rem; 
+    box-sizing: border-box;
+  }
+  
+  .RegisterPage form {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    margin: 0 auto;
+    font-size: 10;
+    font-family: 'Abel', sans-serif;
+  }
+  
+  .RegisterPage h1 {
+    margin: 0 auto 2rem; 
+    font-size: 2.2rem;
+    font-weight: bold;
+    text-align: center;
+    font-family: 'Montagu Slab', serif;
+  
+  }
+  
+  .RegisterPage label {
+    display: block;
+    margin: 1rem 0 0.3rem;
+    font-weight: 600;
+    color: #444;
+  }
+  
+  .RegisterPage button[type='submit'] {
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .RegisterPage button[type='submit']:hover {
+    background: linear-gradient(to right, #00f2fe, #4facfe);
+  }
+  
+  .error-message {
+    margin-top: 1rem;
+    color: red;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  

@@ -1,11 +1,38 @@
 .InputBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   border-radius: 9999px;
   padding: 1rem 2rem;
-  border: 2px solid;
-  background: linear-gradient(to right, #e0f0ff, #e8f0ff);
-  border-image: linear-gradient(to right, #4facfe, #00f2fe) 1;
-  background-clip: padding-box;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
+    linear-gradient(to right, #4facfe, #00f2fe) border-box;
+  background-clip: padding-box, border-box;
   width: 100%;
   max-width: 600px;
   margin: 1rem auto;
+  box-sizing: border-box;
+}
+
+.InputBox-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 1rem;
+  font-family: 'Abel', sans-serif;
+  color: #333;
+  padding: 0;
+}
+
+.InputBox-input::placeholder {
+  color: #aaa;
+  opacity: 1;
+}
+
+.InputBox-input:focus::placeholder {
+  color: transparent;
 }

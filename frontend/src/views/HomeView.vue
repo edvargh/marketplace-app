@@ -1,4 +1,3 @@
-
 <template>
   <div class="home-container">
     <div class="search-bar">
@@ -19,8 +18,12 @@
       <div class="section-header">
         <h2>Your recommendations</h2>
       </div>
-      <div class="recommendations-grid">
-        <p>Recommendations here</p>
+      <div class="detailed-cards-container">
+        <DetailedItemCard
+            v-for="item in items"
+            :key="item.id"
+            :item="item"
+        />
       </div>
     </section>
 
@@ -28,8 +31,8 @@
       <div class="section-header">
         <h2>Market</h2>
       </div>
-      <div class="nft-cards-container">
-        <ItemCard
+      <div class="compact-cards-container">
+        <CompactItemCard
             v-for="item in items"
             :key="item.id"
             :item="item"
@@ -45,7 +48,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import ItemCard from '@/components/ItemCard.vue'
+import DetailedItemCard from "@/components/DetailedItemCard.vue";
+import CompactItemCard from "@/components/CompactItemCard.vue";
 
 
 // Mock data for categories
@@ -60,18 +64,31 @@ const categories = ref([
 // Mock data for item
 const items = ref([
   {
-    id: 1,
     title: 'Flower',
     price: 495,
     location: 'Trondheim',
     category: 'Garden',
     subCategory: 'Flower',
     description: 'This is a description used for a mock data of an item. Should not display more than tree lines of the description, if it is longer. Hope this works. ',
-    imageUrl: '/path/to/flower-image.jpg', // Replace with actual image path
-    reservedStatus: false
+    status: "reserved"
+  }, {
+    title: 'This is a long title at three lines. Should not display more than 2 lines',
+    price: 495,
+    location: 'Trondheim',
+    category: 'Garden',
+    subCategory: 'Flower',
+    description: 'This is a short description',
+    status: "sold"
+  }, {
+    title: 'This is for a long title, so we can see and check',
+    price: 495,
+    location: 'Trondheim',
+    category: 'Garden',
+    subCategory: 'Flower',
+    description: 'This is a description used for a mock data of an item. Should not display more than tree lines of the description, if it is longer. Hope this works. Should not display more than tree lines of the description',
+    status: ""
   },
 ])
-
 </script>
 
 
