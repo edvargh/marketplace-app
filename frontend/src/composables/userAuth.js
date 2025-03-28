@@ -17,15 +17,20 @@ export function userAuth() {
 
       if (!response.ok) {
         const errorData = await response.json()
+        console.warn('[Login Failed Resoinse]', errorData)
         throw new Error(errorData.message || 'Login failed')
       }
 
       const data = await response.json()
+      console.log('[Login Success]', data)
+
       localStorage.setItem('user', JSON.stringify(data))
       user.value = data
       isAuthenticated.value = true
       await router.push('/HomeView')
+
     } catch (err) {
+        console.error('[Login Error]', err)
       throw err
     }
   }

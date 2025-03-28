@@ -12,6 +12,7 @@
           v-model="email"
           required
           placeholder="Enter your email"
+          :disabled="isSubmitting"
         />
       </InputBox>
 
@@ -24,6 +25,7 @@
           v-model="password"
           required
           placeholder="Enter your password"
+          :disabled="isSubmitting"
         />
       </InputBox>
 
