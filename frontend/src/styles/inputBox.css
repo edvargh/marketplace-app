@@ -1,11 +1,16 @@
 .InputBox {
   border-radius: 9999px;
   padding: 1rem 2rem;
-  border: 2px solid;
-  background: linear-gradient(to right, #e0f0ff, #e8f0ff);
-  border-image: linear-gradient(to right, #4facfe, #00f2fe) 1;
-  background-clip: padding-box;
+  border: 1px solid transparent;
+  background: 
+    linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
+    linear-gradient(to right, #4facfe, #00f2fe) border-box;
+  background-clip: padding-box, border-box; 
   width: 100%;
   max-width: 600px;
   margin: 1rem auto;
+  outline: none;
+  align-items: center;
 }
+
+
