@@ -10,9 +10,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller for handling authentication requests.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+
 public class AuthController {
 
   private final UserRepository userRepo;
@@ -20,6 +24,12 @@ public class AuthController {
   private final JwtService jwtService;
   private final AuthenticationManager authManager;
 
+  /**
+   * Register a new user.
+   *
+   * @param user the user to register
+   * @return a JWT token
+   */
   @PostMapping("/register")
   public String register(@RequestBody User user) {
     user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -28,6 +38,12 @@ public class AuthController {
     return jwtService.generateToken(user.getEmail());
   }
 
+  /**
+   * Log in a user.
+   *
+   * @param loginReq the user to log in
+   * @return a JWT token
+   */
   @PostMapping("/login")
   public String login(@RequestBody User loginReq) {
     authManager.authenticate(
