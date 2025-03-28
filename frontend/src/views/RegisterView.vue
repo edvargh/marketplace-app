@@ -53,58 +53,42 @@
   </div>
 </template>
   
-  <script setup>
-  import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import InputBox from '@/components/InputBox.vue'
-  
-  const email = ref('')
-  const telephonenumber = ref('')
-  const password = ref('')
-  const confirmPassword = ref('')
-  const errorMessage = ref('')
-  const isSubmitting = ref(false)
-  
-  const router = useRouter()
-  
-  const RegistrationLogic = async () => {
-    errorMessage.value = ''
-    isSubmitting.value = true
-  
-    if (password.value !== confirmPassword.value) {
-      errorMessage.value = 'Passwords do not match'
-      isSubmitting.value = false
-      return
-    }
-  
-    try {
-      const response = await fetch('http://localhost:8080/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: email.value.trim(),
-          password: password.value,
-          telephonenumber: telephonenumber.value.trim(),
-        })
-      })
-  
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Registration failed')
-      }
-  
-      const data = await response.json()
-      console.log('[Registration Success]', data)
-  
-      await router.push('/login')
-    } catch (err) {
-      console.error('[Registration Error]', err)
-      errorMessage.value = err.message
-    } finally {
-      isSubmitting.value = false
-    }
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@/stores/userStore'
+import InputBox from '@/components/InputBox.vue'
+
+const router = useRouter()
+const userStore = useUserStore()
+
+const email = ref('')
+const telephonenumber = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const errorMessage = ref('')
+const isSubmitting = ref(false)
+
+const RegistrationLogic = async () => {
+  errorMessage.value = ''
+  isSubmitting.value = true
+
+  if (password.value !== confirmPassword.value) {
+    errorMessage.value = 'Passwords do not match'
+    isSubmitting.value = false
+    return
   }
-  </script>
+
+  try {
+    await userStore.register(email.value, password.value, telephonenumber.value)
+    await router.push('/login')
+  } catch (err) {
+    errorMessage.value = err.message
+  } finally {
+    isSubmitting.value = false
+  }
+}
+</script>
   
   <style scoped>
   @import '../styles/RegisterView.css';
