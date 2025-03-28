@@ -1,0 +1,21 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  z-index: 999;
+}
+
+.button {
+  padding: 0.3rem 0.8rem;
+  margin-left: 0.5rem;
+}
+.disabled-link {
+  color: gray;
+  pointer-events: none;
+  cursor: default;
+  margin: 0 0.5rem;
+}
