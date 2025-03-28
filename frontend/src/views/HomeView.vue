@@ -1,14 +1,17 @@
 <template>
   <div class="home-container">
-    <div class="search-bar">
-      <input type="text" placeholder="Search items, collections, and accounts" />
-    </div>
+    <InputBox/>
 
     <div class="categories">
       <h3>Categories</h3>
       <ul>
         <!-- Loop through categories and display them -->
         <li v-for="category in categories" :key="category.id">
+          <img
+              :src="category.image"
+              :alt="category.name"
+              class="category-image"
+          >
           {{ category.name }}
         </li>
       </ul>
@@ -50,15 +53,16 @@
 import { ref } from 'vue';
 import DetailedItemCard from "@/components/DetailedItemCard.vue";
 import CompactItemCard from "@/components/CompactItemCard.vue";
+import InputBox from "@/components/InputBox.vue";
 
 
 // Mock data for categories
 const categories = ref([
-  { id: 1, name: 'Kitchen' },
-  { id: 2, name: 'Cars' },
-  { id: 3, name: 'Computers' },
-  { id: 4, name: 'Sports' },
-  { id: 5, name: 'Houses' }
+  { id: 1, name: 'Kitchen', image: 'kitchen-items.jpg' },
+  { id: 2, name: 'Cars', image: 'cars.webp' },
+  { id: 3, name: 'Tech', image: 'tech.webp' },
+  { id: 4, name: 'Sports', image: 'sports.jpg' },
+  { id: 5, name: 'Houses', image: 'houses.jpg' }
 ]);
 
 // Mock data for item
