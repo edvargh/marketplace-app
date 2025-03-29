@@ -2,6 +2,7 @@ package com.marketplace.backend.controller;
 
 import com.marketplace.backend.model.Role;
 import com.marketplace.backend.model.User;
+import com.marketplace.backend.repository.ItemRepository;
 import com.marketplace.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,9 @@ class UserControllerTest {
   @Autowired
   private UserRepository userRepository;
 
+  @Autowired
+  private ItemRepository itemRepository;
+
   private User testUser;
 
   /**
@@ -37,6 +41,7 @@ class UserControllerTest {
    */
   @BeforeEach
   void setUp() {
+    itemRepository.deleteAll();
     userRepository.deleteAll();
 
     User user1 = new User("John Doe", "john@example.com", "password123", Role.USER, "1234567890");
