@@ -33,7 +33,7 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: ProfileView,
-      meta: { requiresAuth: false }, //endre til true senere
+      meta: { requiresAuth: true }, //endre til true senere
     },
   ],
 })
