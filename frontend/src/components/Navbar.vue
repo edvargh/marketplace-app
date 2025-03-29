@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="nav-left">
       <CustomButton>
-        <router-link to="/" class ="navbar-home-link">Home</router-link>
+        <router-link to="/" class ="navbar-home-link">{{t('navbar.home')}}</router-link>
       </CustomButton>
     </div>
 
@@ -37,9 +37,12 @@ import { useUserStore } from '@/stores/userStore'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CustomButton from '@/components/CustomButton.vue'
+import { useI18n} from 'vue-i18n'
 
 const userStore = useUserStore()
 const router = useRouter()
+
+const { t } = useI18n()
 
 const isAuthenticated = computed(() => userStore.isAuthenticated)
 

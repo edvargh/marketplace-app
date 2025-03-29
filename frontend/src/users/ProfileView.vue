@@ -3,7 +3,7 @@
       <h1>Profile - {{ username }}</h1>
   
       <div class="profile-picture">
-        <img src="https://via.placeholder.com/150" alt="Profile Picture" />
+        <img src="/default-avatar.png" alt="Profile Picture" />
       </div>
   
       <h2>Edit profile</h2>

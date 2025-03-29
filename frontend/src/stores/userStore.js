@@ -6,8 +6,8 @@ export const useUserStore = defineStore('user', () => {
   const isAuthenticated = ref(false)
 
   const login = async (email, password) => {
-    const MOCK = import.meta.env.DEV // midlertidig for å sjekke om login funker
-
+    //const MOCK = import.meta.env.DEV // midlertidig for å sjekke om login funker
+/*
     if (MOCK) {
         await new Promise((resolve) => setTimeout(resolve, 500))
     
@@ -26,6 +26,7 @@ export const useUserStore = defineStore('user', () => {
     localStorage.setItem('user', JSON.stringify(fakeUser))
     return
     }
+*/
 
     const response = await fetch('http://localhost:8080/api/auth/login', {
         method: 'POST',

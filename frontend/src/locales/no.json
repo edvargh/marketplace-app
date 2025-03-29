@@ -1,0 +1,14 @@
+{
+    "navbar": {
+      "home": "Hjem",
+      "login": "Logg inn",
+      "logout": "Logg ut",
+      "profile": "Profil",
+      "account": "Konto",
+      "edit profile" : "Rediger profil"
+    },
+    "register": {
+      "title": "Registrer ny konto"
+    }
+  }
+  
