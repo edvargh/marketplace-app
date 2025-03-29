@@ -28,7 +28,7 @@
         <button type="submit" :disabled="isSubmitting">
           {{ isSubmitting ? 'Logging in...' : 'Log In' }}
         </button>
-        
+
         <div v-if="errorMessage" class="error-message">
           {{ errorMessage }}
         </div>
@@ -44,35 +44,33 @@
 </template>
 
 <script setup>
-import InputBox from '@/components/InputBox.vue'
 import { ref } from 'vue'
-import { userAuth } from '@/composables/userAuth'
 import { useRouter } from 'vue-router'
-
-const router = useRouter()
+import { useUserStore } from '@/stores/userStore'
+import InputBox from '@/components/InputBox.vue'
 
 const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
 const isSubmitting = ref(false)
 
-const { login } = userAuth()
+const router = useRouter()
+const userStore = useUserStore()
 
 const handleLogin = async () => {
   isSubmitting.value = true
   errorMessage.value = ''
+
   try {
-    await login(email.value, password.value)
-    await router.push('/')
+    await userStore.login(email.value, password.value)
+    router.push('/')
   } catch (err) {
-    errorMessage.value = err.message
+    errorMessage.value = err.message || 'Login failed'
   } finally {
     isSubmitting.value = false
   }
 }
 </script>
-
-
 
 <style scoped>
 @import '../styles/LogInView.css';

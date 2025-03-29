@@ -1,0 +1,75 @@
+.profile-view {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 6rem 2rem 2rem;
+    font-family: 'Abel', sans-serif;
+  }
+  
+  .profile-view h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-family: 'Montagu Slab', serif;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    border: 3px solid #4facfe;
+  }
+  
+  .profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .profile-view h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    font-family: 'Montagu Slab', serif;
+    text-align: left;
+  }
+  
+  .profile-view form {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  label {
+    font-weight: 600;
+    color: #444;
+    margin-left: 0.5rem;
+  }
+  
+  button[type='submit'] {
+    padding: 0.75rem;
+    background: linear-gradient(to right, #4caf50, #81c784);
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button[type='submit']:hover {
+    background: linear-gradient(to right, #388e3c, #66bb6a);
+  }
+  
+  .error-message {
+    color: red;
+    text-align: center;
+    font-size: 0.95rem;
+  }
