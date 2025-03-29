@@ -2,6 +2,7 @@
   max-width: 400px;
   margin: 4rem auto;
   padding: 2rem;
+  box-sizing: border-box;
 }
 
 .logInPage h1 {
@@ -26,12 +27,9 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  width: 75vw;
-  padding: 1rem;
-  box-sizing: border-box;
+  width: 100%;
+  padding: 2rem;
 }
-
-
 
 .logInPage button[type='submit'] {
   width: 100%;
@@ -72,4 +70,21 @@
   color: red;
   margin-top: 1rem;
   min-height: 1.5rem;
+}
+
+.home-page {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.home-page a {
+  color: #4facfe;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.home-page a:hover {
+  text-decoration: underline;
 }
