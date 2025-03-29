@@ -6,10 +6,29 @@ export const useUserStore = defineStore('user', () => {
   const isAuthenticated = ref(false)
 
   const login = async (email, password) => {
+    const MOCK = import.meta.env.DEV // midlertidig for å sjekke om login funker
+
+    if (MOCK) {
+        await new Promise((resolve) => setTimeout(resolve, 500))
+    
+    const fakeUser = {
+        id: '123456',
+        email: 'test@123.no',
+        password: '123456',
+        fullName: 'MockUser',
+        token: 'fake-jwt-token',
+    }
+
+    user.value = fakeUser
+    isAuthenticated.value = true
+    localStorage.setItem('user', JSON.stringify(fakeUser))
+    return
+    }
+
     const response = await fetch('http://localhost:8080/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
     })
 
     if (!response.ok) {
@@ -23,11 +42,11 @@ export const useUserStore = defineStore('user', () => {
     isAuthenticated.value = true
   }
 
-  const register = async (email, password, telephonenumber) => {
+  const register = async (fullName, email, password, phoneNumber) => {
     const response = await fetch('http://localhost:8080/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, telephonenumber })
+      body: JSON.stringify({ fullName, email, password, phoneNumber })
     })
 
     if (!response.ok) {
