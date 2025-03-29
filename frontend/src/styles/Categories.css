@@ -1,5 +1,8 @@
 .categories {
     margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .categories h3 {

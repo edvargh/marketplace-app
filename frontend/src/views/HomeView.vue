@@ -74,6 +74,8 @@ onMounted(() => {
   const userData = localStorage.getItem('user');
   hasToken.value = !!userData;
 
+  // TODO: fetchRecommendedItems()
+  // TODO: fetchMostLikedItems()
   fetchMarketItems()
 });
 
