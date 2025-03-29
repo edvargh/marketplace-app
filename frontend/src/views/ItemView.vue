@@ -1,28 +1,11 @@
 <template>
   <div class="item-detail-container">
     <!-- Image Gallery -->
-    <div class="image-gallery">
-      <div class="main-image">
-        <img :src="currentImage" :alt="item.title">
-
-        <!-- Navigation Arrows -->
-        <button class="nav-btn prev-btn" @click="prevImage">
-          &lt;
-        </button>
-        <button class="nav-btn next-btn" @click="nextImage">
-          &gt;
-        </button>
-
-        <!-- Image Counter -->
-        <div class="image-counter" v-if="item.images.length > 1">
-          {{ currentImageIndex + 1 }} / {{ item.images.length }}
-        </div>
-      </div>
-
-      <button class="favorite-btn">
-        <span>❤</span> Add to favorites
-      </button>
-    </div>
+    <ImageGallery
+        :images="item.images"
+        :alt-text="item.title"
+        class="image-gallery"
+    />
 
     <!-- Item Info -->
     <div class="item-info">
@@ -67,6 +50,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import ImageGallery from "@/components/ImageGallery.vue";
 
 const route = useRoute();
 const item = ref({
