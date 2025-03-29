@@ -7,7 +7,7 @@
       <InputBox
         type="text"
         id="fullname"
-        v-model="fullname"
+        v-model="full_name"
         placeholder="Enter your full name"
         :disabled="isSubmitting"
         required
@@ -92,7 +92,7 @@ const RegistrationLogic = async () => {
   }
 
   try {
-    await userStore.register(email.value, password.value, telephonenumber.value)
+    await userStore.register(fullname.value, email.value, password.value, telephonenumber.value)
     await router.push('/login')
   } catch (err) {
     errorMessage.value = err.message
