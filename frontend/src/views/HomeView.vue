@@ -19,9 +19,10 @@
       </ul>
     </div>
 
-    <section class="recommendations">
+    <!-- Most Liked Items -->
+    <section class="most-liked">
       <div class="section-header">
-        <h2>Your recommendations</h2>
+        <h2>Most popular items</h2>
       </div>
       <div class="detailed-cards-container">
         <DetailedItemCard
@@ -32,6 +33,7 @@
       </div>
     </section>
 
+    <!-- Market Items -->
     <section class="market">
       <div class="section-header">
         <h2>Market</h2>
@@ -44,6 +46,7 @@
         />
       </div>
     </section>
+
   </div>
 </template>
 
@@ -52,11 +55,71 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import DetailedItemCard from "@/components/DetailedItemCard.vue";
 import CompactItemCard from "@/components/CompactItemCard.vue";
-import InputBox from "@/components/InputBox.vue";
 import SearchBar from "@/components/SearchBar.vue";
+
+const hasToken = ref(false);
+const recommendations = ref([]);
+const mostLiked = ref([]);
+const market = ref([]);
+
+// Check for token and fetch recommended items
+onMounted(() => {
+  const token = localStorage.getItem('token');
+  hasToken.value = !!token;
+
+  if (hasToken.value) {
+    fetchRecommendedItems();
+  }
+});
+
+async function fetchRecommendedItems() {
+  try {
+    console.log("Fetching recommended items ...");
+    const response = await fetch('', { // TODO: Backend method and implement in HTML above
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+    console.log("Success fetching recommended items");
+
+    if (response.ok) {
+      recommendations.value = await response.json();
+    }
+  } catch (error) {
+    console.error('Error fetching recommended items:', error);
+  }
+}
+
+async function fetchMostLikedItems() {
+  try {
+    console.log("Fetching most liked items ...");
+    const response = await fetch(''); // TODO: Backend method and implement in HTML above
+    console.log("Success fetching most liked items");
+
+    if (response.ok) {
+      mostLikedItems.value = await response.json();
+    }
+  } catch (error) {
+    console.error('Error fetching most liked items:', error);
+  }
+}
+
+async function fetchMarketItems() {
+  try {
+    console.log("Fetching market items ...");
+    const response = await fetch(''); // TODO: Backend method and implement in HTML above
+    console.log("Success fetching market items");
+
+    if (response.ok) {
+      marketItems.value = await response.json();
+    }
+  } catch (error) {
+    console.error('Error fetching market items:', error);
+  }
+}
 
 
 // Mock data for categories
