@@ -15,8 +15,10 @@ export const useUserStore = defineStore('user', () => {
         id: '123456',
         email: 'test@123.no',
         password: '123456',
+        phoneNumber: '+47 12345678',
         fullName: 'MockUser',
         token: 'fake-jwt-token',
+        bio: 'This is a mock user',
     }
 
     user.value = fakeUser
