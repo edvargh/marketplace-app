@@ -7,37 +7,66 @@
       </div>
   
       <h2>Edit profile</h2>
-  
+
       <form @submit.prevent="handleUpdateProfile">
         <label for="username">Username</label>
         <InputBox>
-          <input type="text" id="username" v-model="username" placeholder="Username" />
+          <input
+            type="text"
+            id="username"
+            v-model="username"
+            :placeholder="!username ? 'Enter your username' : ''"
+          />
         </InputBox>
   
         <label for="password">Password</label>
         <InputBox>
-          <input type="password" id="password" v-model="password" placeholder="Password" />
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            placeholder="Enter a new password"
+          />
         </InputBox>
   
         <label for="email">Email</label>
         <InputBox>
-          <input type="email" id="email" v-model="email" placeholder="Email" />
+          <input
+            type="email"
+            id="email"
+            v-model="email"
+            :placeholder="!email ? 'Enter your email' : ''"
+          />
         </InputBox>
   
         <label for="telephonenumber">Telephone Number</label>
         <InputBox>
-          <input type="tel" id="telephonenumber" v-model="telephonenumber" placeholder="Telephone number" />
+          <input
+            type="tel"
+            id="telephonenumber"
+            v-model="telephonenumber"
+            :placeholder="!telephonenumber ? 'Enter your phone number' : ''"
+          />
         </InputBox>
   
         <label for="bio">Bio</label>
         <InputBox>
-          <textarea id="bio" v-model="bio" placeholder="Bio" rows="3"></textarea>
+          <textarea
+            id="bio"
+            v-model="bio"
+            :placeholder="!bio ? 'Enter your bio' : ''"
+            rows="3"
+          ></textarea>
         </InputBox>
   
         <label for="language">Language</label>
-        <InputBox>
-          <input type="text" id="language" v-model="language" placeholder="Language" />
-        </InputBox>
+            <div class="SelectBox">
+                <select id="language" v-model="language" class="dropdown-select">
+                    <option disabled value="">Select your language</option>
+                    <option value="english">English</option>
+                    <option value="norwegian">Norwegian</option>
+                </select>
+            </div>
   
         <button type="submit" :disabled="isSubmitting">
           {{ isSubmitting ? 'Updating...' : 'Update Profile' }}
@@ -51,9 +80,10 @@
   </template>
   
   <script setup>
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
   import InputBox from '@/components/InputBox.vue'
   import { useRouter } from 'vue-router'
+  import { useUserStore } from '@/stores/userStore'
   
   const username = ref('')
   const password = ref('')
@@ -65,6 +95,17 @@
   const isSubmitting = ref(false)
   
   const router = useRouter()
+  const userStore = useUserStore()
+  
+  onMounted(() => {
+    if (userStore.user) {
+      username.value = userStore.user.fullName || ''
+      email.value = userStore.user.email || ''
+      telephonenumber.value = userStore.user.phoneNumber || ''
+      bio.value = userStore.user.bio || ''
+      language.value = userStore.user.language || ''
+    }
+  })
   
   const handleUpdateProfile = async () => {
     isSubmitting.value = true
