@@ -19,7 +19,21 @@
       </ul>
     </div>
 
-    <!-- Most Liked Items -->
+    <!-- Recommended items (only when logged in) -->
+    <section v-if="hasToken" class="recommendations">
+      <div class="section-header">
+        <h2>Your recommendations</h2>
+      </div>
+      <div class="detailed-cards-container">
+        <DetailedItemCard
+            v-for="item in items"
+            :key="item.id"
+            :item="item"
+        />
+      </div>
+    </section>
+
+    <!-- Most Liked Items (always visible) -->
     <section class="most-liked">
       <div class="section-header">
         <h2>Most popular items</h2>
@@ -33,7 +47,7 @@
       </div>
     </section>
 
-    <!-- Market Items -->
+    <!-- Market Items  (always visible) -->
     <section class="market">
       <div class="section-header">
         <h2>Market</h2>
@@ -67,12 +81,8 @@ const market = ref([]);
 
 // Check for token and fetch recommended items
 onMounted(() => {
-  const token = localStorage.getItem('token');
-  hasToken.value = !!token;
-
-  if (hasToken.value) {
-    fetchRecommendedItems();
-  }
+  const userData = localStorage.getItem('user');
+  hasToken.value = !!userData;
 });
 
 async function fetchRecommendedItems() {
