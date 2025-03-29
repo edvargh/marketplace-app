@@ -23,11 +23,11 @@
         required
       />
 
-      <label for="telephonenumber">Telephone Number</label>
+      <label for="phoneNumber">Telephone Number</label>
       <InputBox
         type="tel"
-        id="telephonenumber"
-        v-model="telephonenumber"
+        id="phoneNumber"
+        v-model="phoneNumber"
         placeholder="Enter your telephone number"
         :disabled="isSubmitting"
         required
@@ -75,7 +75,7 @@ const userStore = useUserStore()
 
 const fullName = ref('')
 const email = ref('')
-const telephonenumber = ref('')
+const phoneNumber = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
@@ -92,7 +92,7 @@ const RegistrationLogic = async () => {
   }
 
   try {
-    await userStore.register(fullName.value, email.value, password.value, telephonenumber.value)
+    await userStore.register(fullName.value, email.value, password.value, phoneNumber.value)
     await router.push('/login')
   } catch (err) {
     errorMessage.value = err.message
