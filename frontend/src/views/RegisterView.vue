@@ -2,6 +2,17 @@
   <div class="RegisterPage">
     <h1>Register new account</h1>
     <form @submit.prevent="RegistrationLogic">
+
+      <label for = "fullname">Full Name</label>
+      <InputBox
+        type="text"
+        id="fullname"
+        v-model="fullname"
+        placeholder="Enter your full name"
+        :disabled="isSubmitting"
+        required
+      />
+
       <label for="email">Email</label>
       <InputBox
         type="email"
@@ -62,6 +73,7 @@ import InputBox from '@/components/InputBox.vue'
 const router = useRouter()
 const userStore = useUserStore()
 
+const fullname = ref('')
 const email = ref('')
 const telephonenumber = ref('')
 const password = ref('')
