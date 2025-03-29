@@ -42,11 +42,11 @@ export const useUserStore = defineStore('user', () => {
     isAuthenticated.value = true
   }
 
-  const register = async (email, password, telephonenumber) => {
+  const register = async (fullname, email, password, telephonenumber) => {
     const response = await fetch('http://localhost:8080/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, telephonenumber })
+      body: JSON.stringify({ fullname, email, password, telephonenumber })
     })
 
     if (!response.ok) {
