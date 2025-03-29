@@ -17,14 +17,13 @@
       </div>
     </div>
 
-    <button class="favorite-btn" v-if="showFavoriteButton">
-      <span>❤</span> Add to favorites
-    </button>
+    <FavoriteBtn/>
   </div>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue';
+import FavoriteBtn from "@/components/FavoriteBtn.vue";
 
 const props = defineProps({
   images: {
