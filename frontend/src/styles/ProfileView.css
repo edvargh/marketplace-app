@@ -1,7 +1,7 @@
 .profile-view {
     display: flex;
     flex-direction: column;
-    align-items: left;
+    align-items: center;
     justify-content: flex-start;
     min-height: 100vh;
     padding: 6rem 2rem 2rem;
@@ -14,29 +14,6 @@
     font-family: 'Montagu Slab', serif;
     font-weight: bold;
     text-align: center;
-  }
-  
-  .profile-picture {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-bottom: 2rem;
-    border: 3px solid #4facfe;
-  }
-  
-  .profile-picture img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .profile-view h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-    font-family: 'Montagu Slab', serif;
-    text-align: left;
   }
   
   .profile-view form {
@@ -96,4 +73,57 @@
     font-size: 1rem;
     font-family: 'Abel', sans-serif;
     color: #333;
+  }
+  .profile-picture-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-picture-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #4facfe;
+  }
+  
+  .profile-picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+  }
+  
+  .edit-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    background: white;
+    border-radius: 9999px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Show edit icon on hover */
+  .profile-picture-container:hover .edit-icon {
+    opacity: 1;
+  }
+
+  .input-error {
+    border: 1px solid red !important;
+    box-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
+  }
+  
+  .input-error-text {
+    color: red;
+    font-size: 0.9rem;
+    margin: -0.5rem 0 1rem 0.5rem;
   }

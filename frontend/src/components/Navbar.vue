@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="nav-left">
       <CustomButton>
-        <router-link to="/" class ="navbar-home-link">Home</router-link>
+        <router-link to="/" class ="navbar-home-link">{{t('navbar.home')}}</router-link>
       </CustomButton>
     </div>
 
@@ -10,10 +10,14 @@
       <template v-if="isAuthenticated">
         <li class="account-dropdown" ref="dropdownRef">
           <div class = "dropdown-wrapper">
-          <CustomButton @click= "toggleDropdown"> Account </CustomButton>
+            <CustomButton @click="toggleDropdown">{{ t('navbar.account') }}</CustomButton>
             <ul v-if="dropdownOpen" class="dropdown-menu">
-              <li><router-link to="/profile" class="dropdown-profile-link">Profile</router-link></li>
-              <li><button @click.stop="handleLogout" class="dropdown-logout-button">Log Out</button></li>
+              <li>
+                <router-link to="/profile" class="dropdown-profile-link">{{ t('navbar.profile') }}</router-link>
+              </li>
+              <li>
+                <button @click.stop="handleLogout" class="dropdown-logout-button">{{ t('navbar.logout') }}</button>
+              </li>
             </ul>
           </div>
         </li>
@@ -21,8 +25,8 @@
       <template v-else>
         <li>
           <CustomButton>
-          <router-link to="/login" class="navbar-login-button">
-            Log in
+            <router-link to="/login" class="navbar-login-button">
+              {{ t('navbar.login') }}
           </router-link>
         </CustomButton>
         </li>
@@ -37,9 +41,12 @@ import { useUserStore } from '@/stores/userStore'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CustomButton from '@/components/CustomButton.vue'
+import { useI18n} from 'vue-i18n'
 
 const userStore = useUserStore()
 const router = useRouter()
+
+const { t } = useI18n()
 
 const isAuthenticated = computed(() => userStore.isAuthenticated)
 

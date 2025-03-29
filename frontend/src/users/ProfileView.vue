@@ -2,71 +2,82 @@
     <div class="profile-view">
       <h1>Profile - {{ username }}</h1>
   
-      <div class="profile-picture">
-        <img src="https://via.placeholder.com/150" alt="Profile Picture" />
+    <div class= "profile-picture-wrapper">
+      <div class="profile-picture-container">
+        <img 
+            :src="profileImage" 
+            alt="Profile Picture" 
+            class ="profile-picture"
+            @click= "handleEdit"
+            title = "Change profile picture" />
+        <EditIcon @click="handleEdit" class="edit-icon" />
       </div>
+    </div>
   
       <h2>Edit profile</h2>
-
+  
       <form @submit.prevent="handleUpdateProfile">
-        <label for="username">Username</label>
-        <InputBox>
-          <input
-            type="text"
-            id="username"
-            v-model="username"
-            :placeholder="!username ? 'Enter your username' : ''"
-          />
-        </InputBox>
-  
-        <label for="password">Password</label>
-        <InputBox>
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            placeholder="Enter a new password"
-          />
-        </InputBox>
-  
-        <label for="email">Email</label>
-        <InputBox>
-          <input
-            type="email"
-            id="email"
-            v-model="email"
-            :placeholder="!email ? 'Enter your email' : ''"
-          />
-        </InputBox>
-  
-        <label for="telephonenumber">Telephone Number</label>
-        <InputBox>
-          <input
-            type="tel"
-            id="telephonenumber"
-            v-model="telephonenumber"
-            :placeholder="!telephonenumber ? 'Enter your phone number' : ''"
-          />
-        </InputBox>
-  
-        <label for="bio">Bio</label>
-        <InputBox>
+        <label for="username">{{ t('profile.username') }}</label>
+        <InputBox
+          label="Username"
+          id="username"
+          v-model="username"
+        />
+
+        <label for="bio">{{ t('profile.bio') }}</label>
+        <InputBox
+          label="Bio"
+          id="bio"
+        >
           <textarea
             id="bio"
             v-model="bio"
-            :placeholder="!bio ? 'Enter your bio' : ''"
             rows="3"
+            class="InputBox-input"
           ></textarea>
         </InputBox>
   
-        <label for="language">Language</label>
-            <div class="SelectBox">
-                <select id="language" v-model="language" class="dropdown-select">
-                    <option disabled value="">Select your language</option>
-                    <option value="english">English</option>
-                    <option value="norwegian">Norwegian</option>
-                </select>
-            </div>
+        <label for="email">{{ t('profile.email') }}</label>
+        <InputBox
+          label="Email"
+          id="email"
+          type="email"
+          v-model="email"
+        />
+  
+        <label for="telephonenumber">{{ t('profile.phone') }}</label>
+        <InputBox
+          label="Telephone Number"
+          id="telephonenumber"
+          type="tel"
+          v-model="telephonenumber"
+        />
+  
+        <label for="password">{{ t('profile.password') }}</label>
+        <InputBox
+        id="password"
+        type="password"
+        v-model="password"
+        />
+
+        <label for="confirmPassword">{{ t('profile.confirmPassword') }}</label>
+        <InputBox
+        id="confirmPassword"
+        type="password"
+        v-model="confirmPassword"
+        :class="{ 'input-error': passwordMismatch }" 
+        />
+
+        <p v-if="passwordMismatch" class="input-error-text">Passwords do not match</p>
+
+        <div class="SelectBox">
+            <label for="language">{{ t('profile.language') }}</label>
+            <select id="language" v-model="language" class="dropdown-select">
+            <option disabled value="">Select your language</option>
+            <option value="english">English</option>
+            <option value="norwegian">Norwegian</option>
+          </select>
+        </div>
   
         <button type="submit" :disabled="isSubmitting">
           {{ isSubmitting ? 'Updating...' : 'Update Profile' }}
@@ -77,22 +88,28 @@
         </div>
       </form>
     </div>
+
   </template>
   
+
   <script setup>
-  import { ref, onMounted } from 'vue'
-  import InputBox from '@/components/InputBox.vue'
+  import { ref, computed, onMounted, watch} from 'vue'
   import { useRouter } from 'vue-router'
   import { useUserStore } from '@/stores/userStore'
+  import { useI18n } from 'vue-i18n'
+  import InputBox from '@/components/InputBox.vue'
+  import EditIcon from '@/components/EditIcon.vue'
   
   const username = ref('')
-  const password = ref('')
+  const bio = ref('')
   const email = ref('')
   const telephonenumber = ref('')
-  const bio = ref('')
+  const password = ref('')
+  const confirmPassword = ref('')
   const language = ref('')
-  const errorMessage = ref('')
   const isSubmitting = ref(false)
+  const errorMessage = ref('')
+  const profileImage = ref('/default-picture.jpg')
   
   const router = useRouter()
   const userStore = useUserStore()
@@ -107,7 +124,18 @@
     }
   })
   
+  const passwordMismatch = computed(() => {
+    return password.value !== confirmPassword.value && confirmPassword.value !== ''
+  })
+  
+  const canSubmit = computed(() => !passwordMismatch.value && !isSubmitting.value)
+  
   const handleUpdateProfile = async () => {
+    if (passwordMismatch.value) {
+      errorMessage.value = 'Passwords do not match'
+      return
+    }
+  
     isSubmitting.value = true
     errorMessage.value = ''
   
@@ -121,8 +149,8 @@
           email: email.value,
           telephonenumber: telephonenumber.value,
           bio: bio.value,
-          language: language.value
-        })
+          language: language.value,
+        }),
       })
   
       if (!response.ok) {
@@ -139,7 +167,18 @@
       isSubmitting.value = false
     }
   }
-  </script> 
+
+  const { t, locale } = useI18n()
+  
+  watch(language, (newLang) => {
+  locale.value = newLang
+  })
+  
+  const handleEdit = () => {
+    console.log('Edit icon clicked')
+  }
+  </script>
+
 
 <style scoped>
 @import '../styles/ProfileView.css';

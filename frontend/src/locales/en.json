@@ -1,0 +1,22 @@
+{
+    "navbar": {
+      "home": "Home",
+      "login": "Log In",
+      "logout": "Log Out",
+      "profile": "Profile",
+      "account": "Account"
+    },
+    "register": {
+      "title": "Register new account"
+    },
+    "profile":{
+      "username": "Username",
+      "email": "Email",
+      "phone": "Telephone Number",
+      "bio": "Bio",
+      "password": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "language": "Language"
+    }
+  }
+  

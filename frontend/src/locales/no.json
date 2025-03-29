@@ -1,0 +1,22 @@
+{
+    "navbar": {
+      "home": "Hjem",
+      "login": "Logg inn",
+      "logout": "Logg ut",
+      "profile": "Profil",
+      "account": "Konto"
+    },
+    "register": {
+      "title": "Registrer ny konto"
+    },
+    "profile":{
+      "username": "Brukernavn",
+      "email": "E-post",
+      "phone": "Telefonnummer",
+      "bio": "Bio",
+      "password": "Nytt Passord",
+      "confirmPassword": "Bekreft Nytt Passord",
+      "language": "Språk"
+    }
+  }
+  
