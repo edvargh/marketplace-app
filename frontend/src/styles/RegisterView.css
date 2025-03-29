@@ -58,3 +58,19 @@
     text-align: center;
   }
   
+  .AllreadyHaveAccountText {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: #555;
+  }
+  
+  .AllreadyHaveAccountText a {
+    color: #4facfe;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .AllreadyHaveAccountText a:hover {
+    text-decoration: underline;
+  }

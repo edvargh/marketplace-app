@@ -23,11 +23,13 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LogInView,
+      meta: { hideNavbar: true }
     },
     {
       path: '/register',
       name: 'register',
       component: RegisterView,
+      meta: { hideNavbar: true }
     },
     {
       path: '/profile',

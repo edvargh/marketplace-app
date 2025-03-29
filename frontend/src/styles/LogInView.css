@@ -72,4 +72,19 @@
   min-height: 1.5rem;
 }
 
+.home-page {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #555;
+}
 
+.home-page a {
+  color: #4facfe;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.home-page a:hover {
+  text-decoration: underline;
+}

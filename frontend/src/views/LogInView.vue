@@ -2,6 +2,7 @@
   <div class="logInWrapper">
     <div class="logInPage">
       <h1>Log In</h1>
+
       <form @submit.prevent="handleLogin">
         <label for="email">Email</label>
         <InputBox
@@ -39,6 +40,13 @@
           Don't have an account? <router-link to="/register">Sign Up</router-link>
         </p>
       </div>
+
+      <div>
+        <p class="home-page">
+        Back to main page here: <router-link to="/">Main page</router-link>
+        </p>
+      </div>
+
     </div>
   </div>
 </template>
