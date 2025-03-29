@@ -5,18 +5,14 @@ import com.marketplace.backend.service.ItemService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Controller for handling item related requests.
  */
 @RestController
 @RequestMapping("/api/items")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ItemController {
 
   private final ItemService itemService;
@@ -35,7 +31,7 @@ public class ItemController {
    *
    * @return a list of all items
    */
-  @GetMapping
+  @GetMapping("/all-items")
   public List<Item> getAllItems() {
     return itemService.getAllItems();
   }
