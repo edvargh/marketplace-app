@@ -15,7 +15,7 @@ export const useUserStore = defineStore('user', () => {
         id: '123456',
         email: 'test@123.no',
         password: '123456',
-        username: 'MockUser',
+        fullName: 'MockUser',
         token: 'fake-jwt-token',
     }
 
@@ -42,11 +42,11 @@ export const useUserStore = defineStore('user', () => {
     isAuthenticated.value = true
   }
 
-  const register = async (email, password, telephonenumber) => {
+  const register = async (fullName, email, password, phoneNumber) => {
     const response = await fetch('http://localhost:8080/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, telephonenumber })
+      body: JSON.stringify({ fullName, email, password, phoneNumber })
     })
 
     if (!response.ok) {

@@ -2,6 +2,17 @@
   <div class="RegisterPage">
     <h1>Register new account</h1>
     <form @submit.prevent="RegistrationLogic">
+
+      <label for = "fullName">Full Name</label>
+      <InputBox
+        type="text"
+        id="fullName"
+        v-model="fullName"
+        placeholder="Enter your full name"
+        :disabled="isSubmitting"
+        required
+      />
+
       <label for="email">Email</label>
       <InputBox
         type="email"
@@ -12,11 +23,11 @@
         required
       />
 
-      <label for="telephonenumber">Telephone Number</label>
+      <label for="phoneNumber">Telephone Number</label>
       <InputBox
         type="tel"
-        id="telephonenumber"
-        v-model="telephonenumber"
+        id="phoneNumber"
+        v-model="phoneNumber"
         placeholder="Enter your telephone number"
         :disabled="isSubmitting"
         required
@@ -62,8 +73,9 @@ import InputBox from '@/components/InputBox.vue'
 const router = useRouter()
 const userStore = useUserStore()
 
+const fullName = ref('')
 const email = ref('')
-const telephonenumber = ref('')
+const phoneNumber = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
@@ -80,7 +92,7 @@ const RegistrationLogic = async () => {
   }
 
   try {
-    await userStore.register(email.value, password.value, telephonenumber.value)
+    await userStore.register(fullName.value, email.value, password.value, phoneNumber.value)
     await router.push('/login')
   } catch (err) {
     errorMessage.value = err.message
