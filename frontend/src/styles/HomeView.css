@@ -7,10 +7,10 @@
   margin-bottom: 200px;
 }
 
-.home-container :deep(.InputBox) {
+.search-container {
+  display: flex;
+  justify-content: center;
   width: 100%;
-  max-width: 600px; /* Example override */
-  margin: 0 auto 40px;
 }
 
 .categories {

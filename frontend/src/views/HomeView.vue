@@ -1,6 +1,8 @@
 <template>
   <div class="home-container">
-    <InputBox/>
+    <div class="search-container">
+      <SearchBar/>
+    </div>
 
     <div class="categories">
       <h3>Categories</h3>
@@ -54,6 +56,7 @@ import { ref } from 'vue';
 import DetailedItemCard from "@/components/DetailedItemCard.vue";
 import CompactItemCard from "@/components/CompactItemCard.vue";
 import InputBox from "@/components/InputBox.vue";
+import SearchBar from "@/components/SearchBar.vue";
 
 
 // Mock data for categories
