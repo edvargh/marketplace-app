@@ -19,42 +19,42 @@
       </ul>
     </div>
 
-    <!-- Recommended items (only when logged in) -->
-    <section v-if="hasToken" class="recommendations">
+    <!-- Recommended items -->
+    <section class="recommendations">
       <div class="section-header">
         <h2>Your recommendations</h2>
       </div>
       <div class="detailed-cards-container">
         <DetailedItemCard
-            v-for="item in items"
+            v-for="item in recommendedItems"
             :key="item.id"
             :item="item"
         />
       </div>
     </section>
 
-    <!-- Most Liked Items (always visible) -->
+    <!-- Most Liked Items -->
     <section class="most-liked">
       <div class="section-header">
         <h2>Most popular items</h2>
       </div>
       <div class="detailed-cards-container">
         <DetailedItemCard
-            v-for="item in items"
+            v-for="item in mostLikedItems"
             :key="item.id"
             :item="item"
         />
       </div>
     </section>
 
-    <!-- Market Items  (always visible) -->
+    <!-- Market Items -->
     <section class="market">
       <div class="section-header">
         <h2>Market</h2>
       </div>
       <div class="compact-cards-container">
         <CompactItemCard
-            v-for="item in items"
+            v-for="item in marketItems"
             :key="item.id"
             :item="item"
         />
@@ -75,14 +75,16 @@ import CompactItemCard from "@/components/CompactItemCard.vue";
 import SearchBar from "@/components/SearchBar.vue";
 
 const hasToken = ref(false);
-const recommendations = ref([]);
-const mostLiked = ref([]);
-const market = ref([]);
+const recommendedItems = ref([]);
+const mostLikedItems = ref([]);
+const marketItems = ref([]);
 
 // Check for token and fetch recommended items
 onMounted(() => {
   const userData = localStorage.getItem('user');
   hasToken.value = !!userData;
+
+  fetchMarketItems()
 });
 
 async function fetchRecommendedItems() {
@@ -120,16 +122,32 @@ async function fetchMostLikedItems() {
 async function fetchMarketItems() {
   try {
     console.log("Fetching market items ...");
-    const response = await fetch(''); // TODO: Backend method and implement in HTML above
+
+    const userData = localStorage.getItem('user');
+    const user = JSON.parse(userData);
+
+    const headers = {
+      'Authorization': `Bearer ${user.token}`,
+      'Content-Type': 'application/json'
+    };
+
+    const response = await fetch('http://localhost:8080/api/items/all-items', {
+      method: 'GET',
+      headers: headers
+    });
+
     console.log("Success fetching market items");
 
     if (response.ok) {
       marketItems.value = await response.json();
+    } else {
+      console.error('Failed to fetch market items:', response.status);
     }
   } catch (error) {
     console.error('Error fetching market items:', error);
   }
 }
+
 
 
 // Mock data for categories
