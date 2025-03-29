@@ -6,7 +6,7 @@ import jakarta.persistence.*;
  * Model for a category.
  */
 @Entity
-@Table(name = "categories")
+@Table(name = "Categories")
 public class Category {
 
   @Id
