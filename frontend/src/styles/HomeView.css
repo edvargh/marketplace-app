@@ -13,55 +13,6 @@
   width: 100%;
 }
 
-.categories {
-  margin-bottom: 30px;
-}
-
-.categories h3 {
-  margin-bottom: 15px;
-  font-size: 1.2rem;
-}
-
-.categories ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 25px;
-  list-style-type: none;
-  padding: 0px;
-}
-
-.categories li {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  text-align: center;
-}
-
-.category-image {
-  width: clamp(60px, 15vw, 120px); /* Responsive sizing */
-  height: clamp(60px, 15vw, 120px); /* Same as width for perfect circle */
-  min-width: 60px; /* Minimum size */
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
-  background-color: #e0e0e0;
-  transition: background-color 0.3s ease;
-}
-
-.categories li::before {
-  content: none;
-}
-
-.categories li:hover::before {
-  background-color: #c0c0c0;
-}
-
-.categories li:hover {
-  transform: scale(1.05);
-}
-
 .detailed-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

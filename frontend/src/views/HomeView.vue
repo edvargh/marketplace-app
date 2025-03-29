@@ -4,20 +4,9 @@
       <SearchBar/>
     </div>
 
-    <div class="categories">
-      <h3>Categories</h3>
-      <ul>
-        <!-- Loop through categories and display them -->
-        <li v-for="category in categories" :key="category.id">
-          <img
-              :src="category.image"
-              :alt="category.name"
-              class="category-image"
-          >
-          {{ category.name }}
-        </li>
-      </ul>
-    </div>
+    <Categories
+        :categories="categories"
+    />
 
     <!-- Recommended items -->
     <section class="recommendations">
@@ -73,6 +62,7 @@ import { ref, onMounted } from 'vue';
 import DetailedItemCard from "@/components/DetailedItemCard.vue";
 import CompactItemCard from "@/components/CompactItemCard.vue";
 import SearchBar from "@/components/SearchBar.vue";
+import Categories from '@/components/Categories.vue';
 
 const hasToken = ref(false);
 const recommendedItems = ref([]);
