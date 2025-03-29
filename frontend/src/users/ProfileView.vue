@@ -17,30 +17,14 @@
       <h2>Edit profile</h2>
   
       <form @submit.prevent="handleUpdateProfile">
-        <label>Username</label>
+        <label for="username">{{ t('profile.username') }}</label>
         <InputBox
           label="Username"
           id="username"
           v-model="username"
         />
-  
-        <label for="email">Email</label>
-        <InputBox
-          label="Email"
-          id="email"
-          type="email"
-          v-model="email"
-        />
-  
-        <label for="telephonenumber">Telephone Number</label>
-        <InputBox
-          label="Telephone Number"
-          id="telephonenumber"
-          type="tel"
-          v-model="telephonenumber"
-        />
-  
-        <label for="bio">Bio</label>
+
+        <label for="bio">{{ t('profile.bio') }}</label>
         <InputBox
           label="Bio"
           id="bio"
@@ -52,15 +36,31 @@
             class="InputBox-input"
           ></textarea>
         </InputBox>
-
-        <label for="password">Password</label>
+  
+        <label for="email">{{ t('profile.email') }}</label>
+        <InputBox
+          label="Email"
+          id="email"
+          type="email"
+          v-model="email"
+        />
+  
+        <label for="telephonenumber">{{ t('profile.phone') }}</label>
+        <InputBox
+          label="Telephone Number"
+          id="telephonenumber"
+          type="tel"
+          v-model="telephonenumber"
+        />
+  
+        <label for="password">{{ t('profile.password') }}</label>
         <InputBox
         id="password"
         type="password"
         v-model="password"
         />
 
-        <label for="confirmPassword">Confirm Password</label>
+        <label for="confirmPassword">{{ t('profile.confirmPassword') }}</label>
         <InputBox
         id="confirmPassword"
         type="password"
@@ -71,8 +71,8 @@
         <p v-if="passwordMismatch" class="input-error-text">Passwords do not match</p>
 
         <div class="SelectBox">
-          <label for="language">Language</label>
-          <select id="language" v-model="language" class="dropdown-select">
+            <label for="language">{{ t('profile.language') }}</label>
+            <select id="language" v-model="language" class="dropdown-select">
             <option disabled value="">Select your language</option>
             <option value="english">English</option>
             <option value="norwegian">Norwegian</option>
@@ -93,9 +93,10 @@
   
 
   <script setup>
-  import { ref, computed, onMounted } from 'vue'
+  import { ref, computed, onMounted, watch} from 'vue'
   import { useRouter } from 'vue-router'
   import { useUserStore } from '@/stores/userStore'
+  import { useI18n } from 'vue-i18n'
   import InputBox from '@/components/InputBox.vue'
   import EditIcon from '@/components/EditIcon.vue'
   
@@ -166,6 +167,12 @@
       isSubmitting.value = false
     }
   }
+
+  const { t, locale } = useI18n()
+  
+  watch(language, (newLang) => {
+  locale.value = newLang
+  })
   
   const handleEdit = () => {
     console.log('Edit icon clicked')
