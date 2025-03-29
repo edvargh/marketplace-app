@@ -6,7 +6,7 @@ import jakarta.persistence.*;
  * Model for a user.
  */
 @Entity
-@Table(name = "users") // Make sure this matches your actual table name
+@Table(name = "Users") // Make sure this matches your actual table name
 public class User {
 
   @Id
