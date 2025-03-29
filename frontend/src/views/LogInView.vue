@@ -61,6 +61,12 @@ const handleLogin = async () => {
   isSubmitting.value = true
   errorMessage.value = ''
 
+  if (!email.value || !password.value) {
+  errorMessage.value = 'Email and password are required'
+  isSubmitting.value = false
+  return
+}
+
   try {
     await userStore.login(email.value, password.value)
     router.push('/')
