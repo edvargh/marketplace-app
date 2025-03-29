@@ -35,15 +35,17 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
-        .csrf(csrf -> csrf.disable())
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/**").permitAll()
-            .anyRequest().authenticated()
-        )
-        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authenticationProvider(authenticationProvider())
-        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-        .build();
+               .csrf(csrf -> csrf.disable())
+               .authorizeHttpRequests(auth -> auth
+                                                  .requestMatchers(
+                                                      "/api/auth/**",
+                                                      "/api/items/**").permitAll() // Fixed missing slash
+                                                  .anyRequest().authenticated()
+               )
+               .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+               .authenticationProvider(authenticationProvider())
+               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+               .build();
   }
 
   /**
