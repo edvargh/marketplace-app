@@ -3,6 +3,7 @@ package com.marketplace.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.backend.model.Category;
 import com.marketplace.backend.model.Item;
+import com.marketplace.backend.model.ItemStatus;
 import com.marketplace.backend.model.Role;
 import com.marketplace.backend.model.User;
 import com.marketplace.backend.repository.CategoryRepository;
@@ -80,6 +81,8 @@ class ItemControllerTest {
     item1.setPublishedDate(LocalDateTime.now());
     item1.setLatitude(new BigDecimal("63.4300"));
     item1.setLongitude(new BigDecimal("10.3925"));
+    item1.setStatus(ItemStatus.FOR_SALE); // or RESERVED / SOLD
+
 
     Item item2 = new Item();
     item2.setSeller(testUser);
@@ -90,6 +93,9 @@ class ItemControllerTest {
     item2.setPublishedDate(LocalDateTime.now());
     item2.setLatitude(new BigDecimal("63.4300"));
     item2.setLongitude(new BigDecimal("10.3925"));
+    item2.setStatus(ItemStatus.FOR_SALE); // or RESERVED / SOLD
+
+
 
     itemRepository.saveAll(List.of(item1, item2));
   }
