@@ -1,7 +1,7 @@
 <template>
   <div class="item-card">
     <div class="card-image-container">
-      <img :src="item.imageUrl" alt="Image" class="card-image" />
+      <img :src="item.image" alt="Image" class="card-image" />
 
     </div>
 
@@ -9,7 +9,7 @@
 
       <div class="card-header">
         <div class="profile-badge">
-          <img :src="item.profileImageUrl" alt="Profile Image" class="profile-image" />
+          <img :src="item.profile" alt="Profile Image" class="profile-image" />
         </div>
         <div class="card-header-details">
           <h3 class="title">{{ item.title }}</h3>

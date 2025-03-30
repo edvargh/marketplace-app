@@ -1,3 +1,4 @@
+
 .home-container {
   display: flex;
   flex-direction: column;
@@ -6,6 +7,9 @@
   min-height: 100vh;
   margin-top: 150px;
   margin-bottom: 200px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
 }
 
 .search-container {
@@ -14,21 +18,33 @@
   width: 100%;
 }
 
+.recommendations, .most-liked, .market {
+  width: 100%;
+}
+
+.section-header {
+  width: 100%;
+}
+
 .detailed-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   width: 100%;
-  max-width: 100%;
 }
 
 .compact-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
+  gap: 15px;
   width: 100%;
-  max-width: 100%;
 }
+
+.compact-cards-container > * {
+  flex: 0 0 250px; /* Don't grow, don't shrink, fixed width */
+  max-width: 100%; /* For very narrow screens */
+}
+
 
 
 

@@ -1,12 +1,11 @@
 <template>
   <div class="home-container">
+
     <div class="search-container">
       <SearchBar/>
     </div>
 
-    <Categories
-        :categories="categories"
-    />
+    <Categories :categories="categories"/>
 
     <!-- Recommended items -->
     <section class="recommendations">
@@ -15,7 +14,7 @@
       </div>
       <div class="detailed-cards-container">
         <DetailedItemCard
-            v-for="item in recommendedItems"
+            v-for="item in mockItems"
             :key="item.id"
             :item="item"
         />
@@ -29,7 +28,7 @@
       </div>
       <div class="detailed-cards-container">
         <DetailedItemCard
-            v-for="item in mostLikedItems"
+            v-for="item in mockItems"
             :key="item.id"
             :item="item"
         />
@@ -43,7 +42,7 @@
       </div>
       <div class="compact-cards-container">
         <CompactItemCard
-            v-for="item in marketItems"
+            v-for="item in mockItems"
             :key="item.id"
             :item="item"
         />
@@ -72,7 +71,7 @@ const marketItems = ref([]);
 // Check for token and fetch recommended items
 onMounted(() => {
   const userData = localStorage.getItem('user');
-  hasToken.value = !!userData;
+  // TODO: Check token in backend here
 
   // TODO: fetchRecommendedItems()
   // TODO: fetchMostLikedItems()
@@ -152,7 +151,7 @@ const categories = ref([
 ]);
 
 // Mock data for item
-const items = ref([
+const mockItems = ref([
   {
     title: 'Flower',
     price: 495,
@@ -160,7 +159,9 @@ const items = ref([
     category: 'Garden',
     subCategory: 'Flower',
     description: 'This is a description used for a mock data of an item. Should not display more than tree lines of the description, if it is longer. Hope this works. ',
-    status: "reserved"
+    status: "reserved",
+    image: 'edit-icon.png',
+    profile: 'houses.jpg'
   }, {
     title: 'This is a long title at three lines. Should not display more than 2 lines',
     price: 495,
@@ -168,7 +169,9 @@ const items = ref([
     category: 'Garden',
     subCategory: 'Flower',
     description: 'This is a short description',
-    status: "sold"
+    status: "sold",
+    image: 'default-picture.jpg',
+    profile: 'houses.jpg'
   }, {
     title: 'This is for a long title, so we can see and check',
     price: 495,
@@ -176,7 +179,9 @@ const items = ref([
     category: 'Garden',
     subCategory: 'Flower',
     description: 'This is a description used for a mock data of an item. Should not display more than tree lines of the description, if it is longer. Hope this works. Should not display more than tree lines of the description',
-    status: ""
+    status: "",
+    image: 'houses.jpg',
+    profile: 'sports.jpg'
   },
 ])
 </script>
