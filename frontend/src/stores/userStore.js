@@ -82,9 +82,6 @@ export const useUserStore = defineStore('user', () => {
     const token = localStorage.getItem('token');
     const currentUser = user.value;
     
-    console.log('[UpdateUser] Current token:', token);
-    console.log('[UpdateUser] Current user:', JSON.parse(JSON.stringify(currentUser)));
-    console.log('[UpdateUser] Update data received:', updateData);
   
     if (!token || !currentUser?.id) {
       console.error('[UpdateUser] Missing token or user ID - not authenticated');
@@ -101,7 +98,6 @@ export const useUserStore = defineStore('user', () => {
         password: updateData.password ? updateData.password : undefined
       };
   
-      console.log('[UpdateUser] Sending PUT request to /api/users/me with:', requestBody);
       const response = await fetch(`http://localhost:8080/api/users/${currentUser.id}`, {
         method: 'PUT',  
         headers: {
@@ -111,7 +107,6 @@ export const useUserStore = defineStore('user', () => {
         body: JSON.stringify(requestBody)
       });
   
-      console.log('[UpdateUser] Response status:', response.status);
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -125,10 +120,8 @@ export const useUserStore = defineStore('user', () => {
       }
   
       const updatedUser = await response.json();
-      console.log('[UpdateUser] Update successful:', updatedUser);
-      
-      // Update local state
-      user.value = updatedUser;  // Complete replacement for PUT semantics
+  
+      user.value = updatedUser;  
       localStorage.setItem('user', JSON.stringify(user.value));
       return updatedUser;
     } catch (error) {

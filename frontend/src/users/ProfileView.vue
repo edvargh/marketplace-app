@@ -32,11 +32,10 @@
         v-model="email"
       />
 
-      <label for="phoneNumber">{{ t('profile.phone') }}</label>
+      <label for="phoneNumber">{{ t('profile.phoneNumber') }}</label>
       <InputBox
-        label="Telephone Number"
         id="phoneNumber"
-        type="tel"
+        type="phoneNumber"
         v-model="phoneNumber"
       />
 
@@ -101,12 +100,6 @@ const router = useRouter()
 const userStore = useUserStore()
 
 onMounted(() => {
-  console.log('Initial locale:', locale.value)
-  console.log('User values:')
-  console.log('fullName:', userStore.user.fullName)
-  console.log('Email:', userStore.user.email)
-  console.log('Phone:', userStore.user.phoneNumber)
-  console.log('Language:', userStore.user.language)
   if (userStore.user) {
     fullName.value = userStore.user.fullName || ''
     email.value = userStore.user.email || ''

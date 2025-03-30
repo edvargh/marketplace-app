@@ -9,13 +9,13 @@
   "register": {
     "title": "Registrer ny konto"
   },
-  "profile":{
-    "username": "Brukernavn",
+  "profile": {
+    "fullName": "Fullt navn",
     "email": "E-post",
-    "phone": "Telefonnummer",
+    "phoneNumber": "Telefonnummer",
     "bio": "Bio",
-    "password": "Nytt Passord",
-    "confirmPassword": "Bekreft Nytt Passord",
+    "password": "Passord",
+    "confirmPassword": "Bekreft passord",
     "language": "Språk"
   }
 }

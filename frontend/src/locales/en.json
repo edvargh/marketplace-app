@@ -9,14 +9,12 @@
   "register": {
     "title": "Register new account"
   },
-  "profile":{
-    "fullName": "fullName",
+  "profile": {
+    "fullName": "Full Name",
     "email": "Email",
-    "phone": "Telephone Number",
-    "bio": "Bio",
-    "password": "New Password",
-    "confirmPassword": "Confirm New Password",
+    "phoneNumber": "Phone Number",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
     "language": "Language"
   }
 }
-  
