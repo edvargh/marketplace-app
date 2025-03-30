@@ -1,5 +1,8 @@
 <template>
-  <div class="InputBox-wrapper">
+  <div
+      class="InputBox-wrapper"
+      ref="dropdownRef"
+  >
     <div
         class="InputBox"
         @click="isOpen = !isOpen"
@@ -31,7 +34,7 @@
 
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps({
   options: Array,
@@ -43,6 +46,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 const isOpen = ref(false);
 const selectedOption = ref(props.modelValue);
+const dropdownRef = ref(null); // Add this line to create the ref
 
 watch(() => props.modelValue, (newValue) => {
   selectedOption.value = newValue;
@@ -60,6 +64,20 @@ const selectOption = (option) => {
   emit('update:modelValue', option);
   isOpen.value = false;
 };
+
+const handleClickOutside = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 
