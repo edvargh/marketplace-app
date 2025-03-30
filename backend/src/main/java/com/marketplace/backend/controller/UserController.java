@@ -1,6 +1,7 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.model.User;
+import com.marketplace.backend.dto.UserResponseDto;
+import com.marketplace.backend.dto.UserUpdateDto;
 import com.marketplace.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +30,10 @@ public class UserController {
   /**
    * Get all users.
    *
-   * @return a list of all users
+   * @return a list of all users (DTOs)
    */
   @GetMapping
-  public List<User> getAllUsers() {
+  public List<UserResponseDto> getAllUsers() {
     return userService.getAllUsers();
   }
 
@@ -43,9 +44,23 @@ public class UserController {
    * @return the user if found, otherwise a 404 response
    */
   @GetMapping("/{id}")
-  public ResponseEntity<User> getUserById(@PathVariable Long id) {
-    Optional<User> user = userService.getUserById(id);
+  public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
+    Optional<UserResponseDto> user = userService.getUserById(id);
     return user.map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
+  }
+
+  /**
+   * Update a user.
+   *
+   * @param id  the ID of the user
+   * @param dto the updated user data
+   * @return a 200 response with the updated user if successful, 404 otherwise
+   */
+  @PutMapping("/{id}")
+  public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto dto) {
+    Optional<UserResponseDto> updatedUser = userService.updateUser(id, dto);
+    return updatedUser.map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 }
