@@ -98,7 +98,7 @@ import CustomButton from "@/components/CustomButton.vue";
 const fileInput = ref(null);
 const categories = ref(['Test']);
 // const subCategories = ref({});
-const status = ['For Sale', 'Reserved', 'Sold'] // TODO: Change
+const status = ['Test'] // TODO: Change
 
 const props = defineProps({
   title: String,
