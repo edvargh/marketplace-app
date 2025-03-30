@@ -17,7 +17,7 @@
       </div>
     </div>
 
-    <FavoriteBtn/>
+    <FavoriteBtn v-if="showFavoriteButton" />
   </div>
 </template>
 
@@ -37,7 +37,7 @@ const props = defineProps({
   },
   showFavoriteButton: {
     type: Boolean,
-    default: true
+    default: false
   }
 });
 
@@ -45,7 +45,8 @@ const currentImageIndex = ref(0);
 
 const currentImage = computed(() => {
   if (props.images.length > 0) {
-    return props.images[currentImageIndex.value];
+    const image = props.images[currentImageIndex.value];
+    return typeof image === 'object' && image.url ? image.url : image;
   }
   return '';
 });

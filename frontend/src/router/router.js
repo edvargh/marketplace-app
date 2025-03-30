@@ -5,6 +5,8 @@ import RegisterView from '../views/RegisterView.vue'
 import ProfileView from '../users/ProfileView.vue'
 import { useUserStore } from '@/stores/userStore'  
 import { getActivePinia } from 'pinia'
+import ItemForm from "@/components/ItemForm.vue";
+import CreateItemView from "@/views/CreateItemView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,7 +14,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView,
+      component: CreateItemView,
     },
     {
       path: '/about',

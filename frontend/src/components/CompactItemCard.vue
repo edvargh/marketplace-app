@@ -36,13 +36,12 @@
 
 <script setup>
 // Receive item data
-const props = defineProps({
+defineProps({
   item: {
     type: Object,
     required: true
   }
-})
-
+});
 </script>
 
 
