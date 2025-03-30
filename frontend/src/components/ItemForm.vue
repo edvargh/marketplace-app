@@ -36,11 +36,11 @@
     </div>
 
 
-    <form @submit.prevent="handleSubmit">
-      <!-- Information Input -->
-      <div class="form-section">
+  <!-- Form -->
+  <form class="item-form" @submit.prevent="handleSubmit">
 
         <!-- Status -->
+        <label for="status">Status</label>
         <SelectBox
             label="Status"
             v-model="formData.status"
@@ -50,10 +50,14 @@
         />
 
         <!-- Title and price -->
+        <label for="Title">Title</label>
         <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
+        <label for="Price">Price</label>
         <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
 
+
         <!-- Category -->
+        <label for="Category">Category</label>
         <SelectBox
             label="Category"
             v-model="formData.category"
@@ -73,11 +77,13 @@
         />
 
         <!-- City -->
+        <label for="city">City</label>
         <InputBox label="City" v-model="formData.city" placeholder="City" required />
 
         <!-- TODO: Use Box component -->
+        <label for="description">Description</label>
         <InputBox label="Description" v-model="formData.description" placeholder="Description" required />
-      </div>
+
 
       <!-- Form Actions (implement buttons at bottom for child components) -->
       <div class="form-actions">
