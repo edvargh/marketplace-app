@@ -3,6 +3,8 @@
     <ItemForm
         title="Create New Advertisement"
         @submit="createItem"
+        :showStatus="false"
+        :initialData="{ status: 'For Sale' }"
     >
       <template #actions="{ isValid }">
         <button

@@ -40,15 +40,17 @@
   <div class="item-form-page" id="item-form">
     <form class="item-form" @submit.prevent="handleSubmit">
 
-      <!-- Status -->
-      <label for="status">Status</label>
-      <SelectBox
-          label="Status"
-          v-model="formData.status"
-          :options="status"
-          placeholder="Status"
-          required
-      />
+      <!-- Status. Children can choose to display or not -->
+      <div v-if="showStatus">
+        <label for="status">Status</label>
+        <SelectBox
+            label="Status"
+            v-model="formData.status"
+            :options="status"
+            placeholder="Status"
+            required
+        />
+      </div>
 
       <!-- Title and price -->
       <label for="Title">Title</label>
@@ -102,8 +104,13 @@ const props = defineProps({
   initialData: {
     type: Object,
     default: () => ({})
+  },
+  showStatus: {
+    type: Boolean,
+    default: true
   }
 });
+
 // TODO: Change
 const formData = reactive({
   title: '',
