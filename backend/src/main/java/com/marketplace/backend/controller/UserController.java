@@ -68,6 +68,11 @@ public class UserController {
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
+  /**
+   * Get the current user.
+   *
+   * @return the current user
+   */
   @GetMapping("/me")
   public ResponseEntity<UserResponseDto> getCurrentUser() {
     UserResponseDto user = userService.getCurrentUser();

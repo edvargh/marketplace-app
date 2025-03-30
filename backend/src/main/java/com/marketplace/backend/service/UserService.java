@@ -73,12 +73,22 @@ public class UserService {
     });
   }
 
+  /**
+   * Get the current user.
+   *
+   * @return the current user
+   */
   public UserResponseDto getCurrentUser() {
     String email = getAuthenticatedEmail();
     User user = userRepository.findByEmail(email).orElseThrow();
     return UserResponseDto.fromEntity(user);
   }
 
+  /**
+   * Get the email of the authenticated user.
+   *
+   * @return the email of the authenticated user
+   */
   private String getAuthenticatedEmail() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return authentication.getName(); // Spring extracts username from token
