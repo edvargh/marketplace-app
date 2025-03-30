@@ -109,5 +109,5 @@ const RegistrationLogic = async () => {
   
   <style scoped>
   @import '../styles/RegisterView.css';
-  </style>
+  </style> 
   
