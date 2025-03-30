@@ -1,8 +1,6 @@
 .InputBox {
-  position: relative;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   border-radius: 9999px;
   padding: 1rem 2rem;
   border: 1px solid transparent;
