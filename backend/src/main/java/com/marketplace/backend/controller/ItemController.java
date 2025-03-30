@@ -1,6 +1,8 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.model.Item;
+import com.marketplace.backend.dto.ItemCreateDto;
+import com.marketplace.backend.dto.ItemUpdateDto;
+import com.marketplace.backend.dto.ItemResponseDto;
 import com.marketplace.backend.service.ItemService;
 import java.util.List;
 import java.util.Optional;
@@ -29,10 +31,10 @@ public class ItemController {
   /**
    * Get all items.
    *
-   * @return a list of all items
+   * @return a list of all items as DTOs
    */
   @GetMapping("/all-items")
-  public List<Item> getAllItems() {
+  public List<ItemResponseDto> getAllItems() {
     return itemService.getAllItems();
   }
 
@@ -43,8 +45,8 @@ public class ItemController {
    * @return the item if found, otherwise a 404 response
    */
   @GetMapping("/{id}")
-  public ResponseEntity<Item> getItemById(@PathVariable Long id) {
-    Optional<Item> item = itemService.getItemById(id);
+  public ResponseEntity<ItemResponseDto> getItemById(@PathVariable Long id) {
+    Optional<ItemResponseDto> item = itemService.getItemById(id);
     return item.map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
@@ -52,11 +54,25 @@ public class ItemController {
   /**
    * Create a new item.
    *
-   * @param item the item to create
-   * @return the created item
+   * @param dto the item to create
+   * @return the created item as a DTO
    */
   @PostMapping
-  public ResponseEntity<Item> createItem(@RequestBody Item item) {
-    return ResponseEntity.ok(itemService.createItem(item));
+  public ResponseEntity<ItemResponseDto> createItem(@RequestBody ItemCreateDto dto) {
+    return ResponseEntity.ok(itemService.createItem(dto));
+  }
+
+  /**
+   * Update an item.
+   *
+   * @param id the ID of the item to update
+   * @param dto the updated item data
+   * @return the updated item as a DTO if successful, 404 otherwise
+   */
+  @PutMapping("/{id}")
+  public ResponseEntity<ItemResponseDto> updateItem(@PathVariable Long id, @RequestBody ItemUpdateDto dto) {
+    Optional<ItemResponseDto> updatedItem = itemService.updateItem(id, dto);
+    return updatedItem.map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
   }
 }
