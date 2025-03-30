@@ -44,30 +44,7 @@ const createItem = async (formData) => {
 </script>
 
 <style scoped>
-.create-item-view {
-}
-
-.create-button {
-  background-color: #2e7d15;
-  color: white;
-  padding: 0.75rem;
-  border-radius: 25px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.create-button:hover {
-  transform: scale(1.03);
-  background-color: #45a049;
-}
-
-.create-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
+@import '../styles/CreateItemView.css';
 </style>
 
 

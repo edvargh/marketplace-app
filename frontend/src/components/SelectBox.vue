@@ -29,6 +29,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref, watch } from 'vue';
 
@@ -60,7 +61,6 @@ const selectOption = (option) => {
   isOpen.value = false;
 };
 </script>
-
 
 
 

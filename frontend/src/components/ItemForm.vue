@@ -29,7 +29,7 @@
             type="button"
             @click="removeCurrentImage"
             :disabled="formData.images.length === 0">
-          Remove Current Picture
+          Remove Current Image
         </CustomButton>
       </div>
     </div>
@@ -39,6 +39,7 @@
       <!-- Information Input -->
       <div class="form-section">
 
+        <!-- Status -->
         <SelectBox
             label="Status"
             v-model="formData.status"
@@ -47,9 +48,11 @@
             required
         />
 
+        <!-- Title and price -->
         <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
         <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
 
+        <!-- Category -->
         <SelectBox
             label="Category"
             v-model="formData.category"
@@ -58,6 +61,7 @@
             required
         />
 
+        <!-- Sub-Category -->
         <SelectBox
             v-if="formData.category"
             label="Sub-category"
@@ -67,14 +71,14 @@
         placeholder="Sub-category"
         />
 
+        <!-- City -->
         <InputBox label="City" v-model="formData.city" placeholder="City" required />
 
         <!-- TODO: Use Box component -->
         <InputBox label="Description" v-model="formData.description" placeholder="Description" required />
       </div>
 
-
-      <!-- Form Actions -->
+      <!-- Form Actions (implement buttons at bottom for child components) -->
       <div class="form-actions">
         <slot name="actions" :isValid="isFormValid"></slot>
       </div>
@@ -113,7 +117,7 @@ const formData = reactive({
   ...props.initialData
 })
 
-// Mock data
+// TODO: Figure out how to implement categories etc.
 const status = ['For Sale', 'Reserved', 'Sold']
 const categories = ['Kitchen', 'Cars', 'Tech', 'Sports', 'Houses']
 const subCategories = {
@@ -124,47 +128,55 @@ const subCategories = {
   Houses: ['Apartment', 'Mansion', 'Villa', 'Cabin', 'Studio']
 }
 
-// In the ItemForm component, add this:
-console.log('Validation status:', {
-  status: !!formData.status,
-  title: !!formData.title,
-  price: !!formData.price && formData.price > 0,
-  category: !!formData.category,
-  subCategory: !!formData.subCategory,
-  city: !!formData.city,
-  description: !!formData.description
-});
-
 
 const handleImageUpload = (event) => {
   const files = event.target.files;
   if (!files || files.length === 0) return;
 
-  // Filter only image files
   const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
 
-  // Create image objects with preview URLs
   const newImages = imageFiles.map(file => ({
     url: URL.createObjectURL(file),
-    file, // Store the original file object
+    file,
     name: file.name,
     size: file.size,
     type: file.type
   }));
 
-  // Add new images to the array
   formData.images = [...formData.images, ...newImages];
 
-  // Reset the file input to allow selecting the same files again
   if (fileInput.value) {
     fileInput.value.value = '';
   }
 };
 
-// Form validation
+onBeforeUnmount(() => {
+  formData.images.forEach(image => URL.revokeObjectURL(image.url));
+});
+
+const triggerFileInput = () => {
+  fileInput.value.click();
+};
+
+const removeCurrentImage = () => {
+  if (formData.images.length === 0) return;
+
+  const imageToRemove = formData.images[formData.currentImageIndex];
+
+  if (imageToRemove.url) {
+    URL.revokeObjectURL(imageToRemove.url);
+  }
+
+  formData.images.splice(formData.currentImageIndex, 1);
+
+  if (formData.currentImageIndex >= formData.images.length && formData.images.length > 0) {
+    formData.currentImageIndex = formData.images.length - 1;
+  }
+};
+
 const isFormValid = computed(() => {
-  // Required fields validation
   const requiredFields = [
+    // Images are not a required field
     formData.status,
     formData.title,
     formData.price,
@@ -174,18 +186,12 @@ const isFormValid = computed(() => {
     formData.description
   ];
 
-  // Check if all required fields have values
   const hasAllRequiredFields = requiredFields.every(field => !!field);
-
-  // Additional validation rules can be added here
   const isPriceValid = formData.price > 0;
-
-  // Return true only if all validations pass
   return hasAllRequiredFields && isPriceValid;
 });
 
 const emit = defineEmits(['submit', 'validation-change'])
-
 
 const handleSubmit = () => {
   if (isFormValid.value) {
@@ -193,37 +199,8 @@ const handleSubmit = () => {
   }
 }
 
-
-onBeforeUnmount(() => {
-  formData.images.forEach(image => URL.revokeObjectURL(image.url));
-});
-
-const triggerFileInput = () => {
-  fileInput.value.click();
-};
-const removeCurrentImage = () => {
-  if (formData.images.length === 0) return;
-
-  // Get the image to remove
-  const imageToRemove = formData.images[formData.currentImageIndex];
-
-  // Revoke the object URL to prevent memory leaks
-  if (imageToRemove.url) {
-    URL.revokeObjectURL(imageToRemove.url);
-  }
-
-  // Remove the image from the array
-  formData.images.splice(formData.currentImageIndex, 1);
-
-  // Adjust the current index if necessary
-  if (formData.currentImageIndex >= formData.images.length && formData.images.length > 0) {
-    formData.currentImageIndex = formData.images.length - 1;
-  }
-};
-
-
 watch(isFormValid, (newVal) => {
-  console.log('Form validation changed:', newVal);
+  console.log('Form validation changed:', newVal,);
   console.log('Current field states:', {
     status: formData.status,
     title: formData.title,
@@ -234,7 +211,6 @@ watch(isFormValid, (newVal) => {
     description: formData.description
   });
 });
-
 
 </script>
 
