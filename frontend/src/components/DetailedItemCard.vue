@@ -5,10 +5,10 @@
     </div>
 
     <div class="card-image-container">
-      <img :src="item.imageUrl" alt="Image" class="card-image" />
+      <img :src="item.image" alt="Image" class="card-image" />
 
       <div class="profile-badge">
-        <img :src="item.profileImageUrl" alt="Profile Image" class="profile-image" />
+        <img :src="item.profile" alt="Profile Image" class="profile-image" />
       </div>
 
     </div>

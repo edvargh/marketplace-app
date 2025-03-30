@@ -4,32 +4,22 @@
       <SearchBar/>
     </div>
 
-    <div class="categories">
-      <h3>Categories</h3>
-      <ul>
-        <!-- Loop through categories and display them -->
-        <li v-for="category in categories" :key="category.id">
-          <img
-              :src="category.image"
-              :alt="category.name"
-              class="category-image"
-          >
-          {{ category.name }}
-        </li>
-      </ul>
-    </div>
+    <Categories :categories="categories"/>
 
     <!-- Recommended items -->
     <section class="recommendations">
       <div class="section-header">
         <h2>Your recommendations</h2>
       </div>
-      <div class="detailed-cards-container">
+      <div v-if="mockItems.length > 0" class="detailed-cards-container">
         <DetailedItemCard
-            v-for="item in recommendedItems"
+            v-for="item in mockItems"
             :key="item.id"
             :item="item"
         />
+      </div>
+      <div v-else class="no-items-message">
+        No recommendations found
       </div>
     </section>
 
@@ -38,12 +28,15 @@
       <div class="section-header">
         <h2>Most popular items</h2>
       </div>
-      <div class="detailed-cards-container">
+      <div v-if="mockItems.length > 0" class="detailed-cards-container">
         <DetailedItemCard
-            v-for="item in mostLikedItems"
+            v-for="item in mockItems"
             :key="item.id"
             :item="item"
         />
+      </div>
+      <div v-else class="no-items-message">
+        No popular items found
       </div>
     </section>
 
@@ -52,18 +45,19 @@
       <div class="section-header">
         <h2>Market</h2>
       </div>
-      <div class="compact-cards-container">
+      <div v-if="marketItems.length > 0" class="compact-cards-container">
         <CompactItemCard
             v-for="item in marketItems"
             :key="item.id"
             :item="item"
         />
       </div>
+      <div v-else class="no-items-message">
+        No market items found
+      </div>
     </section>
-
   </div>
 </template>
-
 
 
 
@@ -73,6 +67,7 @@ import { ref, onMounted } from 'vue';
 import DetailedItemCard from "@/components/DetailedItemCard.vue";
 import CompactItemCard from "@/components/CompactItemCard.vue";
 import SearchBar from "@/components/SearchBar.vue";
+import Categories from '@/components/Categories.vue';
 
 const hasToken = ref(false);
 const recommendedItems = ref([]);
@@ -82,8 +77,10 @@ const marketItems = ref([]);
 // Check for token and fetch recommended items
 onMounted(() => {
   const userData = localStorage.getItem('user');
-  hasToken.value = !!userData;
+  // TODO: Check token in backend here
 
+  // TODO: fetchRecommendedItems()
+  // TODO: fetchMostLikedItems()
   fetchMarketItems()
 });
 
@@ -160,7 +157,7 @@ const categories = ref([
 ]);
 
 // Mock data for item
-const items = ref([
+const mockItems = ref([
   {
     title: 'Flower',
     price: 495,
@@ -168,7 +165,9 @@ const items = ref([
     category: 'Garden',
     subCategory: 'Flower',
     description: 'This is a description used for a mock data of an item. Should not display more than tree lines of the description, if it is longer. Hope this works. ',
-    status: "reserved"
+    status: "reserved",
+    image: 'edit-icon.png',
+    profile: 'houses.jpg'
   }, {
     title: 'This is a long title at three lines. Should not display more than 2 lines',
     price: 495,
@@ -176,7 +175,9 @@ const items = ref([
     category: 'Garden',
     subCategory: 'Flower',
     description: 'This is a short description',
-    status: "sold"
+    status: "sold",
+    image: 'default-picture.jpg',
+    profile: 'houses.jpg'
   }, {
     title: 'This is for a long title, so we can see and check',
     price: 495,
@@ -184,7 +185,9 @@ const items = ref([
     category: 'Garden',
     subCategory: 'Flower',
     description: 'This is a description used for a mock data of an item. Should not display more than tree lines of the description, if it is longer. Hope this works. Should not display more than tree lines of the description',
-    status: ""
+    status: "",
+    image: 'houses.jpg',
+    profile: 'sports.jpg'
   },
 ])
 </script>
