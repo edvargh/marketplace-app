@@ -102,7 +102,7 @@ class ItemControllerTest {
   @Test
   @WithMockUser
   void shouldReturnAllItems() throws Exception {
-    mockMvc.perform(get("/api/items"))
+    mockMvc.perform(get("/api/items/all-items"))
         .andExpect(status().isOk())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }

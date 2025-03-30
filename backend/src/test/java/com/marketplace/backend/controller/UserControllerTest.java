@@ -44,11 +44,30 @@ class UserControllerTest {
     itemRepository.deleteAll();
     userRepository.deleteAll();
 
-    User user1 = new User("John Doe", "john@example.com", "password123", Role.USER, "1234567890");
-    User user2 = new User("Jane Smith", "jane@example.com", "password456", Role.USER, "9876543210");
+    User user1 = new User(
+        "John Doe",
+        "john@example.com",
+        "password123",
+        Role.USER,
+        "1234567890",
+        "https://example.com/john-profile.jpg",
+        "english"
+    );
+
+    User user2 = new User(
+        "Jane Smith",
+        "jane@example.com",
+        "password456",
+        Role.USER,
+        "9876543210",
+        "https://example.com/jane-profile.jpg",
+        "norwegian"
+    );
+
     testUser = userRepository.save(user1);
     userRepository.save(user2);
   }
+
 
   /**
    * Test to get all users.

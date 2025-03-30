@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * Controller for handling item related requests.
  */
 @RestController
-@RequestMapping("/api/Items")
+@RequestMapping("/api/items")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ItemController {
 
