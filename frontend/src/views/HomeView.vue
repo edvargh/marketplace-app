@@ -1,6 +1,5 @@
 <template>
   <div class="home-container">
-
     <div class="search-container">
       <SearchBar/>
     </div>
@@ -12,12 +11,15 @@
       <div class="section-header">
         <h2>Your recommendations</h2>
       </div>
-      <div class="detailed-cards-container">
+      <div v-if="mockItems.length > 0" class="detailed-cards-container">
         <DetailedItemCard
             v-for="item in mockItems"
             :key="item.id"
             :item="item"
         />
+      </div>
+      <div v-else class="no-items-message">
+        No recommendations found
       </div>
     </section>
 
@@ -26,12 +28,15 @@
       <div class="section-header">
         <h2>Most popular items</h2>
       </div>
-      <div class="detailed-cards-container">
+      <div v-if="mockItems.length > 0" class="detailed-cards-container">
         <DetailedItemCard
             v-for="item in mockItems"
             :key="item.id"
             :item="item"
         />
+      </div>
+      <div v-else class="no-items-message">
+        No popular items found
       </div>
     </section>
 
@@ -40,18 +45,19 @@
       <div class="section-header">
         <h2>Market</h2>
       </div>
-      <div class="compact-cards-container">
+      <div v-if="marketItems.length > 0" class="compact-cards-container">
         <CompactItemCard
-            v-for="item in mockItems"
+            v-for="item in marketItems"
             :key="item.id"
             :item="item"
         />
       </div>
+      <div v-else class="no-items-message">
+        No market items found
+      </div>
     </section>
-
   </div>
 </template>
-
 
 
 
