@@ -12,7 +12,7 @@ import java.util.Optional;
  * Controller for handling user related requests.
  */
 @RestController
-@RequestMapping("/api/Users")
+@RequestMapping("/api/users")
 public class UserController {
 
   private final UserService userService;

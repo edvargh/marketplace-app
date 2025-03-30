@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { errorMessages } from 'vue/compiler-sfc'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref(null)
   const isAuthenticated = ref(false)
+
 
   const login = async (email, password) => {
 
@@ -14,8 +16,14 @@ export const useUserStore = defineStore('user', () => {
     })
 
     if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || 'Login failed')
+        let errorMessage = 'login failed'
+      try {
+        const errorData = await response.json()
+        errorMessage = errorData.message || errorMessage
+    } catch (e) {
+        errorMessage = 'Oops! Email or password is incorrect'
+    } 
+      throw new Error(errorMessage)    
     }
 
     const data = await response.json()
