@@ -1,17 +1,16 @@
-.item-form {
+.item-form-page {
     max-width: 800px;
     padding: 20px;
-    margin: 50px auto;
+    margin: auto;
+}
+
+.item-form {
+    padding: 0 90px 0 90px;
 }
 
 .title {
     display: flex;
     justify-content: center;
-}
-
-.select-group {
-    margin-bottom: 15px;
-    background-color: #4caf50;
 }
 
 .item-form label {
@@ -22,32 +21,11 @@
     font-size: 1rem;
 }
 
-
-#gallery-control-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
 .image-controls {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 10px;
-}
-
-
-select, textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-textarea {
-    min-height: 120px;
-    resize: vertical;
 }
 
 .form-actions {

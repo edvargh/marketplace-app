@@ -1,96 +1,88 @@
 <template>
-  <div class="item-form">
+  <div class="item-form-page">
     <div class="title">
       <h1>{{ title }}</h1>
     </div>
 
     <!-- Images Gallery Section -->
-     <ImageGallery
-          :images="formData.images"
-          :show-favorite-button="false"
-          :current-index="formData.currentImageIndex"
-          @update:current-index="val => formData.currentImageIndex = val"
+    <ImageGallery
+        :images="formData.images"
+        :show-favorite-button="false"
+        :current-index="formData.currentImageIndex"
+        @update:current-index="val => formData.currentImageIndex = val"
+    />
+
+    <!-- Image Upload/Remove Buttons -->
+    <div class="image-controls">
+      <input
+          type="file"
+          ref="fileInput"
+          @change="handleImageUpload"
+          multiple
+          accept="image/*"
+          style="display: none"
       />
+      <CustomButton type="button" class="upload-button" @click="triggerFileInput">
+        Import Images
+      </CustomButton>
 
-      <!-- Image Upload/Remove Buttons -->
-      <div class="image-controls">
-        <input
-            type="file"
-            ref="fileInput"
-            @change="handleImageUpload"
-            multiple
-            accept="image/*"
-            style="display: none"
-        />
-        <CustomButton type="button" class="upload-button" @click="triggerFileInput">
-          Import Images
-        </CustomButton>
-
-        <CustomButton
-            type="button"
-            @click="removeCurrentImage"
-            :disabled="formData.images.length === 0">
-          Remove Current Image
-        </CustomButton>
-      </div>
+      <CustomButton
+          type="button"
+          @click="removeCurrentImage"
+          :disabled="formData.images.length === 0">
+        Remove Current Image
+      </CustomButton>
     </div>
+  </div>
 
 
   <!-- Form -->
-  <form class="item-form" @submit.prevent="handleSubmit">
+  <div class="item-form-page" id="item-form">
+    <form class="item-form" @submit.prevent="handleSubmit">
 
-        <!-- Status -->
-        <label for="status">Status</label>
-        <SelectBox
-            label="Status"
-            v-model="formData.status"
-            :options="status"
-            placeholder="Status"
-            required
-        />
+      <!-- Status -->
+      <label for="status">Status</label>
+      <SelectBox
+          label="Status"
+          v-model="formData.status"
+          :options="status"
+          placeholder="Status"
+          required
+      />
 
-        <!-- Title and price -->
-        <label for="Title">Title</label>
-        <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
-        <label for="Price">Price</label>
-        <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
+      <!-- Title and price -->
+      <label for="Title">Title</label>
+      <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
+      <label for="Price">Price</label>
+      <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
 
 
-        <!-- Category -->
-        <label for="Category">Category</label>
-        <SelectBox
-            label="Category"
-            v-model="formData.category"
-            :options="categories"
-            placeholder="Category"
-            required
-        />
+      <!-- Category -->
+      <label for="Category">Category</label>
+      <SelectBox
+          label="Category"
+          v-model="formData.category"
+          :options="categories"
+          placeholder="Category"
+          required
+      />
 
-        <!-- Sub-Category -->
-        <SelectBox
-            v-if="formData.category"
-            label="Sub-category"
-            v-model="formData.subCategory"
-            :options="subCategories[formData.category] || []"
-            placeholder="Sub-category"
-            required
-        />
+      <!-- City -->
+      <label for="city">City</label>
+      <InputBox label="City" v-model="formData.city" placeholder="City" required />
 
-        <!-- City -->
-        <label for="city">City</label>
-        <InputBox label="City" v-model="formData.city" placeholder="City" required />
-
-        <!-- TODO: Use Box component -->
-        <label for="description">Description</label>
-        <InputBox label="Description" v-model="formData.description" placeholder="Description" required />
+      <!-- TODO: Use Box component -->
+      <label for="description">Description</label>
+      <InputBox label="Description" v-model="formData.description" placeholder="Description" required />
 
 
       <!-- Form Actions (implement buttons at bottom for child components) -->
       <div class="form-actions">
         <slot name="actions" :isValid="isFormValid"></slot>
       </div>
-
     </form>
+
+  </div>
 </template>
 
 
@@ -103,7 +95,6 @@ import CustomButton from "@/components/CustomButton.vue";
 
 const fileInput = ref(null);
 const categories = ref(['Test']);
-// const subCategories = ref({});
 const status = ['Test'] // TODO: Change
 
 const props = defineProps({
@@ -119,7 +110,6 @@ const formData = reactive({
   price: '',
   city: '',
   category: '',
-  subCategory: '',
   description: '',
   images: [],
   currentImageIndex: 0,
@@ -222,7 +212,6 @@ const isFormValid = computed(() => {
     formData.title,
     formData.price,
     formData.category,
-    // formData.subCategory,
     formData.city,
     formData.description
   ];

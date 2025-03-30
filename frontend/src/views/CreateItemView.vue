@@ -63,7 +63,6 @@ const createItem = async (formData) => {
       price: formData.price,
       city: formData.city,
       category: formData.category,
-      // subCategory: formData.subCategory,
       description: formData.description,
       status: formData.status,
       images: imageUrls,
