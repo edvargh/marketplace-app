@@ -48,11 +48,9 @@
 
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
 import ImageGallery from "@/components/ImageGallery.vue";
 
-const route = useRoute();
 const item = ref({
   title: 'Vintage Camera Collection',
   description: 'Excellent condition vintage cameras from the 1980s. Perfect for collectors.',
@@ -93,9 +91,6 @@ function prevImage() {
 }
 
 /*
-import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-
 const route = useRoute();
 const item = ref({
   title: '',
