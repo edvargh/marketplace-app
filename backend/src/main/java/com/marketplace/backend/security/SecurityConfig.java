@@ -39,7 +39,8 @@ public class SecurityConfig {
                .authorizeHttpRequests(auth -> auth
                                                   .requestMatchers(
                                                       "/api/auth/**",
-                                                      "/api/items/**").permitAll() // Fixed missing slash
+                                                      "/api/items/**",
+                                                      "api/users/**").permitAll() // Fixed missing slash
                                                   .anyRequest().authenticated()
                )
                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
