@@ -37,6 +37,11 @@ public class Item {
   @Column(precision = 9, scale = 6)
   private BigDecimal longitude;
 
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private ItemStatus status;
+
+
   /**
    * Default constructor.
    */
@@ -64,6 +69,7 @@ public class Item {
     this.publishedDate = publishedDate;
     this.latitude = latitude;
     this.longitude = longitude;
+    this.status = ItemStatus.FOR_SALE;
   }
 
 
@@ -227,5 +233,23 @@ public class Item {
    */
   public void setLongitude(BigDecimal longitude) {
     this.longitude = longitude;
+  }
+
+  /**
+   * Get the status of the item.
+   *
+   * @return the status of the item
+   */
+  public ItemStatus getStatus() {
+    return status;
+  }
+
+  /**
+   * Set the status of the item.
+   *
+   * @param status the status of the item
+   */
+  public void setStatus(ItemStatus status) {
+    this.status = status;
   }
 }

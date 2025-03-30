@@ -12,7 +12,7 @@ import java.util.Optional;
  * Controller for handling category related requests.
  */
 @RestController
-@RequestMapping("/api/Categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
   private final CategoryService categoryService;
