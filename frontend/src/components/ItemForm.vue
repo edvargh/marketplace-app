@@ -5,10 +5,11 @@
     </div>
 
     <!-- Images Gallery Section -->
-    <div class="form-section" id="gallery-control-container">
-      <ImageGallery
+     <ImageGallery
           :images="formData.images"
-          :showFavoriteButton="false"
+          :show-favorite-button="false"
+          :current-index="formData.currentImageIndex"
+          @update:current-index="val => formData.currentImageIndex = val"
       />
 
       <!-- Image Upload/Remove Buttons -->
@@ -66,9 +67,9 @@
             v-if="formData.category"
             label="Sub-category"
             v-model="formData.subCategory"
-            :options="subCategories[formData.category]"
-            :categoryId="formData.category"
-        placeholder="Sub-category"
+            :options="subCategories[formData.category] || []"
+            placeholder="Sub-category"
+            required
         />
 
         <!-- City -->
@@ -84,25 +85,28 @@
       </div>
 
     </form>
-  </div>
 </template>
 
 
 <script setup>
-import { ref, reactive, onBeforeUnmount, computed, watch } from 'vue'
+import { ref, reactive, onBeforeUnmount, computed, watch, onMounted } from 'vue'
 import InputBox from '@/components/InputBox.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import SelectBox from "@/components/SelectBox.vue";
 import CustomButton from "@/components/CustomButton.vue";
 
 const fileInput = ref(null);
+const categories = ref(['Test']);
+// const subCategories = ref({});
+const status = ['For Sale', 'Reserved', 'Sold'] // TODO: Change
+
 const props = defineProps({
   title: String,
   initialData: {
     type: Object,
     default: () => ({})
   }
-})
+});
 // TODO: Change
 const formData = reactive({
   title: '',
@@ -115,19 +119,39 @@ const formData = reactive({
   currentImageIndex: 0,
   status: '',
   ...props.initialData
-})
+});
 
-// TODO: Figure out how to implement categories etc.
-const status = ['For Sale', 'Reserved', 'Sold']
-const categories = ['Kitchen', 'Cars', 'Tech', 'Sports', 'Houses']
-const subCategories = {
-  Kitchen: ['Spoon', 'Fork', 'Knife', 'Plate', 'Pot'],
-  Cars: ['Sedan', 'SUV', 'Truck', 'Electric', 'Vintage'],
-  Tech: ['TV', 'Laptop', 'Phone', 'Tablet', 'Camera'],
-  Sports: ['Football', 'Swimming', 'Bicycles', 'Running', 'Yoga'],
-  Houses: ['Apartment', 'Mansion', 'Villa', 'Cabin', 'Studio']
-}
 
+onMounted(async () => {
+  try {
+    // Fetch categories (id + name)
+    const categoriesResponse = await axios.get('<your-backend-endpoint>/categories'); // TODO: Change
+    categories.value = categoriesResponse.data.map(category => ({
+      value: category.id,
+      label: category.name
+    }));
+
+    /*
+    // Fetch subcategories for each category
+    const subcategoriesResponse = await Promise.all(categories.value.map(category =>
+        axios.get(`<your-backend-endpoint>/categories/${category.value}/subcategories`) // TODO: Change
+    ));
+
+    // Organize subcategories by category ID
+    subCategories.value = subcategoriesResponse.reduce((acc, res, index) => {
+      const categoryId = categories.value[index].value;
+      acc[categoryId] = res.data.map(subcategory => ({
+        value: subcategory.id,
+        label: subcategory.name
+      }));
+      return acc;
+    }, {});
+
+     */
+  } catch (error) {
+    console.error('Error fetching categories or subcategories:', error);
+  }
+});
 
 const handleImageUpload = (event) => {
   const files = event.target.files;
@@ -161,18 +185,29 @@ const triggerFileInput = () => {
 const removeCurrentImage = () => {
   if (formData.images.length === 0) return;
 
-  const imageToRemove = formData.images[formData.currentImageIndex];
-
-  if (imageToRemove.url) {
-    URL.revokeObjectURL(imageToRemove.url);
+  // Clean up the current image URL
+  const removedImage = formData.images[formData.currentImageIndex];
+  if (removedImage?.url) {
+    URL.revokeObjectURL(removedImage.url);
   }
 
-  formData.images.splice(formData.currentImageIndex, 1);
+  // Create a new array without the current image
+  const updatedImages = [
+    ...formData.images.slice(0, formData.currentImageIndex),
+    ...formData.images.slice(formData.currentImageIndex + 1)
+  ];
 
-  if (formData.currentImageIndex >= formData.images.length && formData.images.length > 0) {
-    formData.currentImageIndex = formData.images.length - 1;
+  // Update the reactive state
+  formData.images = updatedImages;
+
+  // Handle index update
+  if (updatedImages.length === 0) {
+    formData.currentImageIndex = 0;
+  } else if (formData.currentImageIndex >= updatedImages.length) {
+    formData.currentImageIndex = updatedImages.length - 1;
   }
 };
+
 
 const isFormValid = computed(() => {
   const requiredFields = [
@@ -181,7 +216,7 @@ const isFormValid = computed(() => {
     formData.title,
     formData.price,
     formData.category,
-    formData.subCategory,
+    // formData.subCategory,
     formData.city,
     formData.description
   ];
@@ -200,17 +235,10 @@ const handleSubmit = () => {
 }
 
 watch(isFormValid, (newVal) => {
-  console.log('Form validation changed:', newVal,);
-  console.log('Current field states:', {
-    status: formData.status,
-    title: formData.title,
-    price: formData.price,
-    category: formData.category,
-    subCategory: formData.subCategory,
-    city: formData.city,
-    description: formData.description
-  });
+  console.log('Form validation changed:', newVal);
+  console.log('Current field states:', formData);
 });
+
 
 </script>
 

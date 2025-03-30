@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
 
 const props = defineProps({
@@ -38,13 +38,23 @@ const props = defineProps({
   showFavoriteButton: {
     type: Boolean,
     default: false
+  },
+  currentIndex: {
+    type: Number,
+    default: 0
   }
 });
 
-const currentImageIndex = ref(0);
+const currentImageIndex = ref(props.currentIndex);
+
+watch(() => props.currentIndex, (newIndex) => {
+  if (newIndex >= 0 && newIndex < props.images.length) {
+    currentImageIndex.value = newIndex;
+  }
+});
 
 const currentImage = computed(() => {
-  if (props.images.length > 0) {
+  if (props.images.length > 0 && currentImageIndex.value < props.images.length) {
     const image = props.images[currentImageIndex.value];
     return typeof image === 'object' && image.url ? image.url : image;
   }
@@ -52,16 +62,20 @@ const currentImage = computed(() => {
 });
 
 function nextImage() {
-  if (props.images.length > 0) {
+  if (props.images.length > 1) {
     currentImageIndex.value = (currentImageIndex.value + 1) % props.images.length;
+    emit('update:currentIndex', currentImageIndex.value);
   }
 }
 
 function prevImage() {
-  if (props.images.length > 0) {
+  if (props.images.length > 1) {
     currentImageIndex.value = (currentImageIndex.value - 1 + props.images.length) % props.images.length;
+    emit('update:currentIndex', currentImageIndex.value);
   }
 }
+
+const emit = defineEmits(['update:currentIndex']);
 </script>
 
 <style scoped>
