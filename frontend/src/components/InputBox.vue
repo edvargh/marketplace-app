@@ -8,8 +8,9 @@
       :placeholder="placeholder"
       :required="required"
       :disabled="disabled"
-      class="InputBox-input"
+      :class="['InputBox-input', { 'input-error-border': hasError }]"
     />
+    <slot></slot>
   </div>
 </template>
 
@@ -26,7 +27,8 @@ defineProps({
   id: String,
   placeholder: String,
   required: Boolean,
-  disabled: Boolean
+  disabled: Boolean,
+  hasError: Boolean
 });
 
 defineEmits(['update:modelValue']);
