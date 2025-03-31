@@ -1,6 +1,11 @@
 <template>
   <div class="image-gallery">
-    <div class="main-image">
+
+    <div v-if="!hasImages" class="main-image">
+      <img src="/no-image.png" :alt="altText">
+    </div>
+
+    <div v-else class="main-image">
       <img :src="currentImage" :alt="altText">
 
       <!-- Navigation Arrows -->
@@ -20,6 +25,7 @@
     <FavoriteBtn v-if="showFavoriteButton" />
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed, watch } from 'vue';
@@ -46,6 +52,11 @@ const props = defineProps({
 });
 
 const currentImageIndex = ref(props.currentIndex);
+const emit = defineEmits(['update:currentIndex']);
+
+const hasImages = computed(() => {
+  return props.images.length > 0;
+});
 
 watch(() => props.currentIndex, (newIndex) => {
   if (newIndex >= 0 && newIndex < props.images.length) {
@@ -75,7 +86,6 @@ function prevImage() {
   }
 }
 
-const emit = defineEmits(['update:currentIndex']);
 </script>
 
 <style scoped>
