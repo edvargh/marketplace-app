@@ -60,7 +60,7 @@ public class ItemController {
    * @param dto the item to create
    * @return the created item as a DTO
    */
-  @PostMapping
+  @PostMapping("/create")
   public ResponseEntity<ItemResponseDto> createItem(
       @RequestPart("item") ItemCreateDto dto,
       @RequestPart(value = "images", required = false) List<MultipartFile> images

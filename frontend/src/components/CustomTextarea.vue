@@ -1,5 +1,5 @@
 <template>
-    <div class="CustomTextarea">
+    <div class="CustomTextarea box">
       <textarea
         ref="textareaRef"
         class="custom-textarea"
