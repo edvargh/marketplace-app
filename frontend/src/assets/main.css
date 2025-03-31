@@ -16,7 +16,7 @@ html, body {
 .box {
   display: flex;
   align-items: center;
-  border-radius: 9999px;
+  border-radius: 40px;
   padding: 1rem 2rem;
   border: 1px solid transparent;
   /* For container. not for input itself*/
@@ -30,7 +30,8 @@ html, body {
   box-sizing: border-box;
 }
 
-.box input {
+.box input,
+.box textarea {
   flex: 1;
   border: none;
   outline: none;

@@ -35,7 +35,6 @@
     </div>
   </div>
 
-
   <!-- Form -->
   <div class="item-form-page" id="item-form">
     <form class="item-form" @submit.prevent="handleSubmit">
@@ -56,14 +55,18 @@
       <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
       <label for="Price">Price</label>
       <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
-
+      <div v-if="priceError" class="error-message">
+        {{ priceError }}
+      </div>
 
       <!-- Category -->
       <label for="Category">Category</label>
       <SelectBox
           label="Category"
-          v-model="formData.category"
+          v-model="formData.categoryId"
           :options="categories"
+          option-label="name"
+          option-value="id"
           placeholder="Category"
           required
       />
@@ -72,6 +75,7 @@
       <label for="city">City</label>
       <InputBox label="City" v-model="formData.city" placeholder="City" required />
 
+      <!-- Description -->
       <label for="description">Description</label>
       <CustomTextarea v-model="formData.description" placeholder="Description" :required="true"/>
 
@@ -86,7 +90,7 @@
 
 
 <script setup>
-import { ref, reactive, onBeforeUnmount, computed, onMounted } from 'vue'
+import { ref, reactive, onBeforeUnmount, computed, onMounted, watch } from 'vue'
 import InputBox from '@/components/InputBox.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import SelectBox from "@/components/SelectBox.vue";
@@ -95,6 +99,8 @@ import CustomTextarea from "@/components/CustomTextarea.vue";
 import { useCategoryStore } from "@/stores/categoryStore";
 
 const fileInput = ref(null);
+const categories = ref([]);
+const priceError = ref('');
 const categoryStore = useCategoryStore();
 
 const props = defineProps({
@@ -113,7 +119,7 @@ const formData = reactive({
   title: '',
   price: '',
   city: '',
-  category: '',
+  categoryId: null,
   description: '',
   images: [],
   currentImageIndex: 0,
@@ -121,34 +127,63 @@ const formData = reactive({
   ...props.initialData
 });
 
+watch(() => formData.price, (newPrice) => {
+  validatePrice(newPrice);
+});
+
+const validatePrice = (price) => {
+  if (price === '' || price === null) {
+    priceError.value = '';
+    return false;
+  }
+
+  const numPrice = Number(price);
+  if (numPrice < 0) {
+    priceError.value = 'Please provide a valid price';
+    return false;
+  }
+
+  priceError.value = '';
+  return true;
+};
+
 onMounted(async () => {
   try {
-    await categoryStore.fetchCategories();
-
+    // Fetch and display categories in markdown menu
+    categoryStore.fetchCategories().then(cats => {
+      categories.value = cats.map(category => ({
+        name: category.name,
+        id: category.id
+      }));
+    });
   } catch (error) {
     console.error('Error loading data:', error);
   }
 });
 
-
 const handleImageUpload = (event) => {
   const files = event.target.files;
-  if (!files || files.length === 0) return;
+  if (!files?.length) return;
 
-  const imageFiles = Array.from(files).filter(file => file.type.startsWith('image/'));
+  formData.images = [
+    ...formData.images,
+    ...Array.from(files)
+        .filter(file => file.type.startsWith('image/'))
+        .map(file => ({ file, url: URL.createObjectURL(file) }))
+  ];
 
-  const newImages = imageFiles.map(file => ({
-    url: URL.createObjectURL(file),
-    file,
-    name: file.name,
-    size: file.size,
-    type: file.type
-  }));
+  fileInput.value.value = '';
+};
 
-  formData.images = [...formData.images, ...newImages];
+const removeCurrentImage = () => {
+  if (!formData.images.length) return;
 
-  if (fileInput.value) {
-    fileInput.value.value = '';
+  URL.revokeObjectURL(formData.images[formData.currentImageIndex]?.url);
+  formData.images.splice(formData.currentImageIndex, 1);
+
+  // Adjust current index if needed
+  if (formData.currentImageIndex >= formData.images.length) {
+    formData.currentImageIndex = Math.max(0, formData.images.length - 1);
   }
 };
 
@@ -160,57 +195,33 @@ const triggerFileInput = () => {
   fileInput.value.click();
 };
 
-const removeCurrentImage = () => {
-  if (formData.images.length === 0) return;
-
-  // Clean up the current image URL
-  const removedImage = formData.images[formData.currentImageIndex];
-  if (removedImage?.url) {
-    URL.revokeObjectURL(removedImage.url);
-  }
-
-  // Create a new array without the current image
-  const updatedImages = [
-    ...formData.images.slice(0, formData.currentImageIndex),
-    ...formData.images.slice(formData.currentImageIndex + 1)
-  ];
-
-  // Update the reactive state
-  formData.images = updatedImages;
-
-  // Handle index update
-  if (updatedImages.length === 0) {
-    formData.currentImageIndex = 0;
-  } else if (formData.currentImageIndex >= updatedImages.length) {
-    formData.currentImageIndex = updatedImages.length - 1;
-  }
-};
-
-
 const isFormValid = computed(() => {
   const requiredFields = [
-    // Images are not a required field
     formData.status,
     formData.title,
     formData.price,
-    formData.category,
+    formData.categoryId,
     formData.city,
     formData.description
   ];
 
   const hasAllRequiredFields = requiredFields.every(field => !!field);
-  const isPriceValid = formData.price > 0;
+  const isPriceValid = formData.price >= 0;
   return hasAllRequiredFields && isPriceValid;
 });
 
 const emit = defineEmits(['submit', 'validation-change'])
 
-const handleSubmit = () => {
-  if (isFormValid.value) {
+const handleSubmit = async () => {
+  if (!isFormValid.value) return;
+  try {
     emit('submit', formData);
-  }
-}
 
+  } catch (error) {
+    console.error('Error preparing form data:', error);
+    emit('error', 'Failed to prepare form data');
+  }
+};
 </script>
 
 
