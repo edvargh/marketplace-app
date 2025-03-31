@@ -4,7 +4,8 @@
     "login": "Logg inn",
     "logout": "Logg ut",
     "profile": "Profil",
-    "account": "Konto"
+    "account": "Konto",
+    "create-listing": "Opprett Annonse"
   },
   "register": {
     "title": "Registrer ny konto"
