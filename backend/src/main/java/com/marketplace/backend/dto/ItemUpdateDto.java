@@ -3,6 +3,8 @@ package com.marketplace.backend.dto;
 import com.marketplace.backend.model.ItemStatus;
 
 import java.math.BigDecimal;
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * DTO for updating an item.
@@ -15,6 +17,7 @@ public class ItemUpdateDto {
   private BigDecimal latitude;
   private BigDecimal longitude;
   private ItemStatus status; // Optional field to allow status changes (FOR_SALE, RESERVED, SOLD)
+  private List<MultipartFile> images;
 
   /**
    * Get the title of the item.
@@ -113,4 +116,18 @@ public class ItemUpdateDto {
    * @param status the status of the item
    */
   public void setStatus(ItemStatus status) { this.status = status; }
+
+  /**
+   * Get the images of the item.
+   *
+   * @return the images of the item
+   */
+  public List<MultipartFile> getImages() { return images; }
+
+  /**
+   * Set the images of the item.
+   *
+   * @param images the images of the item
+   */
+  public void setImages(List<MultipartFile> images) { this.images = images; }
 }
