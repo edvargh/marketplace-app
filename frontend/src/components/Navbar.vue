@@ -44,7 +44,7 @@ import { useUserStore } from '@/stores/userStore'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CustomButton from '@/components/CustomButton.vue'
-import { useI18n} from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 
 const userStore = useUserStore()
 const router = useRouter()

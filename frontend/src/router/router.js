@@ -14,7 +14,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: CreateItemView,
+      component: HomeView,
     },
     {
       path: '/about',
@@ -38,7 +38,12 @@ const router = createRouter({
       name: 'profile',
       component: ProfileView,
       meta: { requiresAuth: true }, 
-    },
+    }, {
+      path: '/create',
+      name: 'create',
+      component: CreateItemView,
+      meta: { requiresAuth: true },
+    }
   ],
 })
 
