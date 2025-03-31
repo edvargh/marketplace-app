@@ -26,25 +26,30 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
-
   const createItem = async (formData) => {
     try {
-      const payload = {
-        title: formData.title,
-        price: formData.price,
-        city: formData.city,
-        category: formData.category,
-        description: formData.description,
-        status: formData.status || 'available',
-        // images: imageUrls,
-      };
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
 
-      const headers = getAuthHeaders();
-      const response = await axios.post('http://localhost:8080/api/items', payload, { headers });
-      return response.data;
+      const response = await fetch('http://localhost:8080/api/items/create', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
 
-    } catch (err) {
-      console.error('Error creating item:', err);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message);
+      }
+
+      return await response.json();
+
+
+    } catch (error) {
+      console.error('Failed to create item:', error);
+      throw error;
     }
   };
 
