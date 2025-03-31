@@ -5,7 +5,8 @@
     "logout": "Logg ut",
     "profile": "Profil",
     "account": "Konto",
-    "create-listing": "Opprett Annonse"
+    "create-listing": "Opprett Annonse",
+    "myItems": "Mine Gjenstander"
   },
   "register": {
     "title": "Registrer ny konto"

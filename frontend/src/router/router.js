@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/userStore'
 import { getActivePinia } from 'pinia'
 import ItemForm from "@/components/ItemForm.vue";
 import CreateItemView from "@/views/CreateItemView.vue";
+import MyItemsView from '@/users/MyItemsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,11 @@ const router = createRouter({
       name: 'create',
       component: CreateItemView,
       meta: { requiresAuth: true },
+    }, {
+       path: '/myItems',
+       name: 'myItems',
+       component: MyItemsView,
+       meta: { requiresAuth: true },
     }
   ],
 })
