@@ -97,5 +97,5 @@
   </script>
 
 <style>
-@import '../styles/NotificationBanner.css';
+@import '../styles/components/NotificationBanner.css';
 </style>

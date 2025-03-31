@@ -35,5 +35,5 @@ defineEmits(['update:modelValue']);
 </script>
 
 <style scoped>
-@import '../styles/InputBox.css';
+@import '../styles/components/InputBox.css';
 </style>

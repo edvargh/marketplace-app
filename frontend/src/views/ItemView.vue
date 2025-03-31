@@ -71,5 +71,5 @@ const item = ref({
 </script>
 
 <style scoped>
-@import '../styles/ItemView.css';
+@import '../styles/views/ItemView.css';
 </style>

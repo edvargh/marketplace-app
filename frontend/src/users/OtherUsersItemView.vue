@@ -26,5 +26,5 @@ onMounted(() => {
 
 
 <style scoped>
-@import '@/styles/OtherUsersItemView.css';
+@import '@/styles/users/OtherUsersItemView.css';
 </style>

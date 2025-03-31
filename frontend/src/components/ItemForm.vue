@@ -226,5 +226,5 @@ const handleSubmit = async () => {
 
 
 <style scoped>
-@import '../styles/ItemForm.css';
+@import '../styles/components/ItemForm.css';
 </style>

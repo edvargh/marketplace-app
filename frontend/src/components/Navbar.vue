@@ -84,5 +84,5 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-@import '../styles/Navbar.css';
+@import '../styles/components/Navbar.css';
 </style>

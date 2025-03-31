@@ -20,6 +20,6 @@
   </script>
   
 <style scoped>
-@import '../styles/CustomButton.css';
+@import '../styles/components/CustomButton.css';
 </style>
   

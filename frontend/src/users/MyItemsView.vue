@@ -12,5 +12,5 @@
 
 
 <style scoped>
-@import '../styles/MyItemsView.css';
+@import '../styles/users/MyItemsView.css';
 </style>
