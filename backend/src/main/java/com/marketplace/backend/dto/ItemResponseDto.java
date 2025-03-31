@@ -5,6 +5,8 @@ import com.marketplace.backend.model.ItemStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * DTO for item responses.
@@ -22,6 +24,7 @@ public class ItemResponseDto {
   private ItemStatus status;
   private Long sellerId;
   private String sellerName;
+  private List<String> imageUrls;
 
   /**
    * Default constructor.
@@ -43,6 +46,8 @@ public class ItemResponseDto {
     dto.setStatus(item.getStatus());
     dto.setSellerId(item.getSeller() != null ? item.getSeller().getId() : null);
     dto.setSellerName(item.getSeller() != null ? item.getSeller().getFullName() : null);
+    dto.setImageUrls(item.getImages() != null ? item.getImages().stream().map(img -> img.getImageUrl()).collect(
+        Collectors.toList()) : null);
     return dto;
   }
 
@@ -213,4 +218,18 @@ public class ItemResponseDto {
    * @param sellerName the seller name
    */
   public void setSellerName(String sellerName) { this.sellerName = sellerName; }
+
+  /**
+   * Get the image URLs of the item.
+   *
+   * @return the image URLs of the item
+   */
+  public List<String> getImageUrls() { return imageUrls; }
+
+  /**
+   * Set the image URLs of the item.
+   *
+   * @param imageUrls the image URLs of the item
+   */
+  public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
 }

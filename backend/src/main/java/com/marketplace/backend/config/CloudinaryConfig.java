@@ -2,6 +2,7 @@ package com.marketplace.backend.config;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.marketplace.backend.service.CloudinaryService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,5 +34,16 @@ public class CloudinaryConfig {
         "api_key", apiKey,
         "api_secret", apiSecret
     ));
+  }
+
+  /**
+   * Bean for CloudinaryService.
+   *
+   * @param cloudinary the Cloudinary instance
+   * @return a CloudinaryService instance
+   */
+  @Bean
+  public CloudinaryService cloudinaryService(Cloudinary cloudinary) {
+    return new CloudinaryService(cloudinary);
   }
 }
