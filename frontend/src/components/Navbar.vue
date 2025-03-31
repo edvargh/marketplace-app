@@ -9,6 +9,9 @@
     <ul class="nav-right">
       <template v-if="isAuthenticated">
         <CustomButton>
+          <router-link to ="/myItems" class="navbar-my-items">{{ t('navbar.myItems') }}</router-link>
+        </CustomButton>
+        <CustomButton>
           <router-link to="/create" class="navbar-create-item">{{ t('navbar.create-listing') }}</router-link>
         </CustomButton>
         <li class="account-dropdown" ref="dropdownRef">
@@ -44,7 +47,7 @@ import { useUserStore } from '@/stores/userStore'
 import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CustomButton from '@/components/CustomButton.vue'
-import { useI18n} from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 
 const userStore = useUserStore()
 const router = useRouter()

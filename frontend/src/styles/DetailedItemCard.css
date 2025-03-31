@@ -39,7 +39,7 @@
 .card-image {
     width: 90%;
     height: 90%;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 16px;
     background: #f5f5f5;
 }

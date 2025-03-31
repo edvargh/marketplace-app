@@ -1,0 +1,147 @@
+.item-detail-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 1200px;
+    padding: 2rem;
+    margin-bottom: 150px;
+}
+
+.item-info {
+    max-width: 100%;
+}
+
+.price-status {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.price {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.status {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    background-color: #cccccc;
+}
+
+.location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    color: #666;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 2rem 0;
+}
+
+.action-buttons button {
+    padding: 0.75rem;
+    border-radius: 25px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.action-buttons button:hover {
+    transform: scale(1.03);
+}
+
+.message-btn {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.reserve-btn {
+    background: #e8f5e9;
+    color: #2e7d15;
+}
+
+.buy-btn {
+    background: #4facfe;
+    color: white;
+}
+
+.description {
+    width: 100%;
+    margin: 2rem 0;
+    padding: 1rem 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+}
+
+.description h3 {
+    margin-bottom: 1rem;
+}
+
+.description p {
+    white-space: pre-line;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.seller-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.seller-info h3 {
+    margin-bottom: 1rem;
+}
+
+.seller {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-badge {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #4facfe;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Responsive layout */
+@media (min-width: 900px) {
+    .item-detail-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .image-gallery {
+        flex: 1;
+        max-width: 60%;
+    }
+
+    .item-info {
+        flex: 1;
+        max-width: 35%;
+    }
+
+    .description, .seller-info {
+        flex: 100%;
+    }
+}

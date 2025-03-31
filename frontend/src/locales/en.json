@@ -5,7 +5,8 @@
     "logout": "Log Out",
     "profile": "Profile",
     "account": "Account",
-    "create-listing": "Create Listing"
+    "create-listing": "Create Listing",
+    "myItems": "My Items"
   },
   "register": {
     "title": "Register new account"
