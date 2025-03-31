@@ -73,10 +73,8 @@
       <label for="city">City</label>
       <InputBox label="City" v-model="formData.city" placeholder="City" required />
 
-      <!-- TODO: Use Box component -->
       <label for="description">Description</label>
-      <InputBox label="Description" v-model="formData.description" placeholder="Description" required />
-
+      <CustomTextarea v-model="formData.description" placeholder="Description" :required="true"/>
 
       <!-- Form Actions (implement buttons at bottom for child components) -->
       <div class="form-actions">
@@ -89,15 +87,17 @@
 
 
 <script setup>
-import { ref, reactive, onBeforeUnmount, computed, watch, onMounted } from 'vue'
+import { ref, reactive, onBeforeUnmount, computed, onMounted } from 'vue'
 import InputBox from '@/components/InputBox.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import SelectBox from "@/components/SelectBox.vue";
 import CustomButton from "@/components/CustomButton.vue";
+import axios from "axios";
+import CustomTextarea from "@/components/CustomTextarea.vue";
 
 const fileInput = ref(null);
-const categories = ref(['Test']);
-const status = ['Test'] // TODO: Change
+const categoriesDb = ref([]);
+const categories = ref([]);
 
 const props = defineProps({
   title: String,
@@ -111,7 +111,6 @@ const props = defineProps({
   }
 });
 
-// TODO: Change
 const formData = reactive({
   title: '',
   price: '',
@@ -127,34 +126,15 @@ const formData = reactive({
 
 onMounted(async () => {
   try {
-    // Fetch categories (id + name)
-    const categoriesResponse = await axios.get('<your-backend-endpoint>/categories'); // TODO: Change
-    categories.value = categoriesResponse.data.map(category => ({
-      value: category.id,
-      label: category.name
-    }));
+    const categoriesResponse = await axios.get('http://localhost:8080/api/categories');
+    categoriesDb.value = categoriesResponse.data;
+    categories.value = categoriesResponse.data.map(category => category.name);
 
-    /*
-    // Fetch subcategories for each category
-    const subcategoriesResponse = await Promise.all(categories.value.map(category =>
-        axios.get(`<your-backend-endpoint>/categories/${category.value}/subcategories`) // TODO: Change
-    ));
-
-    // Organize subcategories by category ID
-    subCategories.value = subcategoriesResponse.reduce((acc, res, index) => {
-      const categoryId = categories.value[index].value;
-      acc[categoryId] = res.data.map(subcategory => ({
-        value: subcategory.id,
-        label: subcategory.name
-      }));
-      return acc;
-    }, {});
-
-     */
   } catch (error) {
-    console.error('Error fetching categories or subcategories:', error);
+    console.error('Error fetching categories:', error);
   }
 });
+
 
 const handleImageUpload = (event) => {
   const files = event.target.files;
@@ -235,12 +215,6 @@ const handleSubmit = () => {
     emit('submit', formData);
   }
 }
-
-watch(isFormValid, (newVal) => {
-  console.log('Form validation changed:', newVal);
-  console.log('Current field states:', formData);
-});
-
 
 </script>
 
