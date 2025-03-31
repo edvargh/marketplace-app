@@ -15,10 +15,14 @@
     color: #333;
     cursor: pointer;
     transition: background 0.3s ease, opacity 0.3s ease;
+    text-decoration: none;
   }
   
   .custom-button:hover {
     opacity: 0.85;
+    background:
+      linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
+      linear-gradient(to right, #00f2fe, #4facfe) border-box;
   }
   
   .custom-button:disabled {
