@@ -40,7 +40,7 @@
   <div class="item-form-page" id="item-form">
     <form class="item-form" @submit.prevent="handleSubmit">
 
-      <!-- Status. Children can choose to display or not -->
+      <!-- Status. Can choose to display or not -->
       <div v-if="showStatus">
         <label for="status">Status</label>
         <SelectBox
@@ -92,12 +92,11 @@ import InputBox from '@/components/InputBox.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import SelectBox from "@/components/SelectBox.vue";
 import CustomButton from "@/components/CustomButton.vue";
-import axios from "axios";
 import CustomTextarea from "@/components/CustomTextarea.vue";
+import categoryStore from '@/stores/categoryStore';  // Import categoryStore
 
 const fileInput = ref(null);
-const categoriesDb = ref([]);
-const categories = ref([]);
+const categories = categoryStore.categories;
 
 const props = defineProps({
   title: String,
@@ -123,16 +122,8 @@ const formData = reactive({
   ...props.initialData
 });
 
-
 onMounted(async () => {
-  try {
-    const categoriesResponse = await axios.get('http://localhost:8080/api/categories');
-    categoriesDb.value = categoriesResponse.data;
-    categories.value = categoriesResponse.data.map(category => category.name);
-
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-  }
+  await categoryStore.fetchCategories();
 });
 
 
