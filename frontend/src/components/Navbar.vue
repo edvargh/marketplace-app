@@ -8,6 +8,9 @@
 
     <ul class="nav-right">
       <template v-if="isAuthenticated">
+        <CustomButton>
+          <router-link to="/create" class="navbar-create-item">{{ t('navbar.create-listing') }}</router-link>
+        </CustomButton>
         <li class="account-dropdown" ref="dropdownRef">
           <div class = "dropdown-wrapper">
             <CustomButton @click="toggleDropdown">{{ t('navbar.account') }}</CustomButton>

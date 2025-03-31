@@ -4,7 +4,8 @@
     "login": "Log In",
     "logout": "Log Out",
     "profile": "Profile",
-    "account": "Account"
+    "account": "Account",
+    "create-listing": "Create Listing"
   },
   "register": {
     "title": "Register new account"
