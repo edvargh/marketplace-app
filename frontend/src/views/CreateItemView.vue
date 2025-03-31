@@ -34,6 +34,7 @@ const handleSubmit = async (formData) => {
   try {
     isSubmitting.value = true;
     await itemStore.createItem(formData);
+    await router.push({name: 'home'});
     // TODO: Add navigation
 
   } catch (error) {

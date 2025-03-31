@@ -35,7 +35,6 @@
     </div>
   </div>
 
-
   <!-- Form -->
   <div class="item-form-page" id="item-form">
     <form class="item-form" @submit.prevent="handleSubmit">
@@ -56,7 +55,9 @@
       <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
       <label for="Price">Price</label>
       <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
-
+      <div v-if="priceError" class="error-message">
+        {{ priceError }}
+      </div>
 
       <!-- Category -->
       <label for="Category">Category</label>
@@ -74,6 +75,7 @@
       <label for="city">City</label>
       <InputBox label="City" v-model="formData.city" placeholder="City" required />
 
+      <!-- Description -->
       <label for="description">Description</label>
       <CustomTextarea v-model="formData.description" placeholder="Description" :required="true"/>
 
@@ -88,7 +90,7 @@
 
 
 <script setup>
-import { ref, reactive, onBeforeUnmount, computed, onMounted } from 'vue'
+import { ref, reactive, onBeforeUnmount, computed, onMounted, watch } from 'vue'
 import InputBox from '@/components/InputBox.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
 import SelectBox from "@/components/SelectBox.vue";
@@ -98,6 +100,7 @@ import { useCategoryStore } from "@/stores/categoryStore";
 
 const fileInput = ref(null);
 const categories = ref([]);
+const priceError = ref('');
 const categoryStore = useCategoryStore();
 
 const props = defineProps({
@@ -123,6 +126,26 @@ const formData = reactive({
   status: '',
   ...props.initialData
 });
+
+watch(() => formData.price, (newPrice) => {
+  validatePrice(newPrice);
+});
+
+const validatePrice = (price) => {
+  if (price === '' || price === null) {
+    priceError.value = '';
+    return false;
+  }
+
+  const numPrice = Number(price);
+  if (numPrice < 0) {
+    priceError.value = 'Please provide a valid price';
+    return false;
+  }
+
+  priceError.value = '';
+  return true;
+};
 
 onMounted(async () => {
   try {
@@ -183,7 +206,7 @@ const isFormValid = computed(() => {
   ];
 
   const hasAllRequiredFields = requiredFields.every(field => !!field);
-  const isPriceValid = formData.price > 0;
+  const isPriceValid = formData.price >= 0;
   return hasAllRequiredFields && isPriceValid;
 });
 

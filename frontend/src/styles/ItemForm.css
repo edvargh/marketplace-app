@@ -5,7 +5,7 @@
 }
 
 .item-form {
-    padding: 0 5%;
+    padding: 0 10%;
 }
 
 .title {
@@ -32,6 +32,14 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-top: 30px;
+    margin-top: 70px;
     margin-bottom: 150px;
+}
+
+.error-message {
+    color: red;
+    margin-top: 1rem;
+    min-height: 1.5rem;
+    font-family: 'Abel', sans-serif;
+    margin-bottom: 40px;
 }
