@@ -97,6 +97,8 @@ import { useCategoryStore } from "@/stores/categoryStore";
 const fileInput = ref(null);
 const categoryStore = useCategoryStore();
 
+const categories = ref([]);
+
 const props = defineProps({
   title: String,
   initialData: {
@@ -123,13 +125,13 @@ const formData = reactive({
 
 onMounted(async () => {
   try {
-    await categoryStore.fetchCategories();
-
+    categoryStore.fetchCategories().then(cats => {
+      categories.value = cats.map(category => category.name);
+    });
   } catch (error) {
     console.error('Error loading data:', error);
   }
 });
-
 
 const handleImageUpload = (event) => {
   const files = event.target.files;
