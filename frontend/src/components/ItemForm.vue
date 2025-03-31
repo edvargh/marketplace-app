@@ -191,36 +191,8 @@ const emit = defineEmits(['submit', 'validation-change'])
 
 const handleSubmit = async () => {
   if (!isFormValid.value) return;
-
   try {
-    const formDataToSend = new FormData();
-
-    const itemData = {
-      title: formData.title,
-      description: formData.description,
-      categoryId: formData.categoryId,
-      price: parseFloat(formData.price),
-      city: formData.city,
-      status: formData.status,
-      latitude: 63.43, // TODO: Method to convert to latitude and longtitude
-      longitude: 10.3925
-    };
-
-    const itemBlob = new Blob([JSON.stringify(itemData)], {
-      type: 'application/json'
-    });
-
-    formDataToSend.append('item', itemBlob);
-
-    if (Array.isArray(formData.images)) {
-      formData.images.forEach(image => {
-        if (image?.file) {
-          formDataToSend.append('images', image.file);
-        }
-      });
-    }
-
-    emit('submit', formDataToSend);
+    emit('submit', formData);
 
   } catch (error) {
     console.error('Error preparing form data:', error);

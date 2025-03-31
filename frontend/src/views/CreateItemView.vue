@@ -34,6 +34,7 @@ const handleSubmit = async (formData) => {
   try {
     isSubmitting.value = true;
     await itemStore.createItem(formData);
+    // TODO: Add navigation
 
   } catch (error) {
     console.error('Failed to create item:', error);
