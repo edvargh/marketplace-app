@@ -6,7 +6,7 @@
     {{ error }}
   </div>
 
-  <div class="item-detail-container">
+  <div v-else class="item-detail-container">
     <!-- Image Gallery -->
     <ImageGallery
         :images="item.imageUrls || []"
@@ -54,23 +54,13 @@
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
-import axios from 'axios';
+import { useItemStore } from "@/stores/itemStore";
 
 const route = useRoute();
+const itemStore = useItemStore();
 const item = ref({});
 const loading = ref(true);
 const error = ref(null);
-
-const getAuthHeaders = () => {
-  const userData = localStorage.getItem('user');
-  if (!userData) return { 'Content-Type': 'application/json' };
-
-  const user = JSON.parse(userData);
-  return {
-    'Authorization': `Bearer ${user.token || localStorage.getItem('token')}`,
-    'Content-Type': 'application/json'
-  };
-};
 
 onMounted(async () => {
   try {
@@ -81,17 +71,17 @@ onMounted(async () => {
       throw new Error('No item ID provided');
     }
 
-    const headers = getAuthHeaders();
-    const response = await axios.get(`http://localhost:8080/api/items/${itemId}`, { headers });
+    const itemData = await itemStore.fetchItemById(itemId);
 
-    if (response.data) {
-      item.value = response.data;
+    if (itemData) {
+      item.value = itemData;
     } else {
       throw new Error('Item not found');
     }
   } catch (err) {
     console.error('Error fetching item details:', err);
     error.value = err.message || 'Failed to load item details';
+
   } finally {
     loading.value = false;
   }
