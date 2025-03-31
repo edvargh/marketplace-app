@@ -9,6 +9,9 @@
     <ul class="nav-right">
       <template v-if="isAuthenticated">
         <CustomButton>
+          <router-link to ="/myItems" class="navbar-my-items">{{ t('navbar.myItems') }}</router-link>
+        </CustomButton>
+        <CustomButton>
           <router-link to="/create" class="navbar-create-item">{{ t('navbar.create-listing') }}</router-link>
         </CustomButton>
         <li class="account-dropdown" ref="dropdownRef">
