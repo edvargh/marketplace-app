@@ -46,7 +46,6 @@
         <SelectBox
             label="Status"
             v-model="formData.status"
-            :options="status"
             placeholder="Status"
             required
         />
@@ -93,10 +92,10 @@ import ImageGallery from '@/components/ImageGallery.vue'
 import SelectBox from "@/components/SelectBox.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import CustomTextarea from "@/components/CustomTextarea.vue";
-import categoryStore from '@/stores/categoryStore';  // Import categoryStore
+import { useCategoryStore } from "@/stores/categoryStore";
 
 const fileInput = ref(null);
-const categories = categoryStore.categories;
+const categoryStore = useCategoryStore();
 
 const props = defineProps({
   title: String,
@@ -123,7 +122,12 @@ const formData = reactive({
 });
 
 onMounted(async () => {
-  await categoryStore.fetchCategories();
+  try {
+    await categoryStore.fetchCategories();
+
+  } catch (error) {
+    console.error('Error loading data:', error);
+  }
 });
 
 
