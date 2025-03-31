@@ -157,5 +157,5 @@ const handleEdit = () => {
 
 
 <style scoped>
-@import '../styles/ProfileView.css';
+@import '../styles/users/ProfileView.css';
 </style>

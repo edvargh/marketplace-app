@@ -79,5 +79,5 @@ const emit = defineEmits(['update:currentIndex']);
 </script>
 
 <style scoped>
-@import '../styles/ImageGallery.css';
+@import '../styles/components/ImageGallery.css';
 </style>

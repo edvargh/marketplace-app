@@ -191,6 +191,6 @@ const RegistrationLogic = async () => {
 </script>
   
   <style scoped>
-  @import '../styles/RegisterView.css';
+  @import '../styles/views/RegisterView.css';
   </style> 
   

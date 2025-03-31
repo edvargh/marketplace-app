@@ -13,5 +13,5 @@ const searchQuery = ref('')
 </script>
 
 <style scoped>
-@import '../styles/SearchBar.css';
+@import '../styles/components/SearchBar.css';
 </style>

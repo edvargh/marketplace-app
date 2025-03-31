@@ -105,5 +105,5 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-@import '../styles/SelectBox.css';
+@import '../styles/components/SelectBox.css';
 </style>

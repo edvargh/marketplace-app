@@ -13,5 +13,5 @@ defineEmits(['click'])
 </script>
 
 <style scoped>
-@import '../styles/EditIcon.css';
+@import '../styles/components/EditIcon.css';
 </style>

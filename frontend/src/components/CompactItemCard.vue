@@ -47,7 +47,7 @@ defineProps({
 
 
 <style scoped>
-@import '../styles/CompactItemCard.css';
+@import '../styles/components/CompactItemCard.css';
 </style>
 
 

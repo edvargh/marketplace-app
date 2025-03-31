@@ -48,7 +48,7 @@ const handleSubmit = async (formData) => {
 </script>
 
 <style scoped>
-@import '../styles/CreateItemView.css';
+@import '../styles/views/CreateItemView.css';
 </style>
 
 
