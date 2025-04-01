@@ -61,5 +61,4 @@
   </script>
   
   <style scoped>
-  @import '../styles/components/CustomTextarea.css';
   </style>
