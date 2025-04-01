@@ -30,5 +30,5 @@ const handleCategoryClick = (category) => {
 </template>
 
 <style scoped>
-@import '../styles/Categories.css';
+@import '../styles/components/Categories.css';
 </style>

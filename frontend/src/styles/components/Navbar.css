@@ -113,3 +113,17 @@
   text-decoration: none; 
   transition: background 0.3s ease;
 }
+
+.navbar-create-item{
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+.navbar-my-items{
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}

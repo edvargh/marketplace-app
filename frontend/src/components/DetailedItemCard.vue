@@ -43,7 +43,7 @@ const props = defineProps({
 
 
 <style scoped>
-@import '../styles/DetailedItemCard.css';
+@import '../styles/components/DetailedItemCard.css';
 </style>
 
 

@@ -7,6 +7,7 @@ import { useUserStore } from '@/stores/userStore'
 import { getActivePinia } from 'pinia'
 import ItemForm from "@/components/ItemForm.vue";
 import CreateItemView from "@/views/CreateItemView.vue";
+import MyItemsView from '@/users/MyItemsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +15,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: CreateItemView,
+      component: HomeView,
     },
     {
       path: '/about',
@@ -37,16 +38,26 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: ProfileView,
-      meta: { requiresAuth: true }, //endre til true senere
-    },
+      meta: { requiresAuth: true }, 
+    }, {
+      path: '/create',
+      name: 'create',
+      component: CreateItemView,
+      meta: { requiresAuth: true },
+    }, {
+       path: '/myItems',
+       name: 'myItems',
+       component: MyItemsView,
+       meta: { requiresAuth: true },
+    }
   ],
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async(to, from, next) => {
   const pinia = getActivePinia()
   const userStore = useUserStore(pinia)
 
-  userStore.checkAuth()
+  await userStore.checkAuth()
 
   if (to.meta.requiresAuth && !userStore.isAuthenticated) {
     next('/login')

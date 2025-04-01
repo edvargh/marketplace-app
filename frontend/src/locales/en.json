@@ -1,22 +1,24 @@
 {
-    "navbar": {
-      "home": "Home",
-      "login": "Log In",
-      "logout": "Log Out",
-      "profile": "Profile",
-      "account": "Account"
-    },
-    "register": {
-      "title": "Register new account"
-    },
-    "profile":{
-      "username": "Username",
-      "email": "Email",
-      "phone": "Telephone Number",
-      "bio": "Bio",
-      "password": "New Password",
-      "confirmPassword": "Confirm New Password",
-      "language": "Language"
-    }
+  "navbar": {
+    "home": "Home",
+    "login": "Log In",
+    "logout": "Log Out",
+    "profile": "Profile",
+    "account": "Account",
+    "create-listing": "Create Listing",
+    "myItems": "My Items"
+  },
+  "register": {
+    "title": "Register new account"
+  },
+  "profile": {
+    "fullName": "Full Name",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "language": "Language",
+    "successMessage": "Profile updated successfully"
+
   }
-  
+}

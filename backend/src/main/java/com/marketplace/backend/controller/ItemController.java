@@ -4,10 +4,13 @@ import com.marketplace.backend.dto.ItemCreateDto;
 import com.marketplace.backend.dto.ItemUpdateDto;
 import com.marketplace.backend.dto.ItemResponseDto;
 import com.marketplace.backend.service.ItemService;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Controller for handling item related requests.
@@ -57,8 +60,12 @@ public class ItemController {
    * @param dto the item to create
    * @return the created item as a DTO
    */
-  @PostMapping
-  public ResponseEntity<ItemResponseDto> createItem(@RequestBody ItemCreateDto dto) {
+  @PostMapping("/create")
+  public ResponseEntity<ItemResponseDto> createItem(
+      @RequestPart("item") ItemCreateDto dto,
+      @RequestPart(value = "images", required = false) List<MultipartFile> images
+  ) throws IOException {
+    dto.setImages(images);
     return ResponseEntity.ok(itemService.createItem(dto));
   }
 
@@ -69,10 +76,16 @@ public class ItemController {
    * @param dto the updated item data
    * @return the updated item as a DTO if successful, 404 otherwise
    */
-  @PutMapping("/{id}")
-  public ResponseEntity<ItemResponseDto> updateItem(@PathVariable Long id, @RequestBody ItemUpdateDto dto) {
+  @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<ItemResponseDto> updateItem(
+      @PathVariable Long id,
+      @RequestPart("dto") ItemUpdateDto dto,
+      @RequestPart(value = "images", required = false) List<MultipartFile> images
+  ) {
+    dto.setImages(images);
     Optional<ItemResponseDto> updatedItem = itemService.updateItem(id, dto);
     return updatedItem.map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
+
 }

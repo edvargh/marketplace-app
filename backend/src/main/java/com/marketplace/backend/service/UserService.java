@@ -4,6 +4,8 @@ import com.marketplace.backend.dto.UserResponseDto;
 import com.marketplace.backend.dto.UserUpdateDto;
 import com.marketplace.backend.model.User;
 import com.marketplace.backend.repository.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -69,5 +71,26 @@ public class UserService {
       User updated = userRepository.save(user);
       return UserResponseDto.fromEntity(updated);
     });
+  }
+
+  /**
+   * Get the current user.
+   *
+   * @return the current user
+   */
+  public UserResponseDto getCurrentUser() {
+    String email = getAuthenticatedEmail();
+    User user = userRepository.findByEmail(email).orElseThrow();
+    return UserResponseDto.fromEntity(user);
+  }
+
+  /**
+   * Get the email of the authenticated user.
+   *
+   * @return the email of the authenticated user
+   */
+  private String getAuthenticatedEmail() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return authentication.getName(); // Spring extracts username from token
   }
 }
