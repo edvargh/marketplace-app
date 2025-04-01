@@ -1,6 +1,8 @@
 package com.marketplace.backend.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Model for a user.
@@ -30,10 +32,20 @@ public class User {
   private String phoneNumber;
 
   @Column(name = "profile_picture")
-  private String profilePicture; // URL to Cloudinary or other external image host
+  private String profilePicture;
 
   @Column(name = "preferred_language", nullable = false)
   private String preferredLanguage = "english";
+
+  @ManyToMany
+  @JoinTable(
+      name = "Favorites",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "item_id")
+  )
+  private List<Item> favoriteItems = new ArrayList<>();
+
+
 
   public User() {
   }
@@ -111,5 +123,13 @@ public class User {
 
   public void setPreferredLanguage(String preferredLanguage) {
     this.preferredLanguage = preferredLanguage;
+  }
+
+  public List<Item> getFavoriteItems() {
+    return favoriteItems;
+  }
+
+  public void setFavoriteItems(List<Item> favoriteItems) {
+    this.favoriteItems = favoriteItems;
   }
 }

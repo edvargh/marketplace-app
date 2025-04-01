@@ -46,6 +46,8 @@ public class Item {
   @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Image> images = new ArrayList<>();
 
+  @ManyToMany(mappedBy = "favoriteItems")
+  private List<User> favoritedByUsers = new ArrayList<>();
 
 
   /**
@@ -77,7 +79,6 @@ public class Item {
     this.longitude = longitude;
     this.status = ItemStatus.FOR_SALE;
   }
-
 
   /**
    * Get the item id.
@@ -286,4 +287,13 @@ public class Item {
     images.add(image);
     image.setItem(this);
   }
+
+  public List<User> getFavoritedByUsers() {
+    return favoritedByUsers;
+  }
+
+  public void setFavoritedByUsers(List<User> likedByUsers) {
+    this.favoritedByUsers = likedByUsers;
+  }
+
 }
