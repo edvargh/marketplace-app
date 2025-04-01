@@ -23,14 +23,17 @@
           <span class="price">{{ item.price }} kr</span>
           <span class="status">{{ item.status }}</span>
         </div>
-        <FavoriteBtn/>
+        <FavoriteBtn v-if="!isMyItem" />
       </div>
 
 
       <div class="action-buttons">
-        <button class="message-btn">Send message</button>
-        <button class="reserve-btn">Reserve item</button>
-        <button class="buy-btn">Buy Now</button>
+        <template v-if="!isMyItem">
+          <button class="message-btn">Send message</button>
+          <button class="reserve-btn">Reserve item</button>
+          <button class="blue-btn">Buy Now</button>
+        </template>
+        <button v-else class="blue-btn">Edit Item</button>
       </div>
     </div>
 
@@ -59,13 +62,16 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
 import { useItemStore } from "@/stores/itemStore";
+import { useUserStore } from "@/stores/userStore";
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
 
 const route = useRoute();
 const itemStore = useItemStore();
+const userStore = useUserStore();
 const item = ref({});
 const loading = ref(true);
 const error = ref(null);
+const isMyItem = ref(false);
 
 onMounted(async () => {
   try {
@@ -80,6 +86,8 @@ onMounted(async () => {
 
     if (itemData) {
       item.value = itemData;
+      isMyItem.value = userStore.user?.id === itemData.sellerId;
+
     } else {
       throw new Error('Item not found');
     }
