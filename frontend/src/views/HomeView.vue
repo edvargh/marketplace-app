@@ -103,4 +103,3 @@ onMounted(async () => {
 <style scoped>
 @import '../styles/views/HomeView.css';
 </style>
-
