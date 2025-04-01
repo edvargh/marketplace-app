@@ -45,6 +45,9 @@
         <SelectBox
             label="Status"
             v-model="formData.status"
+            :options="statusOptions"
+            option-label="label"
+            option-value="value"
             placeholder="Status"
             required
         />
@@ -111,9 +114,17 @@ const props = defineProps({
   }
 });
 
+const statusOptions = ref([
+  { value: 'FOR_SALE', label: 'For Sale' },
+  { value: 'RESERVED', label: 'Reserved' },
+  { value: 'SOLD', label: 'Sold' }
+]);
 
-const formData = reactive({...props.initialData});
-
+tustu
+const formData = reactive({
+  ...props.initialData,
+  status: 'FOR_SALE'
+});
 
 watch(() => props.initialData, (newData) => {
   Object.assign(formData, newData);
@@ -124,18 +135,33 @@ watch(() => formData.price, (newPrice) => {
 });
 
 const validatePrice = (price) => {
+  priceError.value = '';
+
   if (price === '' || price === null) {
-    priceError.value = '';
     return false;
   }
 
   const numPrice = Number(price);
-  if (numPrice < 0) {
-    priceError.value = 'Please provide a valid price';
+  const validations = [
+    {
+      condition: isNaN(numPrice),
+      message: 'Please enter a valid number'
+    },
+    {
+      condition: numPrice < 0,
+      message: 'Price cannot be negative number'
+    },
+    {
+      condition: numPrice > 10000000,
+      message: 'Price cannot exceed 10,000,000kr'
+    }
+  ];
+
+  const failedValidation = validations.find(validation => validation.condition);
+  if (failedValidation) {
+    priceError.value = failedValidation.message;
     return false;
   }
-
-  priceError.value = '';
   return true;
 };
 
@@ -156,24 +182,22 @@ onMounted(async () => {
 const handleImageUpload = (event) => {
   const files = event.target.files;
   if (!files?.length) return;
-
-  formData.images = [
+  const newImages = [
     ...formData.images,
     ...Array.from(files)
         .filter(file => file.type.startsWith('image/'))
         .map(file => ({ file, url: URL.createObjectURL(file) }))
   ];
-
+  formData.images = newImages;
   fileInput.value.value = '';
 };
 
 const removeCurrentImage = () => {
   if (!formData.images.length) return;
-
-  URL.revokeObjectURL(formData.images[formData.currentImageIndex]?.url);
-  formData.images.splice(formData.currentImageIndex, 1);
-
-  // Adjust current index if needed
+  const newImages = [...formData.images];
+  URL.revokeObjectURL(newImages[formData.currentImageIndex]?.url);
+  newImages.splice(formData.currentImageIndex, 1);
+  formData.images = newImages;
   if (formData.currentImageIndex >= formData.images.length) {
     formData.currentImageIndex = Math.max(0, formData.images.length - 1);
   }
