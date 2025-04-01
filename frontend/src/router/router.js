@@ -8,6 +8,7 @@ import { getActivePinia } from 'pinia'
 import CreateItemView from "@/views/CreateItemView.vue";
 import MyItemsView from '@/users/MyItemsView.vue'
 import ItemView from "@/views/ItemView.vue";
+import MyFavoriteView from '@/users/MyFavoriteView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +52,12 @@ const router = createRouter({
        name: 'my-items',
        component: MyItemsView,
        meta: { requiresAuth: true },
+    },
+    {
+      path: '/favorites',
+      name: 'favorites',
+      component: MyFavoriteView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/item/:id',

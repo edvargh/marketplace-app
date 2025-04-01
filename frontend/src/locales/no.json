@@ -6,7 +6,8 @@
     "profile": "Profil",
     "account": "Konto",
     "create-listing": "Opprett Annonse",
-    "my-items": "Mine Gjenstander"
+    "my-items": "Mine Gjenstander",
+    "favorites": "Favoritter"
   },
   "register": {
     "title": "Registrer ny konto"

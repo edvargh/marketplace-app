@@ -9,6 +9,9 @@
     <ul class="nav-right" v-if="!isMobile">
       <template v-if="isAuthenticated">
         <CustomButton>
+          <router-link to="/favorites" class="navbar-favorites">{{ t('navbar.favorites') }}</router-link>
+        </CustomButton>
+        <CustomButton>
           <router-link to ="/my-items" class="navbar-my-items">{{ t('navbar.my-items') }}</router-link>
         </CustomButton>
         <CustomButton>
