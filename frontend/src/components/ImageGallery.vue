@@ -21,15 +21,12 @@
         {{ currentImageIndex + 1 }} / {{ images.length }}
       </div>
     </div>
-
-    <FavoriteBtn v-if="showFavoriteButton" />
   </div>
 </template>
 
 
 <script setup>
 import { ref, computed, watch } from 'vue';
-import FavoriteBtn from "@/components/FavoriteBtn.vue";
 
 const props = defineProps({
   images: {
@@ -40,10 +37,6 @@ const props = defineProps({
   altText: {
     type: String,
     default: ''
-  },
-  showFavoriteButton: {
-    type: Boolean,
-    default: false
   },
   currentIndex: {
     type: Number,

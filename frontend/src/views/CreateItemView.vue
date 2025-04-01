@@ -1,15 +1,31 @@
 <template>
   <div class="create-item-view">
+    <Notification
+        v-if="showCreateSuccess"
+        type="success"
+        message="Advertisement created successfully!"
+        :autoClose="true"
+        @close="showCreateSuccess = false"
+    />
+
     <ItemForm
         title="Create New Advertisement"
         @submit="handleSubmit"
         :showStatus="false"
-        :initialData="{ status: 'For Sale' }"
+        :initialData="{
+          title: '',
+          description: '',
+          price: '',
+          categoryId: null,
+          status: 'FOR_SALE',
+          images: [],
+          currentImageIndex: 0
+        }"
     >
       <template #actions="{ isValid }">
         <button
             type="submit"
-            class="create-button"
+            class="action-button button-primary"
             :disabled="isSubmitting || !isValid"
         >
           {{ isSubmitting ? 'Creating...' : 'Create' }}
@@ -25,17 +41,20 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ItemForm from '@/components/ItemForm.vue';
 import { useItemStore } from '@/stores/itemStore';
+import Notification from "@/components/NotificationBanner.vue";
 
 const router = useRouter();
 const isSubmitting = ref(false);
+const showCreateSuccess = ref(false);
 const itemStore = useItemStore();
 
 const handleSubmit = async (formData) => {
   try {
     isSubmitting.value = true;
-    await itemStore.createItem(formData);
-    await router.push({name: 'home'});
-    // TODO: Add navigation
+    const createdItem = await itemStore.createItem(formData);
+    showCreateSuccess.value = true;
+    setTimeout(() => {
+      router.push({ name: 'ItemView', params: { id: createdItem.id } });}, 2000);
 
   } catch (error) {
     console.error('Failed to create item:', error);
@@ -48,7 +67,7 @@ const handleSubmit = async (formData) => {
 </script>
 
 <style scoped>
-@import '../styles/views/CreateItemView.css';
+@import '../styles/components/ItemFormButton.css';
 </style>
 
 

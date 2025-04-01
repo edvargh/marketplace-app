@@ -14,12 +14,12 @@ html, body {
 }
 
 .box {
+  /* For container. not for input itself*/
   display: flex;
   align-items: center;
   border-radius: 40px;
   padding: 1rem 2rem;
   border: 1px solid transparent;
-  /* For container. not for input itself*/
   background:
     linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
     linear-gradient(to right, #4facfe, #00f2fe) border-box;

@@ -28,12 +28,23 @@
     margin-top: 10px;
 }
 
+/* Form actions container - controls ALL form footers */
 .form-actions {
     display: flex;
-    justify-content: center;
+    flex-direction: column !important;
+    align-items: center;
     gap: 15px;
-    margin-top: 70px;
-    margin-bottom: 150px;
+    margin: 70px 0 150px;
+    width: 100%;
+}
+
+/* Nested button container - for EditView only */
+.form-actions .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 300px; /* Optional: constrain button width */
 }
 
 .error-message {

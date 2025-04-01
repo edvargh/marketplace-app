@@ -1,0 +1,44 @@
+/* Base button styles for all action buttons */
+.action-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+    text-align: center;
+    font-family: inherit;
+}
+
+.button-primary {
+    background-color: #2e7d15;
+    color: white;
+}
+
+.button-primary:hover {
+    background-color: #45a049;
+    transform: scale(1.03);
+}
+
+.button-primary:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.button-danger {
+    background-color: #d32f2f;
+    color: white;
+}
+
+.button-danger:hover {
+    background-color: #f44336;
+    transform: scale(1.03);
+}
+
+.button-danger:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
