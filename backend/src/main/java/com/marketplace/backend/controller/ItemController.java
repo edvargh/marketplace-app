@@ -110,4 +110,16 @@ public class ItemController {
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
+  /**
+   * Delete an item.
+   *
+   * @param id the ID of the item to delete
+   * @return a 204 response if successful, 404 otherwise
+   */
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+    boolean deleted = itemService.deleteItem(id);
+    return deleted ? ResponseEntity.noContent().build()
+        : ResponseEntity.notFound().build();
+  }
 }

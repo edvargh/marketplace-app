@@ -128,6 +128,47 @@ class ItemControllerTest {
   }
 
   /**
+   * Test to get items for the current user.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReturnItemsForCurrentUser() throws Exception {
+    mockMvc.perform(get("/api/items/my-items"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.length()").value(2))
+        .andExpect(jsonPath("$[0].title").value("Phone"))
+        .andExpect(jsonPath("$[1].title").value("Tablet"));
+  }
+
+  /**
+   * Test to delete an item.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReturnFavoriteItemsForCurrentUser() throws Exception {
+    Item favoriteItem = new Item(testUser, "Favorited Laptop", "Gaming laptop", testCategory, 1200.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    favoriteItem.setStatus(ItemStatus.FOR_SALE);
+    favoriteItem = itemRepository.save(favoriteItem);
+
+    testUser.getFavoriteItems().add(favoriteItem);
+    userRepository.save(testUser);
+
+    entityManager.flush();
+    entityManager.clear();
+
+    mockMvc.perform(get("/api/items/favorites"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].title").value("Favorited Laptop"))
+        .andExpect(jsonPath("$[0].favoritedByCurrentUser").value(true));
+  }
+
+  /**
    * Test to create an item.
    *
    * @throws Exception if the test fails
@@ -216,40 +257,17 @@ class ItemControllerTest {
    */
   @Test
   @WithMockUser(username = "john@example.com")
-  void shouldReturnFavoriteItemsForCurrentUser() throws Exception {
-    Item favoriteItem = new Item(testUser, "Favorited Laptop", "Gaming laptop", testCategory, 1200.0,
+  void shouldDeleteItem() throws Exception {
+    // Arrange: create and save a new item
+    Item item = new Item(testUser, "Delete Me", "To be deleted", testCategory, 999.0,
         LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
-    favoriteItem.setStatus(ItemStatus.FOR_SALE);
-    favoriteItem = itemRepository.save(favoriteItem);
+    item.setStatus(ItemStatus.FOR_SALE);
+    item = itemRepository.save(item);
 
-    testUser.getFavoriteItems().add(favoriteItem);
-    userRepository.save(testUser);
+    mockMvc.perform(delete("/api/items/" + item.getId()))
+        .andExpect(status().isNoContent());
 
-    entityManager.flush();
-    entityManager.clear();
-
-    mockMvc.perform(get("/api/items/favorites"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].title").value("Favorited Laptop"))
-        .andExpect(jsonPath("$[0].favoritedByCurrentUser").value(true));
+    mockMvc.perform(get("/api/items/" + item.getId()))
+        .andExpect(status().isNotFound());
   }
-
-
-
-  /**
-   * Test to get items for the current user.
-   *
-   * @throws Exception if the test fails
-   */
-  @Test
-  @WithMockUser(username = "john@example.com")
-  void shouldReturnItemsForCurrentUser() throws Exception {
-    mockMvc.perform(get("/api/items/my-items"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.length()").value(2))
-        .andExpect(jsonPath("$[0].title").value("Phone"))
-        .andExpect(jsonPath("$[1].title").value("Tablet"));
-  }
-
 }

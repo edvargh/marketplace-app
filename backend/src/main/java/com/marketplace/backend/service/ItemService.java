@@ -189,6 +189,30 @@ public class ItemService {
   }
 
   /**
+   * Delete an item.
+   *
+   * @param id the ID of the item to delete
+   * @return true if the item was deleted, false otherwise
+   */
+  public boolean deleteItem(Long id) {
+    String email = getAuthenticatedEmail();
+    Optional<User> userOpt = userRepository.findByEmail(email);
+    Optional<Item> itemOpt = itemRepository.findById(id);
+
+    if (userOpt.isEmpty() || itemOpt.isEmpty()) return false;
+
+    User user = userOpt.get();
+    Item item = itemOpt.get();
+
+    if (!item.getSeller().getId().equals(user.getId())) {
+      return false; // Only the seller can delete
+    }
+
+    itemRepository.delete(item);
+    return true;
+  }
+
+  /**
    * Get the email of the authenticated user.
    *
    * @return the email of the authenticated user
