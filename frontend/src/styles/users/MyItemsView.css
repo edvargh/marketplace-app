@@ -1,0 +1,26 @@
+.my-items-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+  
+.my-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+  
+.no-items-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #999;
+    padding: 2rem;
+}
+
+.my-items-title {
+    font-size: 2rem;
+    font-family: 'Abel', sans-serif;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #333;
+}

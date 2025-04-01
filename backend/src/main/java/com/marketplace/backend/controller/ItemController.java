@@ -1,17 +1,22 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.model.Item;
+import com.marketplace.backend.dto.ItemCreateDto;
+import com.marketplace.backend.dto.ItemUpdateDto;
+import com.marketplace.backend.dto.ItemResponseDto;
 import com.marketplace.backend.service.ItemService;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Controller for handling item related requests.
  */
 @RestController
-@RequestMapping("/api/Items")
+@RequestMapping("/api/items")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ItemController {
 
@@ -29,10 +34,10 @@ public class ItemController {
   /**
    * Get all items.
    *
-   * @return a list of all items
+   * @return a list of all items as DTOs
    */
   @GetMapping("/all-items")
-  public List<Item> getAllItems() {
+  public List<ItemResponseDto> getAllItems() {
     return itemService.getAllItems();
   }
 
@@ -43,20 +48,78 @@ public class ItemController {
    * @return the item if found, otherwise a 404 response
    */
   @GetMapping("/{id}")
-  public ResponseEntity<Item> getItemById(@PathVariable Long id) {
-    Optional<Item> item = itemService.getItemById(id);
+  public ResponseEntity<ItemResponseDto> getItemById(@PathVariable Long id) {
+    Optional<ItemResponseDto> item = itemService.getItemById(id);
     return item.map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   /**
+   * Get all items for the current user.
+   *
+   * @return a list of items as DTOs
+   */
+  @GetMapping("/my-items")
+  public ResponseEntity<List<ItemResponseDto>> getItemsForCurrentUser() {
+    List<ItemResponseDto> myItems = itemService.getItemsForCurrentUser();
+    return ResponseEntity.ok(myItems);
+  }
+
+  /**
+   * Get all favorite items for the current user.
+   *
+   * @return a list of favorite items as DTOs
+   */
+  @GetMapping("/favorites")
+  public ResponseEntity<List<ItemResponseDto>> getFavoriteItemsForCurrentUser() {
+    List<ItemResponseDto> favoriteItems = itemService.getFavoriteItemsForCurrentUser();
+    return ResponseEntity.ok(favoriteItems);
+  }
+
+  /**
    * Create a new item.
    *
-   * @param item the item to create
-   * @return the created item
+   * @param dto the item to create
+   * @return the created item as a DTO
    */
-  @PostMapping
-  public ResponseEntity<Item> createItem(@RequestBody Item item) {
-    return ResponseEntity.ok(itemService.createItem(item));
+  @PostMapping("/create")
+  public ResponseEntity<ItemResponseDto> createItem(
+      @RequestPart("item") ItemCreateDto dto,
+      @RequestPart(value = "images", required = false) List<MultipartFile> images
+  ) throws IOException {
+    dto.setImages(images);
+    return ResponseEntity.ok(itemService.createItem(dto));
+  }
+
+  /**
+   * Update an item.
+   *
+   * @param id the ID of the item to update
+   * @param dto the updated item data
+   * @return the updated item as a DTO if successful, 404 otherwise
+   */
+  @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<ItemResponseDto> updateItem(
+      @PathVariable Long id,
+      @RequestPart("dto") ItemUpdateDto dto,
+      @RequestPart(value = "images", required = false) List<MultipartFile> images
+  ) {
+    dto.setImages(images);
+    Optional<ItemResponseDto> updatedItem = itemService.updateItem(id, dto);
+    return updatedItem.map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
+  }
+
+  /**
+   * Delete an item.
+   *
+   * @param id the ID of the item to delete
+   * @return a 204 response if successful, 404 otherwise
+   */
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+    boolean deleted = itemService.deleteItem(id);
+    return deleted ? ResponseEntity.noContent().build()
+        : ResponseEntity.notFound().build();
   }
 }

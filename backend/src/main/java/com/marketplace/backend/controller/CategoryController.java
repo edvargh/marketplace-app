@@ -12,7 +12,8 @@ import java.util.Optional;
  * Controller for handling category related requests.
  */
 @RestController
-@RequestMapping("/api/Categories")
+@RequestMapping("/api/categories")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CategoryController {
 
   private final CategoryService categoryService;

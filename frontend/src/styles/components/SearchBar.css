@@ -1,0 +1,13 @@
+.search-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 1.5rem;
+}
+
+.search-button-image {
+    width: 100%;
+    height: 20px;
+    display: block;
+}

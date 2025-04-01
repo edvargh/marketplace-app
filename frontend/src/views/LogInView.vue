@@ -87,5 +87,5 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-@import '../styles/LogInView.css';
+@import '../styles/views/LogInView.css';
 </style>

@@ -3,6 +3,8 @@ package com.marketplace.backend.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Model for an item.
@@ -37,6 +39,17 @@ public class Item {
   @Column(precision = 9, scale = 6)
   private BigDecimal longitude;
 
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private ItemStatus status;
+
+  @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Image> images = new ArrayList<>();
+
+  @ManyToMany(mappedBy = "favoriteItems")
+  private List<User> favoritedByUsers = new ArrayList<>();
+
+
   /**
    * Default constructor.
    */
@@ -64,8 +77,8 @@ public class Item {
     this.publishedDate = publishedDate;
     this.latitude = latitude;
     this.longitude = longitude;
+    this.status = ItemStatus.FOR_SALE;
   }
-
 
   /**
    * Get the item id.
@@ -228,4 +241,59 @@ public class Item {
   public void setLongitude(BigDecimal longitude) {
     this.longitude = longitude;
   }
+
+  /**
+   * Get the status of the item.
+   *
+   * @return the status of the item
+   */
+  public ItemStatus getStatus() {
+    return status;
+  }
+
+  /**
+   * Set the status of the item.
+   *
+   * @param status the status of the item
+   */
+  public void setStatus(ItemStatus status) {
+    this.status = status;
+  }
+
+  /**
+   * Get the images of the item.
+   *
+   * @return the images of the item
+   */
+  public List<Image> getImages() {
+    return images;
+  }
+
+  /**
+   * Set the images of the item.
+   *
+   * @param images the images of the item
+   */
+  public void setImages(List<Image> images) {
+    this.images = images;
+  }
+
+  /**
+   * Add an image to the item.
+   *
+   * @param image the image to add
+   */
+  public void addImage(Image image) {
+    images.add(image);
+    image.setItem(this);
+  }
+
+  public List<User> getFavoritedByUsers() {
+    return favoritedByUsers;
+  }
+
+  public void setFavoritedByUsers(List<User> likedByUsers) {
+    this.favoritedByUsers = likedByUsers;
+  }
+
 }
