@@ -1,8 +1,14 @@
 <template>
   <div class="home-container">
-    <div class="search-container">
+    <div class="search-filter-container">
       <SearchBar/>
+      <CustomButton @click="toggleFilterPanel">
+        {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+      </CustomButton>
     </div>
+   
+    <FilterPanel v-if="showFilters" @applyFilters="handleApplyFilters" />
+
 
     <Categories :categories="categories"/>
 
@@ -70,6 +76,8 @@ import SearchBar from "@/components/SearchBar.vue";
 import Categories from '@/components/Categories.vue';
 import { useCategoryStore } from "@/stores/categoryStore";
 import { useItemStore } from "@/stores/itemStore";
+import FilterPanel from '@/components/FilterPanel.vue'
+import CustomButton from "@/components/CustomButton.vue";
 
 const categoryStore = useCategoryStore();
 const itemStore = useItemStore();
@@ -78,6 +86,7 @@ const categories = ref([]);
 const recommendedItems = ref([]);
 const mostLikedItems = ref([]);
 const allItems = ref([]);
+const showFilters = ref(false);
 
 
 onMounted(async () => {
@@ -97,6 +106,13 @@ onMounted(async () => {
   }
 });
 
+const toggleFilterPanel = () => {
+  showFilters.value = !showFilters.value;
+};
+
+const handleApplyFilters = (filters) => {
+  console.log('Applied filters:', filters);
+};
 </script>
 
 

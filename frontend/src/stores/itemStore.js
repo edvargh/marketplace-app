@@ -36,6 +36,28 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
+  const fetchUserItems = async () => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`http://localhost:8080/api/items/my-items`, { headers });
+      return response.data;
+    } catch (err) {
+      console.error(`Error fetching items:`, err);
+      throw err;
+    }
+  }
+
+  const fetchUserFavoriteItems = async () => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`http://localhost:8080/api/items/favorites`, { headers });
+      return response.data;
+    } catch (err) {
+      console.error(`Error fetching favorite items:`, err);
+      throw err;
+    }
+  }
+
   const createItem = async (rawFormData) => {
     try {
       const token = localStorage.getItem('token');
@@ -136,8 +158,8 @@ export const useItemStore = defineStore('items', () => {
   const deleteItem = async (id) => {
     try {
       const headers = getAuthHeaders();
-      await axios.delete(`http://localhost:8080/api/items/${id}/delete`, { headers });
-      return true;
+      const response = await axios.delete(`http://localhost:8080/api/items/${id}`, { headers });
+      return response.status === 204;
 
     } catch (err) {
       console.error(`Failed to delete item ${id}:`, err);
@@ -149,8 +171,10 @@ export const useItemStore = defineStore('items', () => {
   return {
     fetchAllItems,
     fetchItemById,
+    fetchUserItems,
     createItem,
     updateItem,
-    deleteItem
+    deleteItem,
+    fetchUserFavoriteItems,
   };
 });

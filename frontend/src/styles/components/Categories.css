@@ -7,7 +7,9 @@
 
 .categories h3 {
     margin-bottom: 15px;
-    font-size: 1.2rem;
+    font-family: 'Abel', sans-serif;
+    font-weight: bold;
+    font-size: 2rem;
 }
 
 .categories ul {

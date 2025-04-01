@@ -6,6 +6,21 @@
     {{ error }}
   </div>
 
+  <Notification
+      v-if="showSaveSuccess"
+      type="success"
+      message="Advertisement updated successfully!"
+      :autoClose="true"
+      @close="showSaveSuccess = false"
+  />
+  <Notification
+      v-if="showDeleteSuccess"
+      type="success"
+      message="Advertisement deleted successfully!"
+      :autoClose="true"
+      @close="showDeleteSuccess = false"
+  />
+
   <div class="edit-item-view">
     <ItemForm
         title="Edit Advertisement"
@@ -38,6 +53,7 @@
 import { ref, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ItemForm from '@/components/ItemForm.vue';
+import Notification from '@/components/NotificationBanner.vue';
 import { useItemStore } from '@/stores/itemStore';
 import { useUserStore } from '@/stores/userStore';
 
@@ -49,6 +65,8 @@ const isSubmitting = ref(false);
 const isDeleting = ref(false);
 const loading = ref(true);
 const error = ref(null);
+const showSaveSuccess = ref(false);
+const showDeleteSuccess = ref(false);
 
 defineProps({
   id: String
@@ -131,7 +149,9 @@ const handleSubmit = async (updatedFormData) => {
     };
 
     await itemStore.updateItem(route.params.id, processedData);
-    await router.push({ name: 'ItemView', params: { id: route.params.id } });
+    showSaveSuccess.value = true;
+    setTimeout(() => {
+      router.push({ name: 'ItemView', params: { id: route.params.id } });}, 2000);
 
   } catch (error) {
     console.error('Failed to update item:', error);
@@ -141,13 +161,17 @@ const handleSubmit = async (updatedFormData) => {
 };
 
 const handleDelete = async () => {
+  // TODO: Custom styling/component for confirmation banner?
   if (!confirm('Are you sure you want to delete this item?')) return;
 
   try {
     isDeleting.value = true;
-    await itemStore.deleteItem(route.params.id);
-    await router.push({ name: 'myItems' });
-
+    const success = await itemStore.deleteItem(route.params.id);
+    if (success) {
+      showDeleteSuccess.value = true;
+      setTimeout(() => {
+        router.push({ name: 'my-items' });}, 2000);
+    }
   } catch (error) {
     console.error('Failed to delete item:', error);
   } finally {

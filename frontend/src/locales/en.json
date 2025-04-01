@@ -6,7 +6,8 @@
     "profile": "Profile",
     "account": "Account",
     "create-listing": "Create Listing",
-    "myItems": "My Items"
+    "my-items": "My Items",
+    "favorites": "Favorites"
   },
   "register": {
     "title": "Register new account"

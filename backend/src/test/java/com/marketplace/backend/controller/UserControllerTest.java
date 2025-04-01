@@ -16,6 +16,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Test class for the UserController.
  */
 @SpringBootTest
+@Transactional
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 class UserControllerTest {
@@ -52,6 +54,11 @@ class UserControllerTest {
    */
   @BeforeEach
   void setUp() {
+    userRepository.findAll().forEach(user -> {
+      user.getFavoriteItems().clear();
+      userRepository.save(user);
+    });
+
     itemRepository.deleteAll();
     userRepository.deleteAll();
 

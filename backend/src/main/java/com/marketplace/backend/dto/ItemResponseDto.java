@@ -3,6 +3,7 @@ package com.marketplace.backend.dto;
 import com.marketplace.backend.model.Item;
 import com.marketplace.backend.model.ItemStatus;
 
+import com.marketplace.backend.model.User;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,14 +26,22 @@ public class ItemResponseDto {
   private Long sellerId;
   private String sellerName;
   private List<String> imageUrls;
+  private boolean favoritedByCurrentUser;
+
 
   /**
    * Default constructor.
    */
   public ItemResponseDto() {}
 
-
-  public static ItemResponseDto fromEntity(Item item) {
+  /**
+   * Create an ItemResponseDto from an Item entity.
+   *
+   * @param item       the item entity
+   * @param currentUser the current user
+   * @return the ItemResponseDto
+   */
+  public static ItemResponseDto fromEntity(Item item, User currentUser) {
     ItemResponseDto dto = new ItemResponseDto();
     dto.setId(item.getId());
     dto.setTitle(item.getTitle());
@@ -46,9 +55,26 @@ public class ItemResponseDto {
     dto.setStatus(item.getStatus());
     dto.setSellerId(item.getSeller() != null ? item.getSeller().getId() : null);
     dto.setSellerName(item.getSeller() != null ? item.getSeller().getFullName() : null);
-    dto.setImageUrls(item.getImages() != null ? item.getImages().stream().map(img -> img.getImageUrl()).collect(
-        Collectors.toList()) : null);
+    dto.setImageUrls(item.getImages() != null
+        ? item.getImages().stream().map(img -> img.getImageUrl()).collect(Collectors.toList())
+        : null);
+
+    boolean isFavorited = currentUser != null &&
+        item.getFavoritedByUsers() != null &&
+        item.getFavoritedByUsers().contains(currentUser);
+
+    dto.setFavoritedByCurrentUser(isFavorited);
     return dto;
+  }
+
+  /**
+   * Create an ItemResponseDto from an Item entity.
+   *
+   * @param item the item entity
+   * @return the ItemResponseDto
+   */
+  public static ItemResponseDto fromEntity(Item item) {
+    return fromEntity(item, null);
   }
 
   /**
@@ -232,4 +258,23 @@ public class ItemResponseDto {
    * @param imageUrls the image URLs of the item
    */
   public void setImageUrls(List<String> imageUrls) { this.imageUrls = imageUrls; }
+
+  /**
+   * Check if the item is favorited by the current user.
+   *
+   * @return true if the item is favorited by the current user, false otherwise
+   */
+  public boolean isFavoritedByCurrentUser() {
+    return favoritedByCurrentUser;
+  }
+
+  /**
+   * Set if the item is favorited by the current user.
+   *
+   * @param favoritedByCurrentUser true if the item is favorited by the current user, false otherwise
+   */
+  public void setFavoritedByCurrentUser(boolean favoritedByCurrentUser) {
+    this.favoritedByCurrentUser = favoritedByCurrentUser;
+  }
+
 }

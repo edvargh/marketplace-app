@@ -8,6 +8,7 @@ import com.marketplace.backend.model.*;
 import com.marketplace.backend.repository.CategoryRepository;
 import com.marketplace.backend.repository.ItemRepository;
 import com.marketplace.backend.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -35,10 +38,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     BackendApplication.class,
     MockCloudinaryConfig.class // Include only the mock
 })
+@Transactional
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
 @Import(MockCloudinaryConfig.class)
 class ItemControllerTest {
+
+  @Autowired
+  private EntityManager entityManager;
 
   @Autowired
   private MockMvc mockMvc;
@@ -63,6 +70,11 @@ class ItemControllerTest {
    */
   @BeforeEach
   void setUp() {
+    userRepository.findAll().forEach(user -> {
+      user.getFavoriteItems().clear();
+      userRepository.save(user);
+    });
+
     itemRepository.deleteAll();
     userRepository.deleteAll();
     categoryRepository.deleteAll();
@@ -116,6 +128,47 @@ class ItemControllerTest {
   }
 
   /**
+   * Test to get items for the current user.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReturnItemsForCurrentUser() throws Exception {
+    mockMvc.perform(get("/api/items/my-items"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.length()").value(2))
+        .andExpect(jsonPath("$[0].title").value("Phone"))
+        .andExpect(jsonPath("$[1].title").value("Tablet"));
+  }
+
+  /**
+   * Test to delete an item.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReturnFavoriteItemsForCurrentUser() throws Exception {
+    Item favoriteItem = new Item(testUser, "Favorited Laptop", "Gaming laptop", testCategory, 1200.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    favoriteItem.setStatus(ItemStatus.FOR_SALE);
+    favoriteItem = itemRepository.save(favoriteItem);
+
+    testUser.getFavoriteItems().add(favoriteItem);
+    userRepository.save(testUser);
+
+    entityManager.flush();
+    entityManager.clear();
+
+    mockMvc.perform(get("/api/items/favorites"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].title").value("Favorited Laptop"))
+        .andExpect(jsonPath("$[0].favoritedByCurrentUser").value(true));
+  }
+
+  /**
    * Test to create an item.
    *
    * @throws Exception if the test fails
@@ -145,7 +198,7 @@ class ItemControllerTest {
         "dummy-image-content".getBytes()
     );
 
-    mockMvc.perform(MockMvcRequestBuilders.multipart("/api/items")
+    mockMvc.perform(MockMvcRequestBuilders.multipart("/api/items/create")
             .file(jsonPart)
             .file(imageFile)
             .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -195,5 +248,26 @@ class ItemControllerTest {
         .andExpect(jsonPath("$.latitude").value(64.0000))
         .andExpect(jsonPath("$.longitude").value(11.0000))
         .andExpect(jsonPath("$.status").value("RESERVED"));
+  }
+
+  /**
+   * Test to delete an item.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldDeleteItem() throws Exception {
+    // Arrange: create and save a new item
+    Item item = new Item(testUser, "Delete Me", "To be deleted", testCategory, 999.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    item.setStatus(ItemStatus.FOR_SALE);
+    item = itemRepository.save(item);
+
+    mockMvc.perform(delete("/api/items/" + item.getId()))
+        .andExpect(status().isNoContent());
+
+    mockMvc.perform(get("/api/items/" + item.getId()))
+        .andExpect(status().isNotFound());
   }
 }
