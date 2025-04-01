@@ -1,4 +1,5 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 defineProps({
   categories: {
     type: Array,
@@ -7,6 +8,7 @@ defineProps({
 });
 
 const emit = defineEmits(['category-click']);
+const { t } = useI18n();
 
 const handleCategoryClick = (category) => {
   emit('category-click', category);
@@ -15,7 +17,7 @@ const handleCategoryClick = (category) => {
 
 <template>
   <div class="categories">
-    <h3>Most popular categories</h3>
+    <h3>{{t("categories.Most-popular-categories")}}</h3>
     <ul>
       <li v-for="category in categories" :key="category.id" @click="handleCategoryClick(category)">
         <img

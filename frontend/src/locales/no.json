@@ -13,6 +13,7 @@
     "title": "Registrer ny konto"
   },
   "profile": {
+    "Profile": "Min Profil",
     "fullName": "Fullt navn",
     "email": "E-post",
     "phoneNumber": "Telefonnummer",
@@ -20,6 +21,32 @@
     "password": "Passord",
     "confirmPassword": "Bekreft passord",
     "language": "Språk",
-    "successMessage": "Profilen ble oppdatert"
+    "successMessage": "Profilen ble oppdatert",
+    "Select-your-language": "Velg ditt språk",
+    "Passwords-do-not-match": "Passordene stemmer ikke overens",
+    "Updating": "Oppdaterer",
+    "Update-profile": "Oppdater profil"
+  },
+  "homeView":{
+    "Your-recommendations": "Dine anbefalinger",
+    "No-recommendet-items-found": "Ingen anbefalte gjenstander funnet",
+    "Most-popular-items": "Mest populære gjenstander",
+    "No-popular-items-found": "Ingen populære gjenstander funnet",
+    "Market": "Marked",
+    "No-market-items-found": "Ingen markedsvarer funnet",
+    "Hide-filters": "Skjul filtere",
+    "Show-filters": "Vis filtere"
+  },
+  "categories":{
+    "Most-popular-categories": "Mest populære kategorier"
+  },
+    "FilterPanel":{
+    "Categories": "Kategorier",
+    "Locations": "Steder",
+    "Price-range":"Prisområde", 
+    "Min-price":"Min pris (kr)",
+    "Max-price":"Maks pris (kr)",
+    "Apply-filters":"Bruk filtre",
+    "Select-all":"Velg alle"
   }
 }

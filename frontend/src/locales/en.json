@@ -13,13 +13,40 @@
     "title": "Register new account"
   },
   "profile": {
+    "Profile": "My Profile",
     "fullName": "Full Name",
     "email": "Email",
     "phoneNumber": "Phone Number",
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "language": "Language",
-    "successMessage": "Profile updated successfully"
+    "successMessage": "Profile updated successfully",
+    "Select-your-language": "Select your language",
+    "Passwords-do-not-match": "Passwords do not match",
+    "updating": "Updating",
+    "updateProfile": "Update Profile"
 
+  },
+  "homeView": {
+    "Your-recommendations": "Your recommendations",
+    "No-recommendet-items-found": "No recommended items found",
+    "Most-popular-items": "Most popular items",
+    "No-popular-items-found": "No popular items found",
+    "Market": "Market",
+    "No-market-items-found": "No market items found",
+    "Hide-filters": "Hide filters",
+    "Show-filters": "Show filters"
+  },
+    "categories":{
+    "Most-popular-categories": "Most popular categories"
+  },
+  "FilterPanel": {
+    "Categories": "Categories",
+    "Locations": "Locations",
+    "Price-range": "Price range",
+    "Min-price": "Min price (kr)",
+    "Max-price": "Max price (kr)",
+    "Apply-filters": "Apply filters",
+    "Select-all": "Select all"
   }
 }

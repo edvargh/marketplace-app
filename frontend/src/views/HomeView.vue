@@ -3,7 +3,7 @@
     <div class="search-filter-container">
       <SearchBar/>
       <CustomButton @click="toggleFilterPanel">
-        {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
+        {{ showFilters ? t('homeView.Hide-filters') : t('homeView.Show-filters') }}
       </CustomButton>
     </div>
    
@@ -15,7 +15,7 @@
     <!-- Recommended items -->
     <section class="recommendations">
       <div class="section-header">
-        <h2>Your recommendations</h2>
+        <h2>{{t('homeView.Your-recommendations')}}</h2>
       </div>
       <div v-if="recommendedItems.length > 0" class="detailed-cards-container">
         <DetailedItemCard
@@ -25,14 +25,14 @@
         />
       </div>
       <div v-else class="no-items-message">
-        No recommended items found
+        {{t('homeView.No-recommendet-items-found')}}
       </div>
     </section>
 
     <!-- Most Liked Items -->
     <section class="most-liked">
       <div class="section-header">
-        <h2>Most popular items</h2>
+        <h2>{{t('homeView.Most-popular-items')}}</h2>
       </div>
       <div v-if="mostLikedItems.length > 0" class="detailed-cards-container">
         <DetailedItemCard
@@ -42,14 +42,14 @@
         />
       </div>
       <div v-else class="no-items-message">
-        No popular items found
+        {{t('homeView.No-popular-items-found')}}
       </div>
     </section>
 
     <!-- Market Items -->
     <section class="market">
       <div class="section-header">
-        <h2>Market</h2>
+        <h2>{{t('homeView.Market')}}</h2>
       </div>
       <div v-if="allItems.length > 0" class="compact-cards-container">
         <CompactItemCard
@@ -59,7 +59,7 @@
         />
       </div>
       <div v-else class="no-items-message">
-        No market items found
+        {{t('homeView.No-market-items-found')}}
       </div>
     </section>
   </div>
@@ -78,6 +78,9 @@ import { useCategoryStore } from "@/stores/categoryStore";
 import { useItemStore } from "@/stores/itemStore";
 import FilterPanel from '@/components/FilterPanel.vue'
 import CustomButton from "@/components/CustomButton.vue";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
 
 const categoryStore = useCategoryStore();
 const itemStore = useItemStore();

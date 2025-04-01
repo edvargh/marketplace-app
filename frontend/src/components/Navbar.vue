@@ -47,6 +47,9 @@
       <Teleport to="body">
       <ul v-if="showMobileMenu" class="mobile-dropdown">
         <li v-if="isAuthenticated">
+        <router-link to="/favorites" class="navbar-favorites">{{ t('navbar.favorites') }}</router-link>
+        </li>
+        <li v-if="isAuthenticated">
           <router-link to="/my-items" @click="showMobileMenu = false">{{ t('navbar.my-items') }}</router-link>
         </li>
         <li v-if="isAuthenticated">
