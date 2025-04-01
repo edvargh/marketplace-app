@@ -30,19 +30,19 @@
     >
       <template #actions="{ isValid }">
         <button
+            type="submit"
+            class="action-button button-primary"
+            :disabled="isSubmitting || !isValid"
+        >
+          {{ isSubmitting ? 'Saving...' : 'Save' }}
+        </button>
+        <button
             type="button"
             class="action-button button-danger"
             @click="handleDelete"
             :disabled="isSubmitting"
         >
           {{ isDeleting ? 'Deleting...' : 'Delete' }}
-        </button>
-        <button
-            type="submit"
-            class="action-button button-primary"
-            :disabled="isSubmitting || !isValid"
-        >
-          {{ isSubmitting ? 'Saving...' : 'Save' }}
         </button>
       </template>
     </ItemForm>
