@@ -71,10 +71,24 @@ public class ItemService {
    * @return an optional item DTO if found
    */
   public Optional<ItemResponseDto> getItemById(Long id) {
-    return itemRepository.findById(id)
-        .map(ItemResponseDto::fromEntity);
+    Optional<Item> itemOpt = itemRepository.findById(id);
+    if (itemOpt.isEmpty()) return Optional.empty();
+
+    String email = getAuthenticatedEmail();
+    Optional<User> userOpt = userRepository.findByEmail(email);
+
+    if (userOpt.isPresent()) {
+      return Optional.of(ItemResponseDto.fromEntity(itemOpt.get(), userOpt.get()));
+    } else {
+      return Optional.of(ItemResponseDto.fromEntity(itemOpt.get()));
+    }
   }
 
+  /**
+   * Get all items for the current user.
+   *
+   * @return a list of items as DTOs
+   */
   public List<ItemResponseDto> getItemsForCurrentUser() {
     String email = getAuthenticatedEmail();
     User user = userRepository.findByEmail(email).orElseThrow();
@@ -83,6 +97,21 @@ public class ItemService {
         .map(ItemResponseDto::fromEntity)
         .collect(Collectors.toList());
   }
+
+  /**
+   * Get all favorite items for the current user.
+   *
+   * @return a list of favorite items as DTOs
+   */
+  public List<ItemResponseDto> getFavoriteItemsForCurrentUser() {
+    String email = getAuthenticatedEmail();
+    User user = userRepository.findByEmail(email).orElseThrow();
+
+    return user.getFavoriteItems().stream()
+        .map(item -> ItemResponseDto.fromEntity(item, user))
+        .collect(Collectors.toList());
+  }
+
 
 
   /**

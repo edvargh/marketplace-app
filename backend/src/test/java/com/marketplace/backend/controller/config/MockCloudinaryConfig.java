@@ -24,7 +24,6 @@ public class MockCloudinaryConfig {
   public CloudinaryService cloudinaryService() throws IOException {
     CloudinaryService mock = mock(CloudinaryService.class);
     when(mock.uploadImage(any())).thenReturn("https://mock.url/fake-image.jpg");
-    System.out.println("✅ Mock CloudinaryService called!");
     return mock;
   }
 }
