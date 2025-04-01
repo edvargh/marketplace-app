@@ -45,6 +45,9 @@
         <SelectBox
             label="Status"
             v-model="formData.status"
+            :options="statusOptions"
+            option-label="label"
+            option-value="value"
             placeholder="Status"
             required
         />
@@ -111,9 +114,17 @@ const props = defineProps({
   }
 });
 
+const statusOptions = ref([
+  { value: 'FOR_SALE', label: 'For Sale' },
+  { value: 'RESERVED', label: 'Reserved' },
+  { value: 'SOLD', label: 'Sold' }
+]);
 
-const formData = reactive({...props.initialData});
-
+tustu
+const formData = reactive({
+  ...props.initialData,
+  status: 'FOR_SALE'
+});
 
 watch(() => props.initialData, (newData) => {
   Object.assign(formData, newData);
