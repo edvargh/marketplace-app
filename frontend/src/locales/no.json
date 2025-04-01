@@ -18,6 +18,7 @@
     "bio": "Bio",
     "password": "Passord",
     "confirmPassword": "Bekreft passord",
-    "language": "Språk"
+    "language": "Språk",
+    "successMessage": "Profilen ble oppdatert"
   }
 }

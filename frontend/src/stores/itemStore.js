@@ -1,68 +1,95 @@
-import { ref } from 'vue';
+import { defineStore } from 'pinia';
 import axios from 'axios';
 
-const isSubmitting = ref(false);
+export const useItemStore = defineStore('items', () => {
+  const getAuthHeaders = () => {
+    const userData = localStorage.getItem('user');
+    if (!userData) throw new Error('User not authenticated');
 
-const uploadImageToCloudinary = async (file) => {
-  const uploadFormData = new FormData();
-  uploadFormData.append('file', file);
-  uploadFormData.append('upload_preset', '<your-upload-preset>'); // Replace with your Cloudinary upload preset
-
-  try {
-    const response = await axios.post(
-        'https://api.cloudinary.com/v1_1/<your-cloud-name>/image/upload', // Replace with your Cloudinary URL
-        uploadFormData
-    );
-    return response.data.secure_url;
-  } catch (error) {
-    console.error('Image upload to Cloudinary failed:', error);
-    return null;
-  }
-};
-
-const createItem = async (formData) => {
-  if (isSubmitting.value) return;
-
-  try {
-    isSubmitting.value = true;
-
-    console.log('Uploading images to Cloudinary...');
-    const imageUploadPromises = formData.images.map((image) => uploadImageToCloudinary(image.file));
-    const imageUrls = await Promise.all(imageUploadPromises);
-    if (imageUrls.includes(null)) {
-      throw new Error('One or more images failed to upload');
-    }
-    console.log('Success uploading images: ', imageUrls);
-
-    const payload = {
-      title: formData.title,
-      price: formData.price,
-      city: formData.city,
-      category: formData.category,
-      description: formData.description,
-      status: formData.status,
-      images: imageUrls,
+    const user = JSON.parse(userData);
+    return {
+      'Authorization': `Bearer ${user.token || localStorage.getItem('token')}`,
+      'Content-Type': 'application/json'
     };
+  };
 
-    const token = localStorage.getItem('user');
-    const response = await axios.post('<your-backend-endpoint>', payload, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log('Item created successfully:', response.data);
-    return response.data;
+  const fetchAllItems = async () => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get('http://localhost:8080/api/items/all-items', { headers });
+      return response.data;
 
-  } catch (error) {
-    console.error('Error creating item:', error);
-    throw error;
-  } finally {
-    isSubmitting.value = false;
-  }
-};
+    } catch (err) {
+      console.error('Error fetching all items:', err);
+      return [];
+    }
+  };
 
-export default {
-  isSubmitting,
-  createItem,
-};
+  const fetchItemById = async (id) => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`http://localhost:8080/api/items/${id}`, { headers });
+      return response.data;
+    } catch (err) {
+      console.error(`Error fetching item with ID ${id}:`, err);
+      throw err;
+    }
+  };
+
+  const createItem = async (rawFormData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
+
+      const formDataToSend = new FormData();
+      const itemData = {
+        title: rawFormData.title,
+        description: rawFormData.description,
+        categoryId: rawFormData.categoryId,
+        price: parseFloat(rawFormData.price),
+        city: rawFormData.city,
+        status: rawFormData.status || 'For Sale', // Default status
+        latitude: 63.43,
+        longitude: 10.3925
+      };
+
+      // JSON blob
+      formDataToSend.append(
+          'item',
+          new Blob([JSON.stringify(itemData)], { type: 'application/json' })
+      );
+
+      // Append images
+      if (Array.isArray(rawFormData.images)) {
+        rawFormData.images.forEach(image => {
+          if (image?.file) {
+            formDataToSend.append('images', image.file);
+          }
+        });
+      }
+
+      const response = await fetch('http://localhost:8080/api/items/create', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formDataToSend
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        throw new Error(error?.message || 'Failed to create item');
+      }
+      return await response.json();
+
+    } catch (error) {
+      console.error('Failed to create item:', error);
+      throw error;
+    }
+  };
+
+
+  return {
+    fetchAllItems,
+    fetchItemById,
+    createItem,
+  };
+});

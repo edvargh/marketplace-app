@@ -11,7 +11,7 @@
           type="text"
           class="InputBox-input"
           readonly
-          :value="selectedOption || ''"
+          :value="displayValue"
           :placeholder="placeholder"
       />
       <span class="dropdown-arrow">▼</span>
@@ -23,47 +23,71 @@
     >
       <li
           v-for="option in options"
-          :key="option"
+          :key="getOptionValue(option)"
           @click="selectOption(option)"
       >
-        {{ option }}
+        {{ getOptionLabel(option) }}
       </li>
     </ul>
   </div>
 </template>
 
-
 <script setup>
-import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
+import { ref, watch, computed, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps({
-  options: Array,
+  options: {
+    type: Array,
+    default: () => []
+  },
   placeholder: String,
-  modelValue: [String, Number],
-  categoryId: [String, Number] // ID of parent category (dependency tracking)
+  modelValue: [String, Number, Object],
+  optionLabel: {
+    type: String,
+    default: 'label'
+  },
+  optionValue: {
+    type: String,
+    default: 'value'
+  },
+  categoryId: [String, Number]
 });
 
 const emit = defineEmits(['update:modelValue']);
 const isOpen = ref(false);
-const selectedOption = ref(props.modelValue);
-const dropdownRef = ref(null); // Add this line to create the ref
+const dropdownRef = ref(null);
 
-watch(() => props.modelValue, (newValue) => {
-  selectedOption.value = newValue;
+// Get the display value for the selected option
+const displayValue = computed(() => {
+  if (!props.modelValue) return '';
+
+  // Find the selected option in options array
+  const selected = props.options.find(option =>
+      getOptionValue(option) === props.modelValue
+  );
+
+  return selected ? getOptionLabel(selected) : props.modelValue;
 });
+
+const getOptionLabel = (option) => {
+  return option[props.optionLabel] || option;
+};
+
+const getOptionValue = (option) => {
+  return option[props.optionValue] || option;
+};
+
+const selectOption = (option) => {
+  const value = getOptionValue(option);
+  emit('update:modelValue', value);
+  isOpen.value = false;
+};
 
 watch(() => props.categoryId, (newValue, oldValue) => {
   if (newValue !== oldValue && oldValue !== undefined) {
-    selectedOption.value = '';
     emit('update:modelValue', '');
   }
 }, { immediate: false });
-
-const selectOption = (option) => {
-  selectedOption.value = option;
-  emit('update:modelValue', option);
-  isOpen.value = false;
-};
 
 const handleClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
@@ -80,8 +104,6 @@ onBeforeUnmount(() => {
 });
 </script>
 
-
-
 <style scoped>
-@import '../styles/SelectBox.css';
+@import '../styles/components/SelectBox.css';
 </style>

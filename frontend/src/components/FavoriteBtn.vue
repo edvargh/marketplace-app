@@ -9,5 +9,5 @@
 </template>
 
 <style scoped>
-@import '../styles/FavoriteBtn.css';
+@import '../styles/components/FavoriteBtn.css';
 </style>

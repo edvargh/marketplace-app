@@ -1,8 +1,9 @@
 package com.marketplace.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.BackendApplication;
+import com.marketplace.backend.controller.config.MockCloudinaryConfig;
 import com.marketplace.backend.dto.ItemCreateDto;
-import com.marketplace.backend.dto.ItemUpdateDto;
 import com.marketplace.backend.model.*;
 import com.marketplace.backend.repository.CategoryRepository;
 import com.marketplace.backend.repository.ItemRepository;
@@ -12,26 +13,31 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the ItemController.
  */
-@SpringBootTest
+@SpringBootTest(classes = {
+    BackendApplication.class,
+    MockCloudinaryConfig.class // Include only the mock
+})
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
+@Import(MockCloudinaryConfig.class)
 class ItemControllerTest {
 
   @Autowired
@@ -78,6 +84,11 @@ class ItemControllerTest {
     itemRepository.saveAll(List.of(item1, item2));
   }
 
+  /**
+   * Test to get all items.
+   *
+   * @throws Exception if the test fails
+   */
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldReturnAllItems() throws Exception {
@@ -86,6 +97,11 @@ class ItemControllerTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }
 
+  /**
+   * Test to get an item by its ID.
+   *
+   * @throws Exception if the test fails
+   */
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldReturnItemById() throws Exception {
@@ -99,6 +115,11 @@ class ItemControllerTest {
         .andExpect(jsonPath("$.title").value("Camera"));
   }
 
+  /**
+   * Test to create an item.
+   *
+   * @throws Exception if the test fails
+   */
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldCreateItem() throws Exception {
@@ -110,13 +131,37 @@ class ItemControllerTest {
     newItem.setLatitude(new BigDecimal("63.4300"));
     newItem.setLongitude(new BigDecimal("10.3925"));
 
-    mockMvc.perform(post("/api/items")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(newItem)))
+    MockMultipartFile jsonPart = new MockMultipartFile(
+        "item",
+        "",
+        "application/json",
+        objectMapper.writeValueAsBytes(newItem)
+    );
+
+    MockMultipartFile imageFile = new MockMultipartFile(
+        "images",
+        "image.jpg",
+        "image/jpeg",
+        "dummy-image-content".getBytes()
+    );
+
+    mockMvc.perform(MockMvcRequestBuilders.multipart("/api/items")
+            .file(jsonPart)
+            .file(imageFile)
+            .contentType(MediaType.MULTIPART_FORM_DATA)
+            .characterEncoding("UTF-8"))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.title").value("Headphones"));
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.title").value("Headphones"))
+        .andExpect(jsonPath("$.categoryId").value(testCategory.getId()))
+        .andExpect(jsonPath("$.imageUrls").isArray()); // if imageUrls added to ItemResponseDto
   }
 
+  /**
+   * Test to update an item.
+   *
+   * @throws Exception if the test fails
+   */
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldUpdateItem() throws Exception {
@@ -125,18 +170,24 @@ class ItemControllerTest {
     item.setStatus(ItemStatus.FOR_SALE);
     item = itemRepository.save(item);
 
-    ItemUpdateDto updateDto = new ItemUpdateDto();
-    updateDto.setTitle("Updated Title");
-    updateDto.setDescription("Updated Description");
-    updateDto.setPrice(120.0);
-    updateDto.setLatitude(new BigDecimal("64.0000"));
-    updateDto.setLongitude(new BigDecimal("11.0000"));
-    updateDto.setCategoryId(testCategory.getId());
-    updateDto.setStatus(ItemStatus.RESERVED);
+    MockMultipartFile updateFile = new MockMultipartFile("dto", "", MediaType.APPLICATION_JSON_VALUE,
+        ("{" +
+            "\"title\":\"Updated Title\"," +
+            "\"description\":\"Updated Description\"," +
+            "\"categoryId\":" + testCategory.getId() + "," +
+            "\"price\":120.0," +
+            "\"latitude\":64.0000," +
+            "\"longitude\":11.0000," +
+            "\"status\":\"RESERVED\"" +
+            "}").getBytes());
 
-    mockMvc.perform(MockMvcRequestBuilders.put("/api/items/" + item.getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(updateDto)))
+    mockMvc.perform(multipart("/api/items/" + item.getId())
+            .file(updateFile)
+            .with(request -> {
+              request.setMethod("PUT");
+              return request;
+            })
+            .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.title").value("Updated Title"))
         .andExpect(jsonPath("$.description").value("Updated Description"))

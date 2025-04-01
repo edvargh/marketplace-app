@@ -1,5 +1,5 @@
 <template>
-    <div class="CustomTextarea">
+    <div class="CustomTextarea box">
       <textarea
         ref="textareaRef"
         class="custom-textarea"
@@ -61,5 +61,4 @@
   </script>
   
   <style scoped>
-  @import '../styles/CustomTextarea.css';
   </style>

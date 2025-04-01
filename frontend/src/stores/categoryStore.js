@@ -1,22 +1,19 @@
-// src/stores/categoryStore.js
-import { ref } from 'vue';
+import { defineStore } from 'pinia';
 import axios from 'axios';
 
-const categoriesDb = ref([]);
-const categories = ref([]);
+export const useCategoryStore = defineStore('categories', () => {
 
-const fetchCategories = async () => {
+  const fetchCategories = async () => {
     try {
-        const response = await axios.get('http://localhost:8080/api/categories');
-        categoriesDb.value = response.data;
-        categories.value = response.data.map(category => category.name);
-    } catch (error) {
-        console.error('Error fetching categories:', error);
-    }
-};
+      const response = await axios.get('http://localhost:8080/api/categories');
+      return response.data;
 
-export default {
-    categoriesDb,
-    categories,
+    } catch (err) {
+      console.error('Error fetching categories:', err);
+    }
+  };
+
+  return {
     fetchCategories
-};
+  };
+});

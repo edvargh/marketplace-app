@@ -1,5 +1,5 @@
 <template>
-  <div class="InputBox">
+  <div class="InputBox box">
     <input
       :type="type"
       :id="id"
@@ -35,5 +35,4 @@ defineEmits(['update:modelValue']);
 </script>
 
 <style scoped>
-@import '../styles/InputBox.css';
 </style>

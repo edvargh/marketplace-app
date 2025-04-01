@@ -1,9 +1,11 @@
 .item-card {
-    width: 300px;
+    min-width: 0;
+    max-width: 100%;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
     border: 2px solid #4facfe;
+    transition: transform 0.3s ease;
 }
 
 .item-card:hover {

@@ -24,25 +24,31 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ItemForm from '@/components/ItemForm.vue';
-import itemStore from '@/stores/itemStore';
+import { useItemStore } from '@/stores/itemStore';
 
 const router = useRouter();
 const isSubmitting = ref(false);
+const itemStore = useItemStore();
 
 const handleSubmit = async (formData) => {
   try {
+    isSubmitting.value = true;
     await itemStore.createItem(formData);
-    await router.push({ name: 'my-items' }); // TODO: Redirect to my items page
+    await router.push({name: 'home'});
+    // TODO: Add navigation
 
   } catch (error) {
     console.error('Failed to create item:', error);
+
+  } finally {
+    isSubmitting.value = false;
   }
 };
 
 </script>
 
 <style scoped>
-@import '../styles/CreateItemView.css';
+@import '../styles/views/CreateItemView.css';
 </style>
 
 

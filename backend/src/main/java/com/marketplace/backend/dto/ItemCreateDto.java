@@ -1,6 +1,8 @@
 package com.marketplace.backend.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * DTO for creating an item.
@@ -12,6 +14,7 @@ public class ItemCreateDto {
   private Double price;
   private BigDecimal latitude;
   private BigDecimal longitude;
+  private List<MultipartFile> images;
 
   /**
    * Get the title of the item.
@@ -96,4 +99,18 @@ public class ItemCreateDto {
    * @param longitude the longitude of the item
    */
   public void setLongitude(BigDecimal longitude) { this.longitude = longitude; }
+
+  /**
+   * Get the images of the item.
+   *
+   * @return the images of the item
+   */
+  public List<MultipartFile> getImages() { return images; }
+
+  /**
+   * Set the images of the item.
+   *
+   * @param images the images of the item
+   */
+  public void setImages(List<MultipartFile> images) { this.images = images; }
 }

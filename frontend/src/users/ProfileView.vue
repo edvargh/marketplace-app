@@ -14,7 +14,6 @@
     </div>
   </div>
 
-    <h2>Edit profile</h2>
 
     <form @submit.prevent="handleUpdateProfile">
       <label for="fullName">{{ t('profile.fullName') }}</label>
@@ -65,10 +64,16 @@
         </select>
       </div>
 
-      <button type="submit" :disabled="isSubmitting">
+      <button type="submit" :disabled="!canSubmit">
         {{ isSubmitting ? 'Updating...' : 'Update Profile' }}
       </button>
-
+      <NotificationBanner
+        v-if="showPopup"
+        :message="t('profile.successMessage')"
+        type="success"
+        @close="showPopup = false"
+      />
+      
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
@@ -80,11 +85,11 @@
 
 <script setup>
 import { ref, computed, onMounted} from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { useI18n } from 'vue-i18n'
 import InputBox from '@/components/InputBox.vue'
 import EditIcon from '@/components/EditIcon.vue'
+import NotificationBanner from '@/components/NotificationBanner.vue'
 
 const fullName = ref('')
 const email = ref('')
@@ -96,8 +101,9 @@ const isSubmitting = ref(false)
 const errorMessage = ref('')
 const profileImage = ref('/default-picture.jpg')
 
-const router = useRouter()
 const userStore = useUserStore()
+const { t, locale } = useI18n()
+const showPopup = ref(false)
 
 onMounted(() => {
   if (userStore.user) {
@@ -105,7 +111,6 @@ onMounted(() => {
     email.value = userStore.user.email || ''
     phoneNumber.value = userStore.user.phoneNumber || ''
     language.value = userStore.user.language || ''
-
     locale.value = userStore.user.language || 'english'
   }
 })
@@ -135,6 +140,7 @@ try {
   })
 
   locale.value = language.value
+  showPopup.value = true
 
   console.log('[Update Success]')
 } catch (err) {
@@ -144,8 +150,6 @@ try {
 }
 }
 
-const { t, locale } = useI18n()
-
 const handleEdit = () => {
   console.log('Edit icon clicked')
 }
@@ -153,5 +157,5 @@ const handleEdit = () => {
 
 
 <style scoped>
-@import '../styles/ProfileView.css';
+@import '../styles/users/ProfileView.css';
 </style>

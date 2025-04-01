@@ -3,6 +3,8 @@ package com.marketplace.backend.model;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Model for an item.
@@ -40,6 +42,10 @@ public class Item {
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private ItemStatus status;
+
+  @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Image> images = new ArrayList<>();
+
 
 
   /**
@@ -251,5 +257,33 @@ public class Item {
    */
   public void setStatus(ItemStatus status) {
     this.status = status;
+  }
+
+  /**
+   * Get the images of the item.
+   *
+   * @return the images of the item
+   */
+  public List<Image> getImages() {
+    return images;
+  }
+
+  /**
+   * Set the images of the item.
+   *
+   * @param images the images of the item
+   */
+  public void setImages(List<Image> images) {
+    this.images = images;
+  }
+
+  /**
+   * Add an image to the item.
+   *
+   * @param image the image to add
+   */
+  public void addImage(Image image) {
+    images.add(image);
+    image.setItem(this);
   }
 }

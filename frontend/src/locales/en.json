@@ -17,6 +17,8 @@
     "phoneNumber": "Phone Number",
     "password": "Password",
     "confirmPassword": "Confirm Password",
-    "language": "Language"
+    "language": "Language",
+    "successMessage": "Profile updated successfully"
+
   }
 }
