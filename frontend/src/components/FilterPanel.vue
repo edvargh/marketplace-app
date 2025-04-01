@@ -50,7 +50,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import CheckboxGroup from '@/components/CheckBoxGroup.vue'
+import CheckboxGroup from '@/components/CheckboxGroup.vue'
 import CustomButton from '@/components/CustomButton.vue'
 import { computed } from 'vue'
 

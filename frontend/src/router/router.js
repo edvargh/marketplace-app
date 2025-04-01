@@ -47,8 +47,8 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-       path: '/myItems',
-       name: 'myItems',
+       path: '/my-items',
+       name: 'my-items',
        component: MyItemsView,
        meta: { requiresAuth: true },
     },
