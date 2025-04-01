@@ -1,5 +1,6 @@
 .item-card {
-    width: 300px;
+    min-width: 0;
+    max-width: 100%;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
