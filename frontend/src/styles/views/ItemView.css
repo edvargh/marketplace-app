@@ -11,6 +11,13 @@
     max-width: 100%;
 }
 
+.overview-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .price-status {
     display: flex;
     align-items: center;
@@ -145,3 +152,18 @@
         flex: 100%;
     }
 }
+
+@media (max-width: 470px) {
+    .overview-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 320px) {
+    .price-status {
+        flex-direction: column;
+    }
+}
+
+

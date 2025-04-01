@@ -18,10 +18,14 @@
     <div class="item-info">
       <h1>{{ item.title }}</h1>
 
-      <div class="price-status">
-        <span class="price">{{ item.price }} kr</span>
-        <span class="status">{{ item.status }}</span>
+      <div class="overview-content">
+        <div class="price-status">
+          <span class="price">{{ item.price }} kr</span>
+          <span class="status">{{ item.status }}</span>
+        </div>
+        <FavoriteBtn/>
       </div>
+
 
       <div class="action-buttons">
         <button class="message-btn">Send message</button>
@@ -55,6 +59,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
 import { useItemStore } from "@/stores/itemStore";
+import FavoriteBtn from "@/components/FavoriteBtn.vue";
 
 const route = useRoute();
 const itemStore = useItemStore();
