@@ -75,6 +75,16 @@ public class ItemService {
         .map(ItemResponseDto::fromEntity);
   }
 
+  public List<ItemResponseDto> getItemsForCurrentUser() {
+    String email = getAuthenticatedEmail();
+    User user = userRepository.findByEmail(email).orElseThrow();
+
+    return itemRepository.findBySeller(user).stream()
+        .map(ItemResponseDto::fromEntity)
+        .collect(Collectors.toList());
+  }
+
+
   /**
    * Create a new item.
    *
