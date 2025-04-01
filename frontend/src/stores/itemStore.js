@@ -47,6 +47,17 @@ export const useItemStore = defineStore('items', () => {
     }
   }
 
+  const fetchUserFavoriteItems = async () => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`http://localhost:8080/api/items/favorites`, { headers });
+      return response.data;
+    } catch (err) {
+      console.error(`Error fetching favorite items:`, err);
+      throw err;
+    }
+  }
+
   const createItem = async (rawFormData) => {
     try {
       const token = localStorage.getItem('token');
@@ -103,5 +114,6 @@ export const useItemStore = defineStore('items', () => {
     fetchItemById,
     fetchUserItems,
     createItem,
+    fetchUserFavoriteItems,
   };
 });
