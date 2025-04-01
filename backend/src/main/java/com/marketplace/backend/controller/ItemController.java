@@ -54,6 +54,13 @@ public class ItemController {
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
+  @GetMapping("/my-items")
+  public ResponseEntity<List<ItemResponseDto>> getItemsForCurrentUser() {
+    List<ItemResponseDto> myItems = itemService.getItemsForCurrentUser();
+    return ResponseEntity.ok(myItems);
+  }
+
+
   /**
    * Create a new item.
    *
