@@ -23,6 +23,7 @@
                     @input="validatePriceInput"
                 >
             </div>
+            
             <div class="price-input">
                 <label>Max Price (kr)</label>
                 <input 
@@ -34,13 +35,16 @@
                 >
             </div>
         </div>
+    <p v-if="priceError" class="price-error">{{ priceError }}</p>
     </div>
-
-    <CustomButton @click="applyFilters" class="apply-filters-button">
-        Apply Filters
-    </CustomButton>
+        <CustomButton 
+            @click="applyFilters" 
+            class="apply-filters-button"
+            :disabled="!!priceError"
+        >
+            Apply Filters
+        </CustomButton>
     </div>
-    
 </template>
 
 
@@ -48,6 +52,7 @@
 import { ref } from 'vue'
 import CheckboxGroup from '@/components/CheckBoxGroup.vue'
 import CustomButton from '@/components/CustomButton.vue'
+import { computed } from 'vue'
 
 const emit = defineEmits(['applyFilters'])
 
@@ -55,11 +60,12 @@ const selectedCategories = ref([])
 const selectedLocations = ref([])
 const priceMin = ref('')
 const priceMax = ref('')
+const MAX_PRICE = 10_000_000
 
 const categoryOptions = ['Kitchen', 'Computers', 'Clothes']
 const locationOptions = ['Oslo', 'Bergen', 'Lillestrøm', 'Trondheim', 'Stavanger', 'Lillehammer']
 
-const emitFilters = () => {
+const applyFilters = () => {
   emit('applyFilters', {
     categories: selectedCategories.value,
     locations: selectedLocations.value,
@@ -67,6 +73,21 @@ const emitFilters = () => {
     priceMax: priceMax.value,
   })
 }
+
+const validatePriceInput = () => {
+    if (priceMin.value > MAX_PRICE) priceMin.value = MAX_PRICE
+    if (priceMax.value > MAX_PRICE) priceMax.value = MAX_PRICE
+
+    if (priceMin.value < 0) priceMin.value = 0
+    if (priceMax.value < 0) priceMax.value = 0
+}
+
+const priceError = computed(() => {
+    if (priceMin.value && priceMax.value && priceMin.value > priceMax.value) {
+    return 'Min price cannot be greater than max price.'
+  }
+    return ''
+})
 </script>
 
 <style>

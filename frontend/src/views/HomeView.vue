@@ -1,10 +1,7 @@
 <template>
   <div class="home-container">
-    <div class="search-container">
+    <div class="search-filter-container">
       <SearchBar/>
-    </div>
-
-    <div class="filter-toggle">
       <CustomButton @click="toggleFilterPanel">
         {{ showFilters ? 'Hide Filters' : 'Show Filters' }}
       </CustomButton>

@@ -61,3 +61,19 @@
     font-weight: bold;
     font-size: 1rem;
 }
+
+.price-error {
+    color: #f87171;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+  }
