@@ -1,6 +1,6 @@
 <template>
   <div class="profile-view">
-    <h1>Profile - {{ fullName }}</h1>
+    <h1>{{t("profile.Profile")}}</h1> <h1> {{ fullName }}</h1>
 
   <div class= "profile-picture-wrapper">
     <div class="profile-picture-container">
@@ -53,19 +53,19 @@
       :class="{ 'input-error': passwordMismatch }" 
       />
 
-      <p v-if="passwordMismatch" class="input-error-text">Passwords do not match</p>
+      <p v-if="passwordMismatch" class="input-error-text">{{t("profile.Passwords-do-not-match")}}</p>
 
       <div class="SelectBox">
           <label for="language">{{ t('profile.language') }}</label>
           <select id="language" v-model="language" class="dropdown-select">
-          <option disabled value="">Select your language</option>
+          <option disabled value="">{{ t('profile.Select-your-language')}}</option>
           <option value="english">English</option>
           <option value="norwegian">Norwegian</option>
         </select>
       </div>
 
       <button type="submit" :disabled="!canSubmit">
-        {{ isSubmitting ? 'Updating...' : 'Update Profile' }}
+        {{ isSubmitting ? t('profile.updating') : t('profile.updateProfile') }}
       </button>
       <NotificationBanner
         v-if="showPopup"

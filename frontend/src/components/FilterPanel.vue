@@ -1,20 +1,20 @@
 <template>
     <div class = "FilterPanel">
         <div>
-            <h3 class="filter-headers">Categories</h3>
+            <h3 class="filter-headers">{{t("FilterPanel.Categories")}}</h3>
         <CheckboxGroup :options="categoryOptions" v-model="selectedCategories" />
         </div>
     
     <div>
-        <h3 class ="filter-headers">Locations</h3>
+        <h3 class ="filter-headers">{{t("FilterPanel.Locations")}}</h3>
         <CheckboxGroup :options="locationOptions" v-model="selectedLocations" />
     </div>
         
     <div class="price-range">
-        <h3 class ="filter-headers">Price Range</h3>
+        <h3 class ="filter-headers">{{t("FilterPanel.Price-range")}}</h3>
         <div class="price-inputs">
             <div class="price-input">
-                <label>Min Price (kr)</label>
+                <label>{{t("FilterPanel.Min-price")}}</label>
                 <input 
                     type="number" 
                     v-model.number="priceMin" 
@@ -25,7 +25,7 @@
             </div>
             
             <div class="price-input">
-                <label>Max Price (kr)</label>
+                <label>{{t("FilterPanel.Max-price")}}</label>
                 <input 
                     type="number" 
                     v-model.number="priceMax" 
@@ -42,7 +42,7 @@
             class="apply-filters-button"
             :disabled="!!priceError"
         >
-            Apply Filters
+            {{t("FilterPanel.Apply-filters")}}
         </CustomButton>
     </div>
 </template>
@@ -53,9 +53,11 @@ import { ref } from 'vue'
 import CheckboxGroup from '@/components/CheckboxGroup.vue'
 import CustomButton from '@/components/CustomButton.vue'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits(['applyFilters'])
 
+const { t } = useI18n()
 const selectedCategories = ref([])
 const selectedLocations = ref([])
 const priceMin = ref('')
