@@ -15,7 +15,7 @@ const handleCategoryClick = (category) => {
 
 <template>
   <div class="categories">
-    <h3>Categories</h3>
+    <h3>Most popular categories</h3>
     <ul>
       <li v-for="category in categories" :key="category.id" @click="handleCategoryClick(category)">
         <img
