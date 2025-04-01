@@ -4,12 +4,20 @@
         title="Create New Advertisement"
         @submit="handleSubmit"
         :showStatus="false"
-        :initialData="{ status: 'For Sale' }"
+        :initialData="{
+          title: '',
+          description: '',
+          price: '',
+          categoryId: null,
+          status: 'FOR_SALE',
+          images: [],
+          currentImageIndex: 0
+        }"
     >
       <template #actions="{ isValid }">
         <button
             type="submit"
-            class="create-button"
+            class="action-button button-primary"
             :disabled="isSubmitting || !isValid"
         >
           {{ isSubmitting ? 'Creating...' : 'Create' }}
@@ -48,7 +56,7 @@ const handleSubmit = async (formData) => {
 </script>
 
 <style scoped>
-@import '../styles/views/CreateItemView.css';
+@import '../styles/components/ItemFormButton.css';
 </style>
 
 

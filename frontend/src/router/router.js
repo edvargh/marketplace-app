@@ -8,6 +8,7 @@ import { getActivePinia } from 'pinia'
 import CreateItemView from "@/views/CreateItemView.vue";
 import MyItemsView from '@/users/MyItemsView.vue'
 import ItemView from "@/views/ItemView.vue";
+import EditItemView from "@/views/EditItemView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,13 @@ const router = createRouter({
       name: 'ItemView',
       component: ItemView,
       props: true
+    },
+    {
+      path: '/edit-item/:id',
+      name: 'EditItemView',
+      component: EditItemView,
+      props: true,
+      meta: { requiresAuth: true }
     },
   ],
 })

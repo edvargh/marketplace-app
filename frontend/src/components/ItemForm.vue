@@ -71,10 +71,6 @@
           required
       />
 
-      <!-- City -->
-      <label for="city">City</label>
-      <InputBox label="City" v-model="formData.city" placeholder="City" required />
-
       <!-- Description -->
       <label for="description">Description</label>
       <CustomTextarea v-model="formData.description" placeholder="Description" :required="true"/>
@@ -115,17 +111,13 @@ const props = defineProps({
   }
 });
 
-const formData = reactive({
-  title: '',
-  price: '',
-  city: '',
-  categoryId: null,
-  description: '',
-  images: [],
-  currentImageIndex: 0,
-  status: '',
-  ...props.initialData
-});
+
+const formData = reactive({...props.initialData});
+
+
+watch(() => props.initialData, (newData) => {
+  Object.assign(formData, newData);
+}, { deep: true, immediate: true });
 
 watch(() => formData.price, (newPrice) => {
   validatePrice(newPrice);
@@ -201,7 +193,6 @@ const isFormValid = computed(() => {
     formData.title,
     formData.price,
     formData.categoryId,
-    formData.city,
     formData.description
   ];
 

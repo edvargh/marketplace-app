@@ -33,7 +33,9 @@
           <button class="reserve-btn">Reserve item</button>
           <button class="blue-btn">Buy Now</button>
         </template>
-        <button v-else class="blue-btn">Edit Item</button>
+        <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
+          Edit Item
+        </router-link>
       </div>
     </div>
 

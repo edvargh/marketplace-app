@@ -47,7 +47,6 @@ export const useItemStore = defineStore('items', () => {
         description: rawFormData.description,
         categoryId: rawFormData.categoryId,
         price: parseFloat(rawFormData.price),
-        city: rawFormData.city,
         status: rawFormData.status || 'For Sale', // Default status
         latitude: 63.43,
         longitude: 10.3925
@@ -86,10 +85,72 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
+  const updateItem = async (id, rawFormData) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No authentication token found');
+
+      const formDataToSend = new FormData();
+      const itemData = {
+        title: rawFormData.title,
+        description: rawFormData.description,
+        categoryId: rawFormData.categoryId,
+        price: parseFloat(rawFormData.price),
+        status: rawFormData.status,
+        latitude: 63.43,
+        longitude: 10.3925,
+      };
+
+      formDataToSend.append(
+          'dto',
+          new Blob([JSON.stringify(itemData)], { type: 'application/json' })
+      );
+
+      // TODO: Better handling maybe
+      if (Array.isArray(rawFormData.images)) {
+        rawFormData.images.forEach(img => {
+          if (img?.file) {
+            formDataToSend.append('images', img.file);
+          }
+        });
+      }
+
+      const response = await fetch(`http://localhost:8080/api/items/${id}`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formDataToSend
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        throw new Error(error?.message || 'Failed to update item');
+      }
+      return await response.json();
+
+    } catch (error) {
+      console.error(`Failed to update item ${id}:`, error);
+      throw error;
+    }
+  };
+
+  const deleteItem = async (id) => {
+    try {
+      const headers = getAuthHeaders();
+      await axios.delete(`http://localhost:8080/api/items/${id}/delete`, { headers });
+      return true;
+
+    } catch (err) {
+      console.error(`Failed to delete item ${id}:`, err);
+      throw err;
+    }
+  };
+
 
   return {
     fetchAllItems,
     fetchItemById,
     createItem,
+    updateItem,
+    deleteItem
   };
 });

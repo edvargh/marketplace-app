@@ -55,16 +55,26 @@
     margin: 2rem 0;
 }
 
-.action-buttons button {
+.action-buttons button,
+.action-buttons a {
     padding: 0.75rem;
     border-radius: 25px;
     border: none;
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s ease;
+    /* For a (router link) */
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    font-family: inherit;
+    line-height: normal;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.action-buttons button:hover {
+.action-buttons button:hover,
+.action-buttons a:hover {
     transform: scale(1.03);
 }
 

@@ -121,7 +121,7 @@ public class ItemService {
   }
 
   /**
-   * Update an item.
+   * Update an item, completely replacing all existing images.
    *
    * @param id the ID of the item to update
    * @param dto the updated item data
@@ -136,26 +136,25 @@ public class ItemService {
       if (dto.getLongitude() != null) item.setLongitude(dto.getLongitude());
       if (dto.getStatus() != null) item.setStatus(dto.getStatus());
 
-      if (dto.getCategoryId() != null) {
-        Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow();
-        item.setCategory(category);
-      }
+      item.getImages().forEach(image -> image.setItem(null));
+      item.getImages().clear();
 
-      if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-        for (MultipartFile imageFile : dto.getImages()) {
-          try {
-            String url = cloudinaryService.uploadImage(imageFile);
-            Image image = new Image(item, url);
-            item.addImage(image);
-          } catch (IOException e) {
-            throw new RuntimeException("Failed to upload image", e);
+      if (dto.getImages() != null) {
+        if (!dto.getImages().isEmpty()) {
+          for (MultipartFile imageFile : dto.getImages()) {
+            try {
+              String url = cloudinaryService.uploadImage(imageFile);
+              Image image = new Image(item, url);
+              item.addImage(image);
+            } catch (IOException e) {
+              throw new RuntimeException("Failed to upload image", e);
+            }
           }
         }
       }
 
       Item updated = itemRepository.save(item);
-      Item reloaded = itemRepository.findById(updated.getId()).orElseThrow();
-      return ItemResponseDto.fromEntity(reloaded);
+      return ItemResponseDto.fromEntity(updated);
     });
   }
 
