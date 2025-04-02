@@ -12,7 +12,10 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      'leaflet/dist/images': fileURLToPath(
+          new URL('./node_modules/leaflet/dist/images', import.meta.url)
+      )
     },
   },
 })

@@ -16,7 +16,7 @@ export const useItemStore = defineStore('items', () => {
   const fetchAllItems = async () => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get('http://localhost:8080/api/items/all-items', { headers });
+      const response = await axios.get('http://localhost:8080/api/items', { headers });
       return response.data;
 
     } catch (err) {
@@ -80,9 +80,9 @@ export const useItemStore = defineStore('items', () => {
         description: rawFormData.description,
         categoryId: rawFormData.categoryId,
         price: parseFloat(rawFormData.price),
-        status: rawFormData.status || 'For Sale', // Default status
-        latitude: 63.43,
-        longitude: 10.3925
+        status: 'For Sale',
+        latitude: rawFormData.latitude,
+        longitude: rawFormData.longitude,
       };
 
       // JSON blob
@@ -130,8 +130,8 @@ export const useItemStore = defineStore('items', () => {
         categoryId: rawFormData.categoryId,
         price: parseFloat(rawFormData.price),
         status: rawFormData.status,
-        latitude: 63.43,
-        longitude: 10.3925,
+        latitude: rawFormData.latitude,
+        longitude: rawFormData.longitude,
       };
 
       formDataToSend.append(
