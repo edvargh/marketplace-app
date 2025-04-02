@@ -2,6 +2,11 @@ package com.marketplace.backend.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,8 +34,17 @@ public class CloudinaryService {
    * @return the secure URL of the uploaded file
    * @throws IOException if an error occurs during upload
    */
-  public String uploadImage(MultipartFile file) throws IOException {
-    Map<String, Object> result = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+  public String uploadImage(Long userId, MultipartFile file) throws IOException {
+    String hash = hashFile(file.getBytes());
+    String publicId = "items/" + userId + "/" + hash;
+
+    Map<String, Object> uploadOptions = ObjectUtils.asMap(
+        "public_id", publicId,
+        "unique_filename", false,
+        "overwrite", false
+    );
+
+    Map<String, Object> result = cloudinary.uploader().upload(file.getBytes(), uploadOptions);
     return result.get("secure_url").toString();
   }
 
@@ -43,5 +57,15 @@ public class CloudinaryService {
    */
   public Map<String, Object> deleteImage(String publicId) throws IOException {
     return cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+  }
+
+  private String hashFile(byte[] data) {
+    try {
+      MessageDigest digest = MessageDigest.getInstance("SHA-1");
+      byte[] hashBytes = digest.digest(data);
+      return Base64.getUrlEncoder().withoutPadding().encodeToString(hashBytes);
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException("Failed to hash file", e);
+    }
   }
 }

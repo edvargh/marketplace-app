@@ -189,8 +189,9 @@ public class ItemService {
     item.setStatus(ItemStatus.FOR_SALE);
 
     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+      Long userId = seller.getId(); // 👈 get the user ID for namespacing
       for (MultipartFile imageFile : dto.getImages()) {
-        String url = cloudinaryService.uploadImage(imageFile);
+        String url = cloudinaryService.uploadImage(userId, imageFile);
         Image image = new Image(item, url);
         item.addImage(image);
       }
@@ -199,6 +200,7 @@ public class ItemService {
     itemRepository.save(item);
     return ItemResponseDto.fromEntity(item);
   }
+
 
   /**
    * Update an item, completely replacing all existing images.
@@ -209,6 +211,7 @@ public class ItemService {
    */
   public Optional<ItemResponseDto> updateItem(Long id, ItemUpdateDto dto) {
     return itemRepository.findById(id).map(item -> {
+      // Update basic fields
       if (dto.getTitle() != null) item.setTitle(dto.getTitle());
       if (dto.getDescription() != null) item.setDescription(dto.getDescription());
       if (dto.getPrice() != null) item.setPrice(dto.getPrice());
@@ -216,19 +219,29 @@ public class ItemService {
       if (dto.getLongitude() != null) item.setLongitude(dto.getLongitude());
       if (dto.getStatus() != null) item.setStatus(dto.getStatus());
 
-      item.getImages().forEach(image -> image.setItem(null));
+      // 🧹 Delete old images from Cloudinary
+      item.getImages().forEach(image -> {
+        image.setItem(null);
+        try {
+          String publicId = extractPublicIdFromUrl(image.getImageUrl());
+          cloudinaryService.deleteImage(publicId);
+        } catch (IOException e) {
+          // Optionally log the error instead of crashing the update
+          throw new RuntimeException("Failed to delete old image from Cloudinary", e);
+        }
+      });
       item.getImages().clear();
 
-      if (dto.getImages() != null) {
-        if (!dto.getImages().isEmpty()) {
-          for (MultipartFile imageFile : dto.getImages()) {
-            try {
-              String url = cloudinaryService.uploadImage(imageFile);
-              Image image = new Image(item, url);
-              item.addImage(image);
-            } catch (IOException e) {
-              throw new RuntimeException("Failed to upload image", e);
-            }
+      // 📤 Upload new images
+      if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+        Long userId = item.getSeller().getId();
+        for (MultipartFile imageFile : dto.getImages()) {
+          try {
+            String url = cloudinaryService.uploadImage(userId, imageFile);
+            Image image = new Image(item, url);
+            item.addImage(image);
+          } catch (IOException e) {
+            throw new RuntimeException("Failed to upload image", e);
           }
         }
       }
@@ -237,6 +250,7 @@ public class ItemService {
       return ItemResponseDto.fromEntity(updated);
     });
   }
+
 
   /**
    * Delete an item.
@@ -271,4 +285,14 @@ public class ItemService {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return authentication.getName();
   }
+
+  private String extractPublicIdFromUrl(String imageUrl) {
+    try {
+      String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+      return filename.substring(0, filename.lastIndexOf(".")); // remove file extension
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Invalid Cloudinary URL: " + imageUrl, e);
+    }
+  }
+
 }
