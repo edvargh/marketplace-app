@@ -1,12 +1,7 @@
 <template>
-  <div v-if="loading" class="loading">
-    Loading item details...
-  </div>
-  <div v-else-if="error" class="error">
-    {{ error }}
-  </div>
+  <LoadingState :loading="loading" :error="error" loadingMessage="Loading advertisement..."/>
 
-  <div v-else class="item-detail-container">
+  <div v-if="!loading && !error" class="item-detail-container">
     <!-- Image Gallery -->
     <ImageGallery
         :images="item.imageUrls || []"
@@ -25,7 +20,6 @@
         </div>
         <FavoriteBtn v-if="!isMyItem" />
       </div>
-
 
       <div class="action-buttons">
         <template v-if="!isMyItem">
@@ -66,6 +60,7 @@ import ImageGallery from "@/components/ImageGallery.vue";
 import { useItemStore } from "@/stores/itemStore";
 import { useUserStore } from "@/stores/userStore";
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
+import LoadingState from "@/components/LoadingState.vue";
 
 const route = useRoute();
 const itemStore = useItemStore();
@@ -76,8 +71,8 @@ const error = ref(null);
 const isMyItem = ref(false);
 
 onMounted(async () => {
+  loading.value = true;
   try {
-    loading.value = true;
     const itemId = route.params.id;
 
     if (!itemId) {
@@ -93,10 +88,8 @@ onMounted(async () => {
     } else {
       throw new Error('Item not found');
     }
-  } catch (err) {
-    console.error('Error fetching item details:', err);
-    error.value = err.message || 'Failed to load item details';
-
+  } catch (e) {
+    error.value = "Could not load this advertisement. Please try again.";
   } finally {
     loading.value = false;
   }

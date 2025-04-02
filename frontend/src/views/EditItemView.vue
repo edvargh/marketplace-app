@@ -1,27 +1,22 @@
 <template>
-  <div v-if="loading" class="loading">
-    Loading item data...
-  </div>
-  <div v-else-if="error" class="error">
-    {{ error }}
-  </div>
+  <LoadingState :loading="loading" :error="error" loadingMessage="Loading advertisement..."/>
 
-  <Notification
-      v-if="showSaveSuccess"
-      type="success"
-      message="Advertisement updated successfully!"
-      :autoClose="true"
-      @close="showSaveSuccess = false"
-  />
-  <Notification
-      v-if="showDeleteSuccess"
-      type="success"
-      message="Advertisement deleted successfully!"
-      :autoClose="true"
-      @close="showDeleteSuccess = false"
-  />
+  <div v-if="!loading && !error" class="edit-item-view">
+    <Notification
+        v-if="showSaveSuccess"
+        type="success"
+        message="Advertisement updated successfully!"
+        :autoClose="true"
+        @close="showSaveSuccess = false"
+    />
+    <Notification
+        v-if="showDeleteSuccess"
+        type="success"
+        message="Advertisement deleted successfully!"
+        :autoClose="true"
+        @close="showDeleteSuccess = false"
+    />
 
-  <div class="edit-item-view">
     <ItemForm
         title="Edit Advertisement"
         @submit="handleSubmit"
@@ -56,6 +51,7 @@ import ItemForm from '@/components/ItemForm.vue';
 import Notification from '@/components/NotificationBanner.vue';
 import { useItemStore } from '@/stores/itemStore';
 import { useUserStore } from '@/stores/userStore';
+import LoadingState from "@/components/LoadingState.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -85,9 +81,8 @@ const formData = reactive({
 });
 
 onMounted(async () => {
+  loading.value = true;
   try {
-    loading.value = true;
-
     const itemId = route.params.id;
     if (!itemId) {
       throw new Error('No item ID provided');
@@ -118,9 +113,8 @@ onMounted(async () => {
       })) : []
     });
 
-  } catch (error) {
-    console.error('Failed to fetch item:', error);
-    error.value = error.message || 'Failed to load item details';
+  } catch (e) {
+    error.value = "Something wrong happened while loading the page. Please try again.";
   } finally {
     loading.value = false;
   }

@@ -176,4 +176,12 @@
     }
 }
 
+@media (min-width: 900px) and (max-width: 1210px) {
+    .overview-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+}
+
 
