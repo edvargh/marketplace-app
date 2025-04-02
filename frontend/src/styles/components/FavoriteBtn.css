@@ -16,4 +16,11 @@
 
 .favorite-btn span {
     color: darkgrey;
+    font-size: 20px;
 }
+
+.favorite-btn .favorite {
+    color: red;
+}
+
+

@@ -18,7 +18,7 @@
           <span class="price">{{ item.price }} kr</span>
           <span class="status">{{ item.status }}</span>
         </div>
-        <FavoriteBtn v-if="!isMyItem" />
+        <FavoriteBtn v-if="!isMyItem" :isFavorite="isFavorite" @update:isFavorite="updateFavoriteStatus" />
       </div>
 
       <div class="action-buttons">
@@ -69,6 +69,7 @@ const item = ref({});
 const loading = ref(true);
 const error = ref(null);
 const isMyItem = ref(false);
+const isFavorite = ref(false);
 
 onMounted(async () => {
   loading.value = true;
@@ -84,6 +85,8 @@ onMounted(async () => {
     if (itemData) {
       item.value = itemData;
       isMyItem.value = userStore.user?.id === itemData.sellerId;
+      const favoriteItems = await itemStore.fetchUserFavoriteItems();
+      isFavorite.value = favoriteItems.some(item => item.id === parseInt(itemId));
 
     } else {
       throw new Error('Item not found');
@@ -94,6 +97,11 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+const updateFavoriteStatus = (newStatus) => {
+  isFavorite.value = newStatus;
+};
+
 </script>
 
 <style scoped>
