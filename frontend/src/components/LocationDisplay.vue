@@ -3,28 +3,38 @@
     <h3>Location</h3>
     <div ref="mapContainer" class="map-container"></div>
 
-    <p>Latitude: {{ currentLat }}</p>
-    <p>Longitude: {{ currentLng }}</p>
-
-    <!-- Show coordinates and use-my-location button in edit mode only -->
-    <div v-if="isEditMode" class="coordinates-display">
-
-      <button type="button" @click="useCurrentLocation" class="location-button">
-        Use My Current Location
-      </button>
-      <p v-if="locationError" class="error-message">{{ locationError }}</p>
+    <div v-if="hasLocation" class="coordinates-display">
+      <p>Latitude: {{ currentLat }}</p>
+      <p>Longitude: {{ currentLng }}</p>
     </div>
+
+    <!-- Show use-my-location button in edit mode only -->
+    <CustomButton
+        v-if="isEditMode"
+        type="button"
+        @click="useCurrentLocation"
+        class="my-location-button"
+    >
+      Use My Current Location
+    </CustomButton>
+    <p v-if="locationError" class="error-message">{{ locationError }}</p>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
+import CustomButton from "@/components/CustomButton.vue";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+const DEFAULT_LAT = 63.4293;
+const DEFAULT_LNG = 10.4168;
+const DEFAULT_ZOOM = 13;
+const USER_LOCATION_ZOOM = 15;
+
 const props = defineProps({
-  lat: { type: [Number, String], default: null },
-  lng: { type: [Number, String], default: null },
+  lat: { type: Number, default: null },
+  lng: { type: Number, default: null },
   isEditMode: { type: Boolean, default: false }
 });
 
@@ -37,12 +47,11 @@ const currentLat = ref(props.lat);
 const currentLng = ref(props.lng);
 
 const hasLocation = computed(() => {
-  return currentLat.value !== null && !isNaN(Number(currentLat.value)) &&
-      currentLng.value !== null && !isNaN(Number(currentLng.value));
+  return currentLat.value !== null && currentLng.value !== null;
 });
 
 function initMap() {
-  if (!mapContainer.value) return;
+  if (!mapContainer.value || mapInstance.value) return;
 
   try {
     mapInstance.value = L.map(mapContainer.value, {
@@ -50,26 +59,20 @@ function initMap() {
       scrollWheelZoom: true,
       doubleClickZoom: true,
       zoomControl: true
-    }).setView([
-      Number(currentLat.value) || 63.4293, // Default Trondheim
-      Number(currentLng.value) || 10.4168
-    ], 13);
+    }).setView([currentLat.value || DEFAULT_LAT, currentLng.value || DEFAULT_LNG], DEFAULT_ZOOM);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(mapInstance.value);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance.value);
 
     if (hasLocation.value) {
-      createMarker(Number(currentLat.value), Number(currentLng.value));
+      createMarker(currentLat.value, currentLng.value);
     }
-
     if (props.isEditMode) {
       mapInstance.value.on('click', (e) => {
         updateLocation(e.latlng.lat, e.latlng.lng);
       });
     }
-
     mapInstance.value.invalidateSize();
+
   } catch (error) {
     console.error("Map initialization error:", error);
   }
@@ -78,19 +81,16 @@ function initMap() {
 function createMarker(lat, lng) {
   if (markerInstance.value) {
     markerInstance.value.setLatLng([lat, lng]);
+
   } else {
     markerInstance.value = L.marker([lat, lng], {
       draggable: props.isEditMode
     }).addTo(mapInstance.value);
 
     if (!props.isEditMode) {
-      markerInstance.value
-          .bindPopup("Location of the advertisement")
-          .openPopup();
+      markerInstance.value.bindPopup("Location of the advertisement").openPopup();
 
-      setTimeout(() => {
-        markerInstance.value.closePopup();
-      }, 3000);
+      setTimeout(() => {markerInstance.value.closePopup();}, 3000);
     }
 
     if (props.isEditMode) {
@@ -107,10 +107,7 @@ function updateLocation(lat, lng) {
   currentLng.value = lng;
   emit('update:lat', lat);
   emit('update:lng', lng);
-
-  if (mapInstance.value) {
-    createMarker(lat, lng);
-  }
+  createMarker(lat, lng);
 }
 
 async function useCurrentLocation() {
@@ -134,10 +131,7 @@ async function useCurrentLocation() {
         position.coords.latitude,
         position.coords.longitude
     );
-
-    if (mapInstance.value) {
-      mapInstance.value.setView([position.coords.latitude, position.coords.longitude], 15);
-    }
+    mapInstance.value.setView([position.coords.latitude, position.coords.longitude], USER_LOCATION_ZOOM);
 
   } catch (error) {
     console.error("Error getting location:", error);
@@ -147,16 +141,15 @@ async function useCurrentLocation() {
 
 function handleGeolocationError(error) {
   let errorMessage = "Could not get your current location. Please make sure location services are enabled.";
-
   if (error && error.code) {
     switch (error.code) {
-      case 1: // PERMISSION_DENIED
+      case 1:
         errorMessage = "Location access was denied. Please enable location permissions in your browser settings.";
         break;
-      case 2: // POSITION_UNAVAILABLE
+      case 2:
         errorMessage = "Location information is unavailable. Please check your network connection.";
         break;
-      case 3: // TIMEOUT
+      case 3:
         errorMessage = "The request to get your location timed out. Please try again.";
         break;
     }

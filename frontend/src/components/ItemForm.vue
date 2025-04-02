@@ -181,7 +181,6 @@ const validatePrice = (price) => {
 
 onMounted(async () => {
   try {
-    // Fetch and display categories in markdown menu
     categoryStore.fetchCategories().then(cats => {
       categories.value = cats.map(category => ({
         name: category.name,
