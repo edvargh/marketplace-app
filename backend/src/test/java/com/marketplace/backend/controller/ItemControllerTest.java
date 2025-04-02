@@ -36,7 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest(classes = {
     BackendApplication.class,
-    MockCloudinaryConfig.class // Include only the mock
+    MockCloudinaryConfig.class
 })
 @Transactional
 @AutoConfigureMockMvc
@@ -176,25 +176,20 @@ class ItemControllerTest {
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldToggleFavoriteItem() throws Exception {
-    // Arrange: add an item that will be favorited/unfavorited
     Item item = new Item(testUser, "Toggle Test", "Will be toggled", testCategory, 999.0,
         LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
     item.setStatus(ItemStatus.FOR_SALE);
     item = itemRepository.save(item);
 
-    // Act: toggle favorite ON
     mockMvc.perform(put("/api/items/" + item.getId() + "/favorite-toggle"))
         .andExpect(status().isOk());
 
-    // Assert: user should now have this item in favorites
     User refreshedUser = userRepository.findById(testUser.getId()).orElseThrow();
     assert refreshedUser.getFavoriteItems().contains(item);
 
-    // Act again: toggle favorite OFF
     mockMvc.perform(put("/api/items/" + item.getId() + "/favorite-toggle"))
         .andExpect(status().isOk());
 
-    // Assert: item should now be removed from favorites
     refreshedUser = userRepository.findById(testUser.getId()).orElseThrow();
     assert !refreshedUser.getFavoriteItems().contains(item);
   }
@@ -290,7 +285,6 @@ class ItemControllerTest {
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldDeleteItem() throws Exception {
-    // Arrange: create and save a new item
     Item item = new Item(testUser, "Delete Me", "To be deleted", testCategory, 999.0,
         LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
     item.setStatus(ItemStatus.FOR_SALE);
