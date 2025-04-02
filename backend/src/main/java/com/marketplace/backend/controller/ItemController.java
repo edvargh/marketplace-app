@@ -77,6 +77,21 @@ public class ItemController {
   }
 
   /**
+   * Toggle favorite status for an item.
+   * If the item is already favorited, it will be removed.
+   * If it's not favorited, it will be added.
+   *
+   * @param itemId the ID of the item to toggle
+   * @return 200 OK if successful, 404 if item not found
+   */
+  @PutMapping("/{itemId}/favorite-toggle")
+  public ResponseEntity<Void> toggleFavorite(@PathVariable Long itemId) {
+    boolean success = itemService.toggleFavoriteItem(itemId);
+    return success ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+  }
+
+
+  /**
    * Create a new item.
    *
    * @param dto the item to create

@@ -112,6 +112,31 @@ public class ItemService {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Toggle favorite status for an item.
+   *
+   * @param itemId the ID of the item to toggle
+   * @return true if the item was toggled, false otherwise
+   */
+  public boolean toggleFavoriteItem(Long itemId) {
+    String email = getAuthenticatedEmail();
+    Optional<User> userOpt = userRepository.findByEmail(email);
+    Optional<Item> itemOpt = itemRepository.findById(itemId);
+
+    if (userOpt.isEmpty() || itemOpt.isEmpty()) return false;
+
+    User user = userOpt.get();
+    Item item = itemOpt.get();
+
+    if (user.getFavoriteItems().contains(item)) {
+      user.getFavoriteItems().remove(item);
+    } else {
+      user.getFavoriteItems().add(item);
+    }
+
+    userRepository.save(user);
+    return true;
+  }
 
 
   /**
