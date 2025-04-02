@@ -2,87 +2,130 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
   
   .participant-info {
-    text-align: center;
-    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
   }
   
   .profile-pic {
-    width: 60px;
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
     border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    border: 2px solid #a0c4ff;
   }
   
   .item-preview {
     display: flex;
     align-items: center;
     gap: 1rem;
-    background: rgba(255,255,255,0.1);
+    border: 2px solid transparent;
+    background: 
+      linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
+      linear-gradient(to right, #4facfe, #00f2fe) border-box;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border-radius: 24px;
     padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
   }
   
   .item-preview img {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
     border-radius: 12px;
     object-fit: cover;
   }
   
   .messages-section {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    overflow-y: auto;
   }
   
   .message-bubble {
-    max-width: 60%;
-    padding: 0.75rem 1rem;
-    border-radius: 18px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
+    max-width: 75%;
+    padding: 0.75rem 1rem;
+    border-radius: 16px;
+    position: relative;
   }
   
-  .message-bubble.sent {
-    background-color: #c6f6d5;
+  .sent {
     align-self: flex-end;
-    border-bottom-right-radius: 0;
+    background: #e0f7fa;
+    flex-direction: row-reverse;
   }
   
-  .message-bubble.received {
-    background-color: #bee3f8;
+  .received {
     align-self: flex-start;
-    border-bottom-left-radius: 0;
+    background: #f0f0f0;
   }
   
   .bubble-profile-pic {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
     border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+  }
+  
+  .bubble-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  
+  .sender-name {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
   }
   
   .message-input-wrapper {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
+    background: white;
+    padding: 1rem 0;
+    position: sticky;
+    bottom: 0;
   }
   
-  .message-input-wrapper input {
+  .message-input {
     flex: 1;
-    padding: 0.75rem;
-    border-radius: 10px;
-    border: 1px solid #ccc;
+    padding: 0.75rem 1.25rem;
+    border: 2px solid #a0c4ff;
+    border-radius: 999px;
+    outline: none;
+    font-size: 1rem;
   }
   
-  .message-input-wrapper button {
-    padding: 0.75rem 1.2rem;
+  .send-button {
+    background: linear-gradient(to right, #89f7fe, #66a6ff);
     border: none;
-    border-radius: 10px;
-    background-color: #00f2fe;
-    color: #fff;
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    color: white;
     font-weight: bold;
     cursor: pointer;
+    transition: filter 0.2s ease;
+  }
+  
+  .send-button:hover {
+    filter: brightness(1.1);
   }
