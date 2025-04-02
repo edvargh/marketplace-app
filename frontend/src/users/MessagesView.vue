@@ -1,12 +1,18 @@
 <template>
     <div class="messages-view-container">
-      <h3>Messages</h3>
-      <div class="messages-container">
+      <h3 class="Message-header">Messages</h3>
+  
+      <div v-if="loading" class="loading-message">Loading conversations...</div>
+      <div v-else-if="error" class="error-message">
+        Something went wrong while loading your messages. Please try again later.
+      </div>
+      <div v-else class="messages-container">
         <ConversationPreviewCard
           v-for="conv in conversations"
-          :key="conv.withUserId + '-' + conv.itemId"
+          :key="conv.withUserId + '-' + conv.item.id"
           :conversation="conv"
         />
+        <div v-if="conversations.length === 0" class="no-messages">No conversations yet.</div>
       </div>
     </div>
   </template>
@@ -14,46 +20,47 @@
   <script setup>
   import { ref, onMounted } from 'vue'
   import { useMessageStore } from '@/stores/messageStore'
+  import { useItemStore } from '@/stores/itemStore'
   import ConversationPreviewCard from '@/components/ConversationPreviewCard.vue'
   
   const messageStore = useMessageStore()
+  const itemStore = useItemStore()
+  
   const conversations = ref([])
+  const loading = ref(true)
+  const error = ref(false)
   
   onMounted(async () => {
     try {
-      console.log('[MessagesView] Fetching user conversations...')
       const rawData = await messageStore.fetchUserConversations()
-      console.log('[MessagesView] Raw conversation data:', rawData)
   
-      conversations.value = rawData.map(c => ({
-        item: {
-          id: c.itemId,
-          title: c.itemTitle,
-          price: 'N/A', // Placeholder
-          status: 'Active', // Placeholder
-          imageUrls: ['/no-image.png'] // Placeholder
-        },
-        latestMessage: c.lastMessage,
-        withUserId: c.withUserId,
-        withUserName: c.withUserName
-      }))
-      console.log('[MessagesView] Mapped conversations:', conversations.value)
-    } catch (err) {
-      console.error('[MessagesView] Error loading conversations:', err)
+      const enriched = await Promise.all(
+        rawData.map(async (c) => {
+          try {
+            const item = await itemStore.fetchItemById(c.itemId)
+  
+            return {
+              item,
+              latestMessage: c.lastMessage,
+              withUserId: c.withUserId,
+              withUserName: c.withUserName
+            }
+          } catch {
+            return null
+          }
+        })
+      )
+  
+      conversations.value = enriched.filter(c => c !== null)
+    } catch {
+      error.value = true
+    } finally {
+      loading.value = false
     }
   })
   </script>
   
   <style scoped>
-  .messages-view-container {
-    padding: 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  .messages-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+  @import '../styles/users/MessagesView.css';
+
   </style>
-  

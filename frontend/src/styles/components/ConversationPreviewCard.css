@@ -1,11 +1,13 @@
 .conversation-preview-card {
-    border: 1px solid #ddd;
+    border: 2px solid #4facfe;
     padding: 1rem;
     border-radius: 8px;
     cursor: pointer;
     display: flex;
     gap: 1rem;
-    background: #f9f9f9;
+    background:  
+    linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
+    linear-gradient(to right, #4facfe, #00f2fe) border-box;;
   }
   
   .card-image-container img {
