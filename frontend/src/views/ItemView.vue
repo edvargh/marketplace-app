@@ -39,6 +39,12 @@
       <p>{{ item.description }}</p>
     </div>
 
+    <!-- Location -->
+    <LocationDisplay
+        :lat="item.latitude"
+        :lng="item.longitude"
+    />
+
     <!-- Seller Info -->
     <div class="seller-info">
       <h3>Seller</h3>
@@ -61,6 +67,7 @@ import { useItemStore } from "@/stores/itemStore";
 import { useUserStore } from "@/stores/userStore";
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
 import LoadingState from "@/components/LoadingState.vue";
+import LocationDisplay from "@/components/LocationDisplay.vue";
 
 const route = useRoute();
 const itemStore = useItemStore();

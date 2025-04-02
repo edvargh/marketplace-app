@@ -1,0 +1,24 @@
+{
+  "name": "vue-leaflet",
+  "version": "0.1.0",
+  "description": "Leaflet map components for Vue.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dabroder/vue-leaflet.git"
+  },
+  "keywords": [
+    "vuejs",
+    "vue",
+    "leaflet"
+  ],
+  "author": "Daniel Broder <daniel.broder@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dabroder/vue-leaflet/issues"
+  },
+  "homepage": "https://github.com/dabroder/vue-leaflet"
+}
