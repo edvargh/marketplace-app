@@ -97,17 +97,40 @@ class ItemControllerTest {
   }
 
   /**
-   * Test to get all items.
+   * Test to get filtered items.
    *
    * @throws Exception if the test fails
    */
   @Test
-  @WithMockUser(username = "john@example.com")
-  void shouldReturnAllItems() throws Exception {
-    mockMvc.perform(get("/api/items/all-items"))
+  @WithMockUser(username = "john@example.com") // testUser is logged in
+  void shouldReturnFilteredItemsAndExcludeUsersOwn() throws Exception {
+    // Create a second user
+    User otherUser = new User("Alice", "alice@example.com", "password", Role.USER,
+        "9876543210", null, "english");
+    otherUser = userRepository.save(otherUser);
+
+    // Add 2 items from the other user
+    Item item1 = new Item(otherUser, "MacBook", "Apple laptop", testCategory, 1000.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    item1.setStatus(ItemStatus.FOR_SALE);
+
+    Item item2 = new Item(otherUser, "Samsung TV", "Smart TV", testCategory, 700.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    item2.setStatus(ItemStatus.FOR_SALE);
+
+    itemRepository.saveAll(List.of(item1, item2));
+
+    // Call /api/items with a filter that matches only one of Alice's items
+    mockMvc.perform(get("/api/items")
+            .param("minPrice", "900")
+            .param("searchQuery", "macbook") // test case-insensitive search
+        )
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].title").value("MacBook"))
+        .andExpect(jsonPath("$[0].sellerName").value("Alice"));
   }
+
 
   /**
    * Test to get an item by its ID.

@@ -5,6 +5,7 @@ import com.marketplace.backend.dto.ItemUpdateDto;
 import com.marketplace.backend.dto.ItemResponseDto;
 import com.marketplace.backend.service.ItemService;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.MediaType;
@@ -31,15 +32,36 @@ public class ItemController {
     this.itemService = itemService;
   }
 
+
   /**
-   * Get all items.
+   * Get all items, optionally filtered by price, category, search query, location, and distance.
    *
-   * @return a list of all items as DTOs
+   * @param minPrice    the minimum price
+   * @param maxPrice    the maximum price
+   * @param categoryId  the category ID
+   * @param searchQuery the search query
+   * @param latitude    the latitude
+   * @param longitude   the longitude
+   * @param distanceKm  the distance in kilometers
+   * @return a list of items as DTOs
    */
-  @GetMapping("/all-items")
-  public List<ItemResponseDto> getAllItems() {
-    return itemService.getAllItems();
+  @GetMapping
+  public ResponseEntity<List<ItemResponseDto>> getFilteredItems(
+      @RequestParam(required = false) Double minPrice,
+      @RequestParam(required = false) Double maxPrice,
+      @RequestParam(required = false) Long categoryId,
+      @RequestParam(required = false) String searchQuery,
+      @RequestParam(required = false) BigDecimal latitude,
+      @RequestParam(required = false) BigDecimal longitude,
+      @RequestParam(required = false) Double distanceKm
+  ) {
+    List<ItemResponseDto> items = itemService.getFilteredItems(
+        minPrice, maxPrice, categoryId, searchQuery, latitude, longitude, distanceKm
+    );
+
+    return ResponseEntity.ok(items);
   }
+
 
   /**
    * Get an item by its id.

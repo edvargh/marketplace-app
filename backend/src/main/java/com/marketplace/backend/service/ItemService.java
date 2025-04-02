@@ -3,6 +3,7 @@ package com.marketplace.backend.service;
 import com.marketplace.backend.model.Image;
 import com.marketplace.backend.model.ItemStatus;
 import java.io.IOException;
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,14 +55,39 @@ public class ItemService {
   }
 
   /**
-   * Get all items.
+   * Get all items, optionally filtered by price, category, search query, location, and distance.
    *
-   * @return a list of all items as DTOs
+   * @param minPrice    the minimum price
+   * @param maxPrice    the maximum price
+   * @param categoryId  the category ID
+   * @param searchQuery the search query
+   * @param latitude    the latitude
+   * @param longitude   the longitude
+   * @param distanceKm  the distance in kilometers
+   * @return a list of items as DTOs
    */
-  public List<ItemResponseDto> getAllItems() {
-    return itemRepository.findAll().stream()
-        .map(ItemResponseDto::fromEntity)
-        .collect(Collectors.toList());
+  public List<ItemResponseDto> getFilteredItems(Double minPrice, Double maxPrice,
+                                                Long categoryId, String searchQuery,
+                                                BigDecimal latitude, BigDecimal longitude,
+                                                Double distanceKm) {
+
+    String email = getAuthenticatedEmail();
+    User currentUser = userRepository.findByEmail(email).orElseThrow();
+
+    List<Item> items = itemRepository.findFilteredItems(
+        currentUser.getId(),
+        minPrice,
+        maxPrice,
+        categoryId,
+        (searchQuery != null && !searchQuery.isBlank()) ? searchQuery : null,
+        latitude,
+        longitude,
+        distanceKm
+    );
+
+    return items.stream()
+        .map(item -> ItemResponseDto.fromEntity(item, currentUser))
+        .toList();
   }
 
   /**
