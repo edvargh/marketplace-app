@@ -58,6 +58,17 @@ export const useItemStore = defineStore('items', () => {
     }
   }
 
+  const toggleFavorite = async (itemId) => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.put(`http://localhost:8080/api/items/${itemId}/favorite-toggle`, {}, { headers });
+      return response.status === 200;
+    } catch (err) {
+      console.error(`Error toggling favorite status for item ${itemId}:`, err);
+      throw err;
+    }
+  }
+
   const createItem = async (rawFormData) => {
     try {
       const token = localStorage.getItem('token');
@@ -167,7 +178,6 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
-
   return {
     fetchAllItems,
     fetchItemById,
@@ -176,5 +186,6 @@ export const useItemStore = defineStore('items', () => {
     updateItem,
     deleteItem,
     fetchUserFavoriteItems,
+    toggleFavorite
   };
 });

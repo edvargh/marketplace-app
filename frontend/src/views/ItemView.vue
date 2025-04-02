@@ -1,12 +1,7 @@
 <template>
-  <div v-if="loading" class="loading">
-    Loading item details...
-  </div>
-  <div v-else-if="error" class="error">
-    {{ error }}
-  </div>
+  <LoadingState :loading="loading" :error="error" loadingMessage="Loading advertisement..."/>
 
-  <div v-else class="item-detail-container">
+  <div v-if="!loading && !error" class="item-detail-container">
     <!-- Image Gallery -->
     <ImageGallery
         :images="item.imageUrls || []"
@@ -23,9 +18,8 @@
           <span class="price">{{ item.price }} kr</span>
           <span class="status">{{ item.status }}</span>
         </div>
-        <FavoriteBtn v-if="!isMyItem" />
+        <FavoriteBtn v-if="!isMyItem" :isFavorite="isFavorite" @update:isFavorite="updateFavoriteStatus" />
       </div>
-
 
       <div class="action-buttons">
         <template v-if="!isMyItem">
@@ -66,6 +60,7 @@ import ImageGallery from "@/components/ImageGallery.vue";
 import { useItemStore } from "@/stores/itemStore";
 import { useUserStore } from "@/stores/userStore";
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
+import LoadingState from "@/components/LoadingState.vue";
 
 const route = useRoute();
 const itemStore = useItemStore();
@@ -74,10 +69,11 @@ const item = ref({});
 const loading = ref(true);
 const error = ref(null);
 const isMyItem = ref(false);
+const isFavorite = ref(false);
 
 onMounted(async () => {
+  loading.value = true;
   try {
-    loading.value = true;
     const itemId = route.params.id;
 
     if (!itemId) {
@@ -89,18 +85,23 @@ onMounted(async () => {
     if (itemData) {
       item.value = itemData;
       isMyItem.value = userStore.user?.id === itemData.sellerId;
+      const favoriteItems = await itemStore.fetchUserFavoriteItems();
+      isFavorite.value = favoriteItems.some(item => item.id === parseInt(itemId));
 
     } else {
       throw new Error('Item not found');
     }
-  } catch (err) {
-    console.error('Error fetching item details:', err);
-    error.value = err.message || 'Failed to load item details';
-
+  } catch (e) {
+    error.value = "Could not load this advertisement. Please try again.";
   } finally {
     loading.value = false;
   }
 });
+
+const updateFavoriteStatus = (newStatus) => {
+  isFavorite.value = newStatus;
+};
+
 </script>
 
 <style scoped>

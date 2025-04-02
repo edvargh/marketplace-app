@@ -120,7 +120,6 @@ const statusOptions = ref([
   { value: 'SOLD', label: 'Sold' }
 ]);
 
-tustu
 const formData = reactive({
   ...props.initialData,
   status: 'FOR_SALE'

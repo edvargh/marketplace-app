@@ -1,18 +1,20 @@
 <template>
+  <LoadingState :loading="loading" :error="error" loadingMessage="Loading your profile..."/>
+
   <div class="profile-view">
     <h1>{{t("profile.Profile")}}</h1> <h1> {{ fullName }}</h1>
 
-  <div class= "profile-picture-wrapper">
-    <div class="profile-picture-container">
-      <img 
-          :src="profileImage" 
-          alt="Profile Picture" 
-          class ="profile-picture"
-          @click= "handleEdit"
-          title = "Change profile picture" />
-      <EditIcon @click="handleEdit" class="edit-icon" />
+    <div class= "profile-picture-wrapper">
+      <div class="profile-picture-container">
+        <img
+            :src="profileImage"
+            alt="Profile Picture"
+            class ="profile-picture"
+            @click= "handleEdit"
+            title = "Change prof\ile picture" />
+        <EditIcon @click="handleEdit" class="edit-icon" />
+      </div>
     </div>
-  </div>
 
 
     <form @submit.prevent="handleUpdateProfile">
@@ -90,6 +92,7 @@ import { useI18n } from 'vue-i18n'
 import InputBox from '@/components/InputBox.vue'
 import EditIcon from '@/components/EditIcon.vue'
 import NotificationBanner from '@/components/NotificationBanner.vue'
+import LoadingState from "@/components/LoadingState.vue";
 
 const fullName = ref('')
 const email = ref('')
@@ -100,12 +103,15 @@ const language = ref('')
 const isSubmitting = ref(false)
 const errorMessage = ref('')
 const profileImage = ref('/default-picture.jpg')
+const loading = ref(true);
+const error = ref(null);
 
 const userStore = useUserStore()
 const { t, locale } = useI18n()
 const showPopup = ref(false)
 
 onMounted(() => {
+  loading.value = true;
   if (userStore.user) {
     fullName.value = userStore.user.fullName || ''
     email.value = userStore.user.email || ''
@@ -113,6 +119,7 @@ onMounted(() => {
     language.value = userStore.user.language || ''
     locale.value = userStore.user.language || 'english'
   }
+  loading.value = false;
 })
 
 const passwordMismatch = computed(() => {
