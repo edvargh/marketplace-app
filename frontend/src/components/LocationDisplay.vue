@@ -46,6 +46,13 @@ const locationError = ref(null);
 const currentLat = ref(props.lat);
 const currentLng = ref(props.lng);
 
+const customIcon = L.icon({
+  iconUrl: '/map-marker.webp',
+  iconSize: [32, 48],
+  iconAnchor: [16, 48],
+  popupAnchor: [0, -48]
+});
+
 const hasLocation = computed(() => {
   return currentLat.value !== null && currentLng.value !== null;
 });
@@ -84,7 +91,8 @@ function createMarker(lat, lng) {
 
   } else {
     markerInstance.value = L.marker([lat, lng], {
-      draggable: props.isEditMode
+      draggable: props.isEditMode,
+      icon: customIcon
     }).addTo(mapInstance.value);
 
     if (!props.isEditMode) {

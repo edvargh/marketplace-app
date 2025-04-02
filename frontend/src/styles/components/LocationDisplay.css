@@ -32,6 +32,11 @@ h3 {
     font-size: 0.9rem;
 }
 
+:deep(.leaflet-marker-icon) {
+    background: none !important;
+    border: none !important;
+}
+
 :deep(.leaflet-popup-content-wrapper) {
     border-radius: 40px;
 }
