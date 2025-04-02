@@ -1,0 +1,88 @@
+.conversation-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .participant-info {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .profile-pic {
+    width: 60px;
+    border-radius: 50%;
+  }
+  
+  .item-preview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255,255,255,0.1);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+  }
+  
+  .item-preview img {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+  
+  .messages-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  
+  .message-bubble {
+    max-width: 60%;
+    padding: 0.75rem 1rem;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .message-bubble.sent {
+    background-color: #c6f6d5;
+    align-self: flex-end;
+    border-bottom-right-radius: 0;
+  }
+  
+  .message-bubble.received {
+    background-color: #bee3f8;
+    align-self: flex-start;
+    border-bottom-left-radius: 0;
+  }
+  
+  .bubble-profile-pic {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+  
+  .message-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .message-input-wrapper input {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  .message-input-wrapper button {
+    padding: 0.75rem 1.2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #00f2fe;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+  }

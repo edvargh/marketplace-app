@@ -10,6 +10,8 @@ import MyItemsView from '@/users/MyItemsView.vue'
 import ItemView from "@/views/ItemView.vue";
 import EditItemView from "@/views/EditItemView.vue";
 import MyFavoriteView from '@/users/MyFavoriteView.vue'
+import MessagesView from '@/users/MessagesView.vue'
+import ConverSationView from '@/users/ConversationView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +45,12 @@ const router = createRouter({
       meta: { requiresAuth: true }, 
     },
     {
+      path: '/messages/conversations',
+      name: 'messages',
+      component: MessagesView,
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/create',
       name: 'create',
       component: CreateItemView,
@@ -72,6 +80,12 @@ const router = createRouter({
       component: EditItemView,
       props: true,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/messages/conversation',
+      name: 'ConversationView',
+      component: ConverSationView,
+      meta: { requiresAuth: true },
     },
   ],
 })
