@@ -3,6 +3,7 @@ package com.marketplace.backend.controller;
 import com.marketplace.backend.model.Category;
 import com.marketplace.backend.service.CategoryService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -51,15 +52,34 @@ public class CategoryController {
   }
 
   /**
-   * Create or update a category.
+   * Create a category.
    *
-   * @param category the category to create or update
-   * @return the saved category
+   * @param category the category to create
+   * @return the created category
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping
-  public ResponseEntity<Category> saveCategory(@RequestBody Category category) {
-    Category saved = categoryService.saveCategory(category);
-    return ResponseEntity.ok(saved);
+  public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+    Category created = categoryService.createCategory(category);
+    return ResponseEntity.ok(created);
+  }
+
+  /**
+   * Update a category by ID.
+   *
+   * @param id       the category ID to update
+   * @param category the updated category data
+   * @return the updated category
+   */
+  @PreAuthorize("hasRole('ADMIN')")
+  @PutMapping("/{id}")
+  public ResponseEntity<Category> updateCategory(
+      @PathVariable Long id,
+      @RequestBody Category category
+  ) {
+    return categoryService.updateCategory(id, category)
+        .map(ResponseEntity::ok)
+        .orElseGet(() -> ResponseEntity.notFound().build());
   }
 
   /**
@@ -68,6 +88,7 @@ public class CategoryController {
    * @param id the category ID to delete
    * @return HTTP 204 No Content if deleted
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
     categoryService.deleteCategory(id);

@@ -86,11 +86,11 @@ class CategoryControllerTest {
   }
 
   /**
-   * Test saving a new category.
+   * Test creating a new category.
    */
   @Test
-  @WithMockUser
-  void shouldSaveCategory() throws Exception {
+  @WithMockUser(roles = "ADMIN")
+  void shouldCreateCategory() throws Exception {
     Category newCategory = new Category("Books");
 
     mockMvc.perform(post("/api/categories")
@@ -101,10 +101,25 @@ class CategoryControllerTest {
   }
 
   /**
+   * Test updating a category.
+   */
+  @Test
+  @WithMockUser(roles = "ADMIN")
+  void shouldUpdateCategory() throws Exception {
+    Category updatedCategory = new Category("Updated Toys");
+
+    mockMvc.perform(put("/api/categories/" + toysCategory.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(updatedCategory)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.name").value("Updated Toys"));
+  }
+
+  /**
    * Test deleting a category.
    */
   @Test
-  @WithMockUser
+  @WithMockUser(roles = "ADMIN")
   void shouldDeleteCategory() throws Exception {
     mockMvc.perform(delete("/api/categories/" + toysCategory.getId()))
         .andExpect(status().isNoContent());
