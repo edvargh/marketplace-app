@@ -1,4 +1,4 @@
-.loading {
+.state {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,6 +7,10 @@
     color: #555;
     border-radius: 8px;
     margin: 20px 0;
+    background-color: transparent;
+}
+
+.loading {
     animation: pulse 1.5s infinite ease-in-out;
 }
 
