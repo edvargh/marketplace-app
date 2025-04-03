@@ -11,11 +11,10 @@
             alt="Profile Picture"
             class ="profile-picture"
             @click= "handleEdit"
-            title = "Change prof\ile picture" />
+            title = "Change profile picture" />
         <EditIcon @click="handleEdit" class="edit-icon" />
       </div>
     </div>
-
 
     <form @submit.prevent="handleUpdateProfile">
       <label for="fullName">{{ t('profile.fullName') }}</label>
@@ -81,7 +80,6 @@
       </div>
     </form>
   </div>
-
 </template>
 
 
@@ -105,7 +103,6 @@ const errorMessage = ref('')
 const profileImage = ref('/default-picture.jpg')
 const loading = ref(true);
 const error = ref(null);
-
 const userStore = useUserStore()
 const { t, locale } = useI18n()
 const showPopup = ref(false)
@@ -129,32 +126,32 @@ const passwordMismatch = computed(() => {
 const canSubmit = computed(() => !passwordMismatch.value && !isSubmitting.value)
 
 const handleUpdateProfile = async () => {
-if (passwordMismatch.value) {
-  errorMessage.value = 'Passwords do not match'
-  return
-}
+  if (passwordMismatch.value) {
+    errorMessage.value = 'Passwords do not match'
+    return
+  }
 
-isSubmitting.value = true
-errorMessage.value = ''
+  isSubmitting.value = true
+  errorMessage.value = ''
 
-try {
-  await userStore.updateUser({
-    fullName: fullName.value,
-    email: email.value,
-    phoneNumber: phoneNumber.value,
-    language: language.value,
-    password: password.value || undefined
-  })
+  try {
+    await userStore.updateUser({
+      fullName: fullName.value,
+      email: email.value,
+      phoneNumber: phoneNumber.value,
+      language: language.value,
+      password: password.value || undefined
+    })
 
-  locale.value = language.value
-  showPopup.value = true
+    locale.value = language.value
+    showPopup.value = true
 
-  console.log('[Update Success]')
-} catch (err) {
-  errorMessage.value = err.message
-} finally {
-  isSubmitting.value = false
-}
+    console.log('[Update Success]')
+  } catch (err) {
+    errorMessage.value = err.message
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 const handleEdit = () => {
