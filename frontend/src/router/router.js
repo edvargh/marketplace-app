@@ -10,6 +10,7 @@ import MyItemsView from '@/users/MyItemsView.vue'
 import ItemView from "@/views/ItemView.vue";
 import EditItemView from "@/views/EditItemView.vue";
 import MyFavoriteView from '@/users/MyFavoriteView.vue'
+import FrontPageView from "@/views/FrontPageView.vue";
 import MessagesView from '@/users/MessagesView.vue'
 import ConverSationView from '@/users/ConversationView.vue'
 
@@ -18,13 +19,15 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'frontpage',
+      component: FrontPageView,
+      meta: { hideNavbar: true }
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      path: '/home',
+      name: 'home',
+      component: HomeView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/login',
@@ -57,10 +60,10 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-       path: '/my-items',
-       name: 'my-items',
-       component: MyItemsView,
-       meta: { requiresAuth: true },
+      path: '/my-items',
+      name: 'my-items',
+      component: MyItemsView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/favorites',
@@ -72,7 +75,8 @@ const router = createRouter({
       path: '/item/:id',
       name: 'ItemView',
       component: ItemView,
-      props: true
+      props: true,
+      meta: { requiresAuth: true },
     },
     {
       path: '/edit-item/:id',
@@ -90,16 +94,26 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const pinia = getActivePinia()
   const userStore = useUserStore(pinia)
 
   await userStore.checkAuth()
 
-  if (to.meta.requiresAuth && !userStore.isAuthenticated) {
-    next('/login')
+  if (userStore.isAuthenticated) {
+    // Redirect to HomePage if trying to access login/register/frontpage
+    if (to.name === 'login' || to.name === 'register' || to.name === 'frontpage') {
+      next({ name: 'home' })
+    } else {
+      next()
+    }
   } else {
-    next()
+    if (to.meta.requiresAuth) {
+      // Redirect to login page if page requires authentication
+      next('/login')
+    } else {
+      next()
+    }
   }
 })
 

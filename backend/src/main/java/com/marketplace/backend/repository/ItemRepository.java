@@ -16,7 +16,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
   List<Item> findBySeller(User seller);
 
   @Query(value = """
-    SELECT * FROM items i
+    SELECT * FROM Items i
     WHERE i.seller_id != :currentUserId
       AND i.status = 'FOR_SALE'
       AND (:minPrice IS NULL OR i.price >= :minPrice)
