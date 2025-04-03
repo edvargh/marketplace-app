@@ -34,7 +34,7 @@
         </div>
         <div
         v-else
-        :class="['message-bubble', msg.senderId === currentUserId ? 'sent' : 'received']" 
+        :class="['message-bubble', msg.fromYou ? 'sent' : 'received']" 
         >
           <img
             class="bubble-profile-pic"
@@ -95,6 +95,7 @@ const fetchConversation = async () => {
 
     const normalized = rawMessages.map(msg => ({
       id: msg.id,
+      fromYou: msg.fromYou,
       senderId: msg.fromYou ? currentUserId : item.value?.sellerId,
       content: msg.text,
       sentAt: msg.sentAt
