@@ -30,16 +30,6 @@
     font-weight: bold;
 }
 
-.status {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 4px 8px;
-    border-radius: 20px;
-    background-color: #cccccc;
-}
-
 .location {
     display: flex;
     align-items: center;
