@@ -64,7 +64,7 @@
         <li v-if="isAuthenticated">
           <router-link to="/messages/conversations" @click="showMobileMenu = false">{{ t('navbar.messages') }}</router-link>
         </li>
-        <li v-else>
+        <li>
           <router-link to="/categories" @click="showMobileMenu = false">Categories</router-link>
         </li>
         <li v-if="isAuthenticated">
