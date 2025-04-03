@@ -1,6 +1,27 @@
 <template>
   <LoadingState :loading="loading" :error="error" loadingMessage="Loading categories..."/>
 
+  <NotificationBanner
+      v-if="showCreateSuccess"
+      type="success"
+      message="Category created successfully!"
+      :autoClose="true"
+      @close="showCreateSuccess = false"
+  />
+  <NotificationBanner
+      v-if="showUpdateSuccess"
+      type="success"
+      message="Category updated successfully!"
+      :autoClose="true"
+      @close="showUpdateSuccess = false"
+  />
+  <NotificationBanner
+      v-if="showError"
+      type="error"
+      :message="errorMessage"
+      @close="showError = false"
+  />
+
   <div v-if="!loading && !error" class="categories-page">
     <h1>All Categories</h1>
     <CustomButton @click="openCreateForm">Create new category</CustomButton>
@@ -21,7 +42,9 @@
       <form @submit.prevent="submitForm">
         <InputBox v-model="form.name" type="text" placeholder="Category Name" required class="input-category-name"></InputBox>
         <div class="form-buttons-container">
-          <button type="submit" class="action-button button-primary">{{ formMode === 'create' ? 'Create' : 'Update' }}</button>
+          <button type="submit" class="action-button button-primary" :disabled="!form.name.trim()">
+            {{ formMode === 'create' ? 'Create' : 'Update' }}
+          </button>
           <button @click="closeForm" class="action-button button-cancel">Cancel</button>
         </div>
       </form>
@@ -35,7 +58,12 @@ import { useCategoryStore } from '../stores/categoryStore';
 import LoadingState from "@/components/LoadingState.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import InputBox from "@/components/InputBox.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
+const showCreateSuccess = ref(false);
+const showUpdateSuccess = ref(false);
+const showError = ref(false);
+const errorMessage = ref('');
 const categoryStore = useCategoryStore();
 const loading = ref(true);
 const error = ref(null);
@@ -58,6 +86,11 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+const showErrorNotification = (message) => {
+  errorMessage.value = message;
+  showError.value = true;
+};
 
 const openCreateForm = () => {
   isFormOpen.value = true;
@@ -91,8 +124,10 @@ const createCategory = async () => {
       description: form.value.description
     });
     categories.value = await categoryStore.fetchCategories();
-  } catch (err) {
-    console.error('Error creating category:', err);
+    showCreateSuccess.value = true;
+
+  } catch (e) {
+    showErrorNotification(e.value);
   }
 };
 
@@ -103,8 +138,10 @@ const updateCategory = async () => {
       description: form.value.description
     });
     categories.value = await categoryStore.fetchCategories();
+    showUpdateSuccess.value = true;
+
   } catch (err) {
-    console.error('Error updating category:', err);
+    showErrorNotification(e.value);
   }
 };
 </script>
