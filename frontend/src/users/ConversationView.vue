@@ -28,7 +28,13 @@
         <div
           v-for="msg in messages"
           :key="msg.id"
-          :class="['message-bubble', msg.senderId === currentUserId ? 'sent' : 'received']"
+        >
+        <div v-if = "msg.isDateDivider" class = "date-divider">
+            {{ msg.date }}
+        </div>
+        <div
+        v-else
+        :class="['message-bubble', msg.senderId === currentUserId ? 'sent' : 'received']" 
         >
           <img
             class="bubble-profile-pic"
@@ -36,10 +42,13 @@
             @error="$event.target.src = '/default-picture.jpg'"
           />
           <div class = "bubble-content">
-            <div class="bubble-time">{{ new Date(msg.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}</div>
+            <div class="bubble-time">
+                {{ new Date(msg.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
+            </div>
           <div class="bubble-text">{{ msg.content }}</div>
           <div class="sender-name">{{ getSenderName(msg.senderId) }}</div>
         </div>
+        </div> 
         </div>
       </div>
   
@@ -84,18 +93,36 @@ const fetchConversation = async () => {
     const rawMessages = await messageStore.fetchConversationWithUser(itemId, withUserId)
     console.log('[ConversationView] ✅ Raw messages from backend:', rawMessages)
 
-    messages.value = rawMessages.map(msg => ({
+    const normalized = rawMessages.map(msg => ({
       id: msg.id,
       senderId: msg.fromYou ? currentUserId : item.value?.sellerId,
       content: msg.text,
       sentAt: msg.sentAt
     }))
 
-    console.log('[ConversationView] 📥 Normalized messages:', messages.value)
-  } catch (err) {
-    console.error('[ConversationView] ❌ Failed to load conversation:', err)
-  }
-}
+    const grouped = []
+    let lastDate = ''
+
+    for (const msg of normalized){
+        const currentDate = new Date(msg.sentAt).toLocaleDateString()
+
+        if (currentDate !== lastDate) {
+            grouped.push({
+            isDateDivider: true,
+            date: currentDate
+
+        })
+        lastDate= currentDate
+        }
+        grouped.push(msg)
+    }
+
+    messages.value = grouped
+    } catch(err) {
+    console.error('[ConversationView] ❌ Failed to load messages:', err)
+    }
+    }
+
 
 // 🔍 Fetch item info
 const fetchItem = async () => {
