@@ -52,9 +52,18 @@ export const useMessageStore = defineStore('messageStore', () => {
     }
   }
 
+  const ensureConversationExists = async (itemId, withUserId) => {
+    try {
+      return await fetchConversationWithUser(itemId, withUserId)
+    } catch (err) {
+      return []
+    }
+  }
+  
   return {
     fetchUserConversations,
     fetchConversationWithUser,
-    sendMessage
+    sendMessage,
+    ensureConversationExists
   }
 })

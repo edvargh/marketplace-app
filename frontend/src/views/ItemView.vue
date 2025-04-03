@@ -23,7 +23,7 @@
 
       <div class="action-buttons">
         <template v-if="!isMyItem">
-          <button class="message-btn">Send message</button>
+          <button class="message-btn" @click="handleMessageSeller">Send message</button>
           <button class="reserve-btn">Reserve item</button>
           <button class="blue-btn">Buy Now</button>
         </template>
@@ -61,10 +61,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
 import { useItemStore } from "@/stores/itemStore";
 import { useUserStore } from "@/stores/userStore";
+import { useMessageStore } from '@/stores/messageStore';
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
 import LoadingState from "@/components/LoadingState.vue";
 import LocationDisplay from "@/components/LocationDisplay.vue";
@@ -77,6 +78,8 @@ const loading = ref(true);
 const error = ref(null);
 const isMyItem = ref(false);
 const isFavorite = ref(false);
+const router = useRouter();
+const messageStore = useMessageStore();
 
 onMounted(async () => {
   loading.value = true;
@@ -104,6 +107,33 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: false
+  }
+})
+
+const handleMessageSeller = async () => {
+  const itemId = item.value.id;
+  const sellerId = item.value.sellerId;
+
+  try {
+    await messageStore.ensureConversationExists(itemId, sellerId);
+
+    router.push({
+      name: 'ConversationView',
+      query: {
+        itemId: itemId.toString(),
+        withUserId: sellerId.toString()
+      }
+    });
+  } catch (err) {
+    console.error('[ItemView] ❌ Failed to start or find conversation:', err);
+    alert("Could not start a conversation with the seller.");
+  }
+};
 
 const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;
