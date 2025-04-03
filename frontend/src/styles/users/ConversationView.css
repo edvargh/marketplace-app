@@ -157,5 +157,16 @@
     border-radius: 12px;
     backdrop-filter: blur(4px);
   }
+  .loading-state,
+  .error-state,
+  .empty-state {
+    text-align: center;
+    padding: 1rem;
+    color: #777;
+    font-style: italic;
+  }
   
-
+  .send-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
