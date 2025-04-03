@@ -11,7 +11,7 @@
             alt="Profile Picture"
             class ="profile-picture"
             @click= "handleEdit"
-            title = "Change prof\ile picture" />
+            title = "Change profile picture" />
         <EditIcon @click="handleEdit" class="edit-icon" />
       </div>
     </div>
@@ -111,6 +111,8 @@ const { t, locale } = useI18n()
 const showPopup = ref(false)
 
 onMounted(() => {
+  console.log('[ProfileView] User field names:', Object.keys(userStore.user))
+  console.log('[ProfileView] Fetched user:', userStore.user);
   loading.value = true;
   if (userStore.user) {
     fullName.value = userStore.user.fullName || ''
@@ -118,6 +120,7 @@ onMounted(() => {
     phoneNumber.value = userStore.user.phoneNumber || ''
     language.value = userStore.user.language || ''
     locale.value = userStore.user.language || 'english'
+    profileImage.value = userStore.user.profilePicture || '/default-picture.jpg'
   }
   loading.value = false;
 })
