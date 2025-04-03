@@ -1,0 +1,66 @@
+<template>
+    <div class="messages-view-container">
+      <h3 class="Message-header">Messages</h3>
+  
+      <div v-if="loading" class="loading-message">Loading conversations...</div>
+      <div v-else-if="error" class="error-message">
+        Something went wrong while loading your messages. Please try again later.
+      </div>
+      <div v-else class="messages-container">
+        <ConversationPreviewCard
+          v-for="conv in conversations"
+          :key="conv.withUserId + '-' + conv.item.id"
+          :conversation="conv"
+        />
+        <div v-if="conversations.length === 0" class="no-messages">No conversations yet.</div>
+      </div>
+    </div>
+  </template>
+  
+  <script setup>
+  import { ref, onMounted } from 'vue'
+  import { useMessageStore } from '@/stores/messageStore'
+  import { useItemStore } from '@/stores/itemStore'
+  import ConversationPreviewCard from '@/components/ConversationPreviewCard.vue'
+  
+  const messageStore = useMessageStore()
+  const itemStore = useItemStore()
+  
+  const conversations = ref([])
+  const loading = ref(true)
+  const error = ref(false)
+  
+  onMounted(async () => {
+    try {
+      const rawData = await messageStore.fetchUserConversations()
+  
+      const enriched = await Promise.all(
+        rawData.map(async (c) => {
+          try {
+            const item = await itemStore.fetchItemById(c.itemId)
+  
+            return {
+              item,
+              latestMessage: c.lastMessage,
+              withUserId: c.withUserId,
+              withUserName: c.withUserName
+            }
+          } catch {
+            return null
+          }
+        })
+      )
+  
+      conversations.value = enriched.filter(c => c !== null)
+    } catch {
+      error.value = true
+    } finally {
+      loading.value = false
+    }
+  })
+  </script>
+  
+  <style scoped>
+  @import '../styles/users/MessagesView.css';
+
+  </style>

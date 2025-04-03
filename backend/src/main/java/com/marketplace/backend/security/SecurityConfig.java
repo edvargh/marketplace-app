@@ -41,7 +41,8 @@ public class SecurityConfig {
                                                       "/api/auth/**",
                                                       "/api/items/**",
                                                       "api/users/**",
-                                                      "api/categories/**")
+                                                      "api/categories/**",
+                                                        "api/messages/**")
                                                   .permitAll() // Fixed missing slash
                                                   .anyRequest().authenticated()
                )

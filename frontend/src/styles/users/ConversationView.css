@@ -1,0 +1,172 @@
+.conversation-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .participant-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .profile-pic {
+    width: 64px;
+    height: 64px;
+    min-width: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.5rem;
+    border: 2px solid #a0c4ff;
+  }
+  
+  .item-preview {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 2px solid transparent;
+    background: 
+      linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
+      linear-gradient(to right, #4facfe, #00f2fe) border-box;
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border-radius: 24px;
+    padding: 1rem;
+  }
+  
+  .item-preview img {
+    width: 100px;
+    height: 100px;
+    min-width: 100px;
+    border-radius: 12px;
+    object-fit: cover;
+  }
+  
+  .bubble-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: left;
+    flex: 1;
+  }
+
+  .messages-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    overflow-y: auto;
+    padding: 1rem;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+  }
+  
+  .message-bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-width: 50%;
+  padding: 0.75rem 1rem;
+  border-radius: 16px;
+  position: relative;
+  flex-direction: row;
+  text-align: left;
+  }
+  
+  .sent {
+    align-self: flex-end;
+    background: #e0f7fa;
+    max-width: 50%;
+    flex-direction: row-reverse;
+    margin-left: auto;
+  }
+  
+  .received {
+    align-self: flex-start;
+    background: #f0f0f0;
+  }
+  
+  .bubble-profile-pic {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ddd;
+  }
+  
+  .bubble-text {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  
+  .sender-name {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+  }
+  
+  .message-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    background: transparent;
+    padding: 1rem 0;
+    position: sticky;
+    bottom: 0;
+  }
+  
+  .message-input {
+    flex: 1;
+    padding: 0.75rem 1.25rem;
+    border: 2px solid #a0c4ff;
+    border-radius: 999px;
+    outline: none;
+    font-size: 1rem;
+  }
+  
+  .send-button {
+    background: linear-gradient(to right, #89f7fe, #66a6ff);
+    border: none;
+    border-radius: 999px;
+    padding: 0.75rem 1.5rem;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: filter 0.2s ease;
+  }
+  
+  .send-button:hover {
+    filter: brightness(1.1);
+  }
+
+  .date-divider {
+    align-self: center;
+    text-align: center;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #666;
+    background: #B9D9EB;
+    padding: 0.25rem 1rem;
+    border-radius: 12px;
+    backdrop-filter: blur(4px);
+  }
+  .loading-state,
+  .error-state,
+  .empty-state {
+    text-align: center;
+    padding: 1rem;
+    color: #777;
+    font-style: italic;
+  }
+  
+  .send-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
