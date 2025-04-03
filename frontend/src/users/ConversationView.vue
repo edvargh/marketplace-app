@@ -11,7 +11,7 @@
       </div>
 
       <!-- Item preview -->
-      <div class="item-preview">
+      <RouterLink :to="`/item/${itemId}`" class="item-preview" style="text-decoration: none; color: inherit;">
         <img :src="item.imageUrls?.[0] || '/no-image.png'" alt="item" />
         <div class="item-details-wrapper">
         <div class="item-details"> 
@@ -21,7 +21,7 @@
           <p>Status: {{ item.status }}</p>
         </div>
         </div>
-      </div>
+    </RouterLink>
   
       <!-- Messages -->
       <div class="messages-section">
