@@ -13,6 +13,7 @@ import MyFavoriteView from '@/users/MyFavoriteView.vue'
 import FrontPageView from "@/views/FrontPageView.vue";
 import MessagesView from '@/users/MessagesView.vue'
 import ConverSationView from '@/users/ConversationView.vue'
+import CategoriesAdminView from "@/views/CategoriesAdminView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -90,6 +91,12 @@ const router = createRouter({
       name: 'ConversationView',
       component: ConverSationView,
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/categories',
+      name: 'CategoriesAdminView',
+      component: CategoriesAdminView,
+      meta: { requiresAuth: true, role: 'ADMIN' }
     },
   ],
 })

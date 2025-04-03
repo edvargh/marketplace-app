@@ -20,6 +20,9 @@
         <CustomButton>
           <router-link to="/messages/conversations" class="navbar-messages">{{ t('navbar.messages') }}</router-link>
         </CustomButton>
+        <CustomButton>
+          <router-link to="/categories" class="navbar-categories">Categories</router-link>
+        </CustomButton>
         <li class="account-dropdown" ref="dropdownRef">
           <div class = "dropdown-wrapper">
             <CustomButton @click="toggleDropdown">{{ t('navbar.account') }}</CustomButton>
@@ -60,6 +63,9 @@
         </li>
         <li v-if="isAuthenticated">
           <router-link to="/messages/conversations" @click="showMobileMenu = false">{{ t('navbar.messages') }}</router-link>
+        </li>
+        <li v-else>
+          <router-link to="/categories" @click="showMobileMenu = false">Categories</router-link>
         </li>
         <li v-if="isAuthenticated">
           <router-link to="/profile" @click="showMobileMenu = false">{{ t('navbar.profile') }}</router-link>
