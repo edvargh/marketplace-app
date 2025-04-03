@@ -1,8 +1,10 @@
 package com.marketplace.backend.controller.config;
 
 import com.marketplace.backend.service.CloudinaryService;
+import java.util.Map;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -23,7 +25,11 @@ public class MockCloudinaryConfig {
   @Bean
   public CloudinaryService cloudinaryService() throws IOException {
     CloudinaryService mock = mock(CloudinaryService.class);
-    when(mock.uploadImage(any())).thenReturn("https://mock.url/fake-image.jpg");
+    when(mock.uploadImage(anyLong(), any(MultipartFile.class)))
+        .thenReturn("https://mock.url/fake-image.jpg");
+    when(mock.deleteImage(anyString()))
+        .thenReturn(Map.of("result", "ok"));
+
     return mock;
   }
 }

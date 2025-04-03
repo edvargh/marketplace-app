@@ -53,15 +53,6 @@
         />
       </div>
 
-      <!-- Title and price -->
-      <label for="Title">Title</label>
-      <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
-      <label for="Price">Price</label>
-      <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
-      <div v-if="priceError" class="error-message">
-        {{ priceError }}
-      </div>
-
       <!-- Category -->
       <label for="Category">Category</label>
       <SelectBox
@@ -74,9 +65,32 @@
           required
       />
 
+      <!-- Title -->
+      <label for="Title">Title</label>
+      <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
+
       <!-- Description -->
       <label for="description">Description</label>
       <CustomTextarea v-model="formData.description" placeholder="Description" :required="true"/>
+
+      <!-- Price -->
+      <label for="Price">Price</label>
+      <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
+      <div v-if="priceError" class="error-message">
+        {{ priceError }}
+      </div>
+
+      <!-- Location -->
+      <LocationDisplay
+          :lat="formData.latitude"
+          :lng="formData.longitude"
+          :is-edit-mode="true"
+          @update:lat="(val) => formData.latitude = val"
+          @update:lng="(val) => formData.longitude = val"
+      />
+      <div v-if="!formData.latitude || !formData.longitude" class="error-message">
+        Please select a location on the map
+      </div>
 
       <!-- Form Actions (implement buttons at bottom for child components) -->
       <div class="form-actions">
@@ -95,6 +109,7 @@ import ImageGallery from '@/components/ImageGallery.vue'
 import SelectBox from "@/components/SelectBox.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import CustomTextarea from "@/components/CustomTextarea.vue";
+import LocationDisplay from "@/components/LocationDisplay.vue";
 import { useCategoryStore } from "@/stores/categoryStore";
 
 const fileInput = ref(null);
@@ -166,7 +181,6 @@ const validatePrice = (price) => {
 
 onMounted(async () => {
   try {
-    // Fetch and display categories in markdown menu
     categoryStore.fetchCategories().then(cats => {
       categories.value = cats.map(category => ({
         name: category.name,
@@ -216,7 +230,9 @@ const isFormValid = computed(() => {
     formData.title,
     formData.price,
     formData.categoryId,
-    formData.description
+    formData.description,
+    formData.latitude,
+    formData.longitude
   ];
 
   const hasAllRequiredFields = requiredFields.every(field => !!field);

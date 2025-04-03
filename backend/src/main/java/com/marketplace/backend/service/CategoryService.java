@@ -43,13 +43,28 @@ public class CategoryService {
   }
 
   /**
-   * Create or update a category.
+   * Create a new category.
    *
-   * @param category the category to save
-   * @return the saved category
+   * @param category the category to create
+   * @return the created category
    */
-  public Category saveCategory(Category category) {
+  public Category createCategory(Category category) {
     return categoryRepository.save(category);
+  }
+
+  /**
+   * Update an existing category.
+   *
+   * @param id       the id of the category to update
+   * @param category the updated category
+   * @return the updated category, if found
+   */
+  public Optional<Category> updateCategory(Long id, Category category) {
+    if (!categoryRepository.existsById(id)) {
+      return Optional.empty();
+    }
+    category.setId(id);
+    return Optional.of(categoryRepository.save(category));
   }
 
   /**

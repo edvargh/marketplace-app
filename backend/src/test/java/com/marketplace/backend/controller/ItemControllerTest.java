@@ -8,6 +8,7 @@ import com.marketplace.backend.model.*;
 import com.marketplace.backend.repository.CategoryRepository;
 import com.marketplace.backend.repository.ItemRepository;
 import com.marketplace.backend.repository.UserRepository;
+import com.marketplace.backend.service.CloudinaryService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import java.util.List;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -61,6 +63,10 @@ class ItemControllerTest {
 
   @Autowired
   private CategoryRepository categoryRepository;
+
+  @Autowired
+  private CloudinaryService cloudinaryService;
+
 
   private User testUser;
   private Category testCategory;
@@ -97,17 +103,40 @@ class ItemControllerTest {
   }
 
   /**
-   * Test to get all items.
+   * Test to get filtered items.
    *
    * @throws Exception if the test fails
    */
   @Test
-  @WithMockUser(username = "john@example.com")
-  void shouldReturnAllItems() throws Exception {
-    mockMvc.perform(get("/api/items/all-items"))
+  @WithMockUser(username = "john@example.com") // testUser is logged in
+  void shouldReturnFilteredItemsAndExcludeUsersOwn() throws Exception {
+    // Create a second user
+    User otherUser = new User("Alice", "alice@example.com", "password", Role.USER,
+        "9876543210", null, "english");
+    otherUser = userRepository.save(otherUser);
+
+    // Add 2 items from the other user
+    Item item1 = new Item(otherUser, "MacBook", "Apple laptop", testCategory, 1000.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    item1.setStatus(ItemStatus.FOR_SALE);
+
+    Item item2 = new Item(otherUser, "Samsung TV", "Smart TV", testCategory, 700.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    item2.setStatus(ItemStatus.FOR_SALE);
+
+    itemRepository.saveAll(List.of(item1, item2));
+
+    // Call /api/items with a filter that matches only one of Alice's items
+    mockMvc.perform(get("/api/items")
+            .param("minPrice", "900")
+            .param("searchQuery", "macbook") // test case-insensitive search
+        )
         .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        .andExpect(jsonPath("$.length()").value(1))
+        .andExpect(jsonPath("$[0].title").value("MacBook"))
+        .andExpect(jsonPath("$[0].sellerName").value("Alice"));
   }
+
 
   /**
    * Test to get an item by its ID.
@@ -296,4 +325,50 @@ class ItemControllerTest {
     mockMvc.perform(get("/api/items/" + item.getId()))
         .andExpect(status().isNotFound());
   }
+
+  /**
+   * Test to delete old image when updating an item.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldDeleteOldImageWhenUpdatingItem() throws Exception {
+    Item item = new Item(testUser, "Old Title", "Old Desc", testCategory, 100.0,
+        LocalDateTime.now(), new BigDecimal("63.0"), new BigDecimal("10.0"));
+    item.setStatus(ItemStatus.FOR_SALE);
+
+    String oldImageUrl = "https://res.cloudinary.com/drpa3n1yc/image/upload/v1234567890/abc123.jpg";
+    Image oldImage = new Image(item, oldImageUrl);
+    item.addImage(oldImage);
+    item = itemRepository.save(item);
+
+    MockMultipartFile updateFile = new MockMultipartFile("dto", "", MediaType.APPLICATION_JSON_VALUE,
+        ("{" +
+            "\"title\":\"New Title\"," +
+            "\"description\":\"New Description\"," +
+            "\"categoryId\":" + testCategory.getId() + "," +
+            "\"price\":150.0," +
+            "\"latitude\":64.0000," +
+            "\"longitude\":11.0000," +
+            "\"status\":\"FOR_SALE\"" +
+            "}").getBytes());
+
+    MockMultipartFile imageFile = new MockMultipartFile(
+        "images",
+        "new-image.jpg",
+        "image/jpeg",
+        "dummy-new-image".getBytes()
+    );
+
+    mockMvc.perform(multipart("/api/items/" + item.getId())
+            .file(updateFile)
+            .file(imageFile)
+            .with(req -> { req.setMethod("PUT"); return req; })
+            .contentType(MediaType.MULTIPART_FORM_DATA))
+        .andExpect(status().isOk());
+
+    verify(cloudinaryService).deleteImage("abc123");
+  }
+
 }

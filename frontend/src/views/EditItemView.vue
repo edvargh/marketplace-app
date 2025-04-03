@@ -56,7 +56,6 @@ import LoadingState from "@/components/LoadingState.vue";
 const route = useRoute();
 const router = useRouter();
 const itemStore = useItemStore();
-const userStore = useUserStore();
 const isSubmitting = ref(false);
 const isDeleting = ref(false);
 const loading = ref(true);
@@ -84,18 +83,7 @@ onMounted(async () => {
   loading.value = true;
   try {
     const itemId = route.params.id;
-    if (!itemId) {
-      throw new Error('No item ID provided');
-    }
-
     const item = await itemStore.fetchItemById(itemId);
-    if (!item) {
-      throw new Error('Item not found');
-    }
-
-    if (userStore.user?.id !== item.sellerId) {
-      throw new Error('You do not have permission to edit this item');
-    }
 
     Object.assign(formData, {
       title: item.title,
