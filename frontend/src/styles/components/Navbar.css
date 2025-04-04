@@ -87,7 +87,7 @@
 }
 
 .navbar-home-link:hover {
-  color: #00f2fe;
+  color: #5ca0db;
 }
 
 .navbar-login-link {
@@ -105,7 +105,7 @@
   color: white;
 }
 
-.navbar-login-button {
+.navbar-button-link {
   color: black;
   font-weight: bold;
   border: none;
@@ -114,35 +114,7 @@
   transition: background 0.3s ease;
 }
 
-.navbar-create-item{
-  font-weight: bold;
-  color: black;
-  text-decoration: none;
-  transition: background 0.3s ease;
-}
-
-.navbar-my-items{
-  font-weight: bold;
-  color: black;
-  text-decoration: none;
-  transition: background 0.3s ease;
-}
-
-.navbar-favorites{
-  font-weight: bold;
-  color: black;
-  text-decoration: none;
-  transition: background 0.3s ease;
-}
-
-.navbar-messages{
-  font-weight: bold;
-  color: black;
-  text-decoration: none;
-  transition: background 0.3s ease;
-}
-
-.navbar-categories {
+.navbar-button {
   font-weight: bold;
   color: black;
   text-decoration: none;
@@ -195,7 +167,7 @@
   color: #000;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1070px) {
   .nav-right {
     display: none;
   }
