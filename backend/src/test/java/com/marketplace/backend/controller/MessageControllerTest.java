@@ -84,6 +84,53 @@ class MessageControllerTest {
   }
 
   /**
+   * Test sending a reservation request to the seller.
+   */
+  @Test
+  @WithMockUser(username = "buyer@example.com")
+  void shouldSendReservationRequest() throws Exception {
+    String body = """
+      {
+        "receiverId": %d,
+        "itemId": %d,
+        "messageText": "Can you reserve this for me?",
+        "isReservationRequest": true
+      }
+      """.formatted(seller.getId(), item.getId());
+
+    mockMvc.perform(post("/api/messages/send-reservation-request")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(body))
+        .andExpect(status().isOk());
+
+    List<Message> messages = messageRepository.findAll();
+    assert messages.size() == 1;
+    assert messages.get(0).isReservationRequest();
+    assert messages.get(0).getReservationStatus() == ReservationStatus.PENDING;
+  }
+
+  /**
+   * Test updating the reservation status of a reservation request.
+   */
+  @Test
+  @WithMockUser(username = "seller@example.com")
+  void shouldUpdateReservationStatus() throws Exception {
+    Message reservationRequest = new Message(
+        buyer, seller, item, "Can you reserve this?", LocalDateTime.now());
+    reservationRequest.setReservationRequest(true);
+    reservationRequest.setReservationStatus(ReservationStatus.PENDING);
+    reservationRequest = messageRepository.save(reservationRequest);
+
+    mockMvc.perform(put("/api/messages/" + reservationRequest.getId() + "/update-reservation-status")
+            .param("status", "ACCEPTED"))
+        .andExpect(status().isOk());
+
+    Message updatedMessage = messageRepository.findById(reservationRequest.getId()).orElseThrow();
+    assert updatedMessage.getReservationStatus() == ReservationStatus.ACCEPTED;
+  }
+
+
+  /**
    * Test sending a message to the seller.
    */
   @Test
