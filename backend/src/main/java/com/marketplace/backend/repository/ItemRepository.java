@@ -21,7 +21,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
       AND i.status = 'FOR_SALE'
       AND (:minPrice IS NULL OR i.price >= :minPrice)
       AND (:maxPrice IS NULL OR i.price <= :maxPrice)
-      AND (:categoryId IS NULL OR i.category_id = :categoryId)
+      AND (:categoryIds IS NULL OR i.category_id IN (:categoryIds))
       AND (
         :searchQuery IS NULL OR
         LOWER(i.title) LIKE LOWER(CONCAT('%', :searchQuery, '%')) OR
@@ -39,7 +39,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
       @Param("currentUserId") Long currentUserId,
       @Param("minPrice") Double minPrice,
       @Param("maxPrice") Double maxPrice,
-      @Param("categoryId") Long categoryId,
+      @Param("categoryIds") List<Long> categoryIds,
       @Param("searchQuery") String searchQuery,
       @Param("latitude") BigDecimal latitude,
       @Param("longitude") BigDecimal longitude,
