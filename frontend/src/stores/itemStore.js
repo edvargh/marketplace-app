@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { ref } from 'vue';
 
 export const useItemStore = defineStore('items', () => {
   const getAuthHeaders = () => {
@@ -12,6 +13,8 @@ export const useItemStore = defineStore('items', () => {
       'Content-Type': 'application/json'
     };
   };
+
+  const items = ref([])
 
   const fetchMarketItems = async () => {
     try {
@@ -182,7 +185,48 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
+  const searchItems = async (filters) => {
+    try {
+      console.log('[searchItems] Filters:', filters)
+  
+      const queryParams = new URLSearchParams()
+      if (filters.searchQuery) queryParams.append('searchQuery', filters.searchQuery)
+      if (filters.categoryId != null) queryParams.append('categoryId', filters.categoryId)
+      if (filters.minPrice != null) queryParams.append('minPrice', filters.minPrice)
+      if (filters.maxPrice != null) queryParams.append('maxPrice', filters.maxPrice)
+      if (filters.latitude != null) queryParams.append('latitude', filters.latitude)
+      if (filters.longitude != null) queryParams.append('longitude', filters.longitude)
+      if (filters.distanceKm != null) queryParams.append('distanceKm', filters.distanceKm)
+  
+      const url = `http://localhost:8080/api/items?${queryParams.toString()}`
+      const headers = getAuthHeaders()
+      const res = await fetch(url, {
+        method: 'GET',
+        headers,
+      })
+  
+      const rawText = await res.text()
+      console.log('[searchItems] Raw response text:', rawText)
+  
+      if (!res.ok) {
+        console.error('[searchItems] Response error:', res.status)
+        items.value = []
+        return
+      }
+  
+      items.value = JSON.parse(rawText)
+      console.log('[searchItems] Parsed items:', items.value)
+  
+    } catch (err) {
+      console.error('[searchItems] Request failed:', err)
+      items.value = []
+    }
+  }
+  
+  
+
   return {
+    items,
     fetchMarketItems,
     fetchItemById,
     fetchUserItems,
@@ -190,6 +234,7 @@ export const useItemStore = defineStore('items', () => {
     updateItem,
     deleteItem,
     fetchUserFavoriteItems,
-    toggleFavorite
+    toggleFavorite,
+    searchItems
   };
 });

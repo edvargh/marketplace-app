@@ -64,7 +64,7 @@ const priceMin = ref('')
 const priceMax = ref('')
 const MAX_PRICE = 10_000_000
 
-const categoryOptions = ['Kitchen', 'Computers', 'Clothes']
+const categoryOptions = ['Kitchen', 'Computers', 'Clothes', 'Surfboard']
 const locationOptions = ['Oslo', 'Bergen', 'Lillestrøm', 'Trondheim', 'Stavanger', 'Lillehammer']
 
 const applyFilters = () => {
