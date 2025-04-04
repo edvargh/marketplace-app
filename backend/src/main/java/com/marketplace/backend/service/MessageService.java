@@ -4,6 +4,7 @@ import com.marketplace.backend.dto.MessageSendDto;
 import com.marketplace.backend.dto.MessageResponseDto;
 import com.marketplace.backend.model.Item;
 import com.marketplace.backend.model.Message;
+import com.marketplace.backend.model.ReservationStatus;
 import com.marketplace.backend.model.User;
 import com.marketplace.backend.repository.ItemRepository;
 import com.marketplace.backend.repository.MessageRepository;
@@ -69,6 +70,54 @@ public class MessageService {
     messageRepository.save(message);
   }
 
+  /**
+   * Send a reservation request message to a user about an item.
+   */
+  public void sendReservationRequest(MessageSendDto dto) {
+    String email = getAuthenticatedEmail();
+    User sender = userRepository.findByEmail(email).orElseThrow();
+    User receiver = userRepository.findById(dto.getReceiverId()).orElseThrow();
+    Item item = itemRepository.findById(dto.getItemId()).orElseThrow();
+
+    if (!item.getSeller().getId().equals(receiver.getId())) {
+      throw new AccessDeniedException("Reservation requests can only be sent to the seller of the item.");
+    }
+
+    if (sender.getId().equals(receiver.getId())) {
+      throw new AccessDeniedException("You cannot send a reservation request to yourself.");
+    }
+
+    Message message = new Message(
+        sender,
+        receiver,
+        item,
+        dto.getMessageText(),
+        LocalDateTime.now()
+    );
+    message.setReservationRequest(true);
+    message.setReservationStatus(ReservationStatus.PENDING);
+    messageRepository.save(message);
+  }
+
+  public void updateReservationStatus(Long messageId, ReservationStatus status) {
+    String email = getAuthenticatedEmail();
+    User currentUser = userRepository.findByEmail(email).orElseThrow();
+
+    Message message = messageRepository.findById(messageId).orElseThrow();
+
+    if (!message.isReservationRequest()) {
+      throw new IllegalArgumentException("This message is not a reservation request.");
+    }
+
+    if (!message.getReceiver().getId().equals(currentUser.getId())) {
+      throw new AccessDeniedException("Only the receiver can update the reservation status.");
+    }
+
+    message.setReservationStatus(status);
+    messageRepository.save(message);
+  }
+
+
 
   /**
    * Get all messages in a specific conversation.
@@ -89,7 +138,9 @@ public class MessageService {
         .map(msg -> new MessageResponseDto(
             msg.getSender().getId().equals(currentUser.getId()),
             msg.getMessageText(),
-            msg.getSentAt()
+            msg.getSentAt(),
+            msg.isReservationRequest(),
+            msg.getReservationStatus()
         ))
         .collect(Collectors.toList());
   }
