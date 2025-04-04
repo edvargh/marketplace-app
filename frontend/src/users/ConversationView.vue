@@ -1,5 +1,5 @@
 <template>
-  <LoadingState :loading="isLoading" :error="hasError" loadingMessage="Loading conversation..."/>
+  <LoadingState :loading="isLoading" :error="hasError" :loadingMessage="t('ConversationView.loadingMessage')"/>
 
   <div v-if="!isLoading && !hasError" class="conversation-container">
     <!-- Participant info -->
@@ -30,7 +30,9 @@
 
     <!-- Messages -->
     <div class="messages-section">
-      <div v-if="messages.length === 0" class="empty-state">No messages here yet</div>
+      <div v-if="messages.length === 0" class="empty-state">
+        {{ t('ConversationView.noMessages') }}
+      </div>
       <div v-else>
         <div v-for="msg in messages" :key="msg.id">
           <div v-if="msg.isDateDivider" class="date-divider">
@@ -59,11 +61,11 @@
       <input
         v-model="newMessage"
         @keyup.enter="sendMessage"
-        placeholder="Type your message..."
+        :placeholder="t('ConversationView.messagePlaceholder')"
         class="message-input"
       />
       <button @click="sendMessage" :disabled="isSending" class="send-button">
-        {{ isSending ? 'Sending...' : 'Send' }}
+        {{ isSending ? t('ConversationView.sending') : t('ConversationView.send') }}
       </button>
     </div>
   </div>
@@ -76,7 +78,9 @@ import { useMessageStore } from '@/stores/messageStore'
 import { useUserStore } from '@/stores/userStore'
 import { useItemStore } from '@/stores/itemStore'
 import LoadingState from "@/components/LoadingState.vue";
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const route = useRoute()
 const itemId = Number(route.query.itemId)
 const withUserId = Number(route.query.withUserId)

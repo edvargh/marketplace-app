@@ -49,5 +49,20 @@
     "Max-price": "Max price (kr)",
     "Apply-filters": "Apply filters",
     "Select-all": "Select all"
+  },
+  "ConversationPreviewCard": {
+    "itemImageAlt": "Item image"
+  },
+  "MessagesView": {
+    "title": "Messages",
+    "loadingMessage": "Loading messages...",
+    "noMessages": "No messages yet."
+  },
+  "ConversationView": {
+    "loadingMessage": "Loading conversation...",
+    "noMessages": "No messages here yet",
+    "messagePlaceholder": "Type your message...",
+    "sending": "Sending...",
+    "send": "Send"
   }
 }
