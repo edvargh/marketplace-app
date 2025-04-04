@@ -69,7 +69,7 @@ public class ItemService {
    *
    * @param minPrice    the minimum price
    * @param maxPrice    the maximum price
-   * @param categoryId  the category ID
+   * @param categoryIds  the category ID
    * @param searchQuery the search query
    * @param latitude    the latitude
    * @param longitude   the longitude
