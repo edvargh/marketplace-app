@@ -1,6 +1,8 @@
 package com.marketplace.backend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.BackendApplication;
+import com.marketplace.backend.controller.config.MockCloudinaryConfig;
 import com.marketplace.backend.dto.UserUpdateDto;
 import com.marketplace.backend.model.Role;
 import com.marketplace.backend.model.User;
@@ -11,7 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,10 +33,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test class for the UserController.
  */
-@SpringBootTest
+@SpringBootTest(classes = {
+    BackendApplication.class,
+    MockCloudinaryConfig.class
+})
 @Transactional
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
+@Import(MockCloudinaryConfig.class)
 class UserControllerTest {
 
   @Autowired
@@ -121,20 +129,36 @@ class UserControllerTest {
    */
   @Test
   @WithMockUser
-  void shouldUpdateUser() throws Exception {
+  void shouldUpdateUserWithDataAndProfilePicture() throws Exception {
+    // Create and populate update DTO
     UserUpdateDto updateDto = new UserUpdateDto();
     updateDto.setFullName("John Updated");
     updateDto.setPreferredLanguage("norwegian");
     updateDto.setPhoneNumber("0000000000");
 
-    mockMvc.perform(MockMvcRequestBuilders.put("/api/users/" + testUser.getId())
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(updateDto)))
+    // Convert the DTO into a JSON part for the "dto" field
+    MockMultipartFile dtoPart = new MockMultipartFile(
+        "dto", "", "application/json", objectMapper.writeValueAsBytes(updateDto)
+    );
+
+    // Dummy image file for the "profilePicture" field
+    MockMultipartFile image = new MockMultipartFile(
+        "profilePicture", "avatar.jpg", "image/jpeg", "dummy image content".getBytes()
+    );
+
+    // Perform the multipart PUT request (note: override method to PUT explicitly)
+    mockMvc.perform(MockMvcRequestBuilders.multipart("/api/users/" + testUser.getId())
+            .file(dtoPart)
+            .file(image)
+            .with(request -> { request.setMethod("PUT"); return request; }) // Force PUT method
+            .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.fullName", is("John Updated")))
         .andExpect(jsonPath("$.preferredLanguage", is("norwegian")))
         .andExpect(jsonPath("$.phoneNumber", is("0000000000")));
   }
+
+
 
   /**
    * Test to update a non-existing user.
@@ -147,9 +171,15 @@ class UserControllerTest {
     UserUpdateDto updateDto = new UserUpdateDto();
     updateDto.setFullName("Ghost");
 
-    mockMvc.perform(MockMvcRequestBuilders.put("/api/users/999999")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(updateDto)))
+    MockMultipartFile dtoPart = new MockMultipartFile(
+        "dto", "", "application/json", objectMapper.writeValueAsBytes(updateDto)
+    );
+
+    mockMvc.perform(MockMvcRequestBuilders.multipart("/api/users/999999")
+            .file(dtoPart)
+            .with(req -> { req.setMethod("PUT"); return req; }) // Force PUT
+            .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isNotFound());
   }
+
 }
