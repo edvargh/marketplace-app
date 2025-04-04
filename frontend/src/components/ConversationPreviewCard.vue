@@ -1,29 +1,36 @@
 <template>
-    <div class="conversation-preview-card" @click="goToConversation">
-      <div class="conversation-card">
-        <div class="card-image-container">
-          <img
+  <div class="conversation-preview-card" @click="goToConversation">
+    <div class="conversation-card">
+      <div class="card-image-container">
+        <img
             :src="conversation.item.imageUrls && conversation.item.imageUrls.length > 0
               ? conversation.item.imageUrls[0]
               : '/no-image.png'"
             alt="Item image"
-          />
+        />
+      </div>
+
+      <div class="card-content">
+        <div class="card-header">
+          <p class="title">{{ conversation.item.title }}</p>
+          <p class="price">{{ conversation.item.price }} kr</p>
         </div>
-  
-        <div class="card-content">
-          <div class="card-header">
-            <h3>{{ conversation.item.title }}</h3>
-          </div>
-          <p class="latest-message">{{ conversation.latestMessage }}</p>
-          <p class="with-user-name">With: {{ conversation.withUserName }}</p>
-          <p class="price">Price: {{ conversation.item.price }} kr</p>
+        <p class="latest-message">
+            <span class="sender-indicator">
+              {{ lastMessageSenderIndicator }}:
+            </span>
+          {{ conversation.latestMessage }}
+        </p>
+        <div class="status-banner-container">
           <StatusBanner :status="conversation.item.status" />
         </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
   
   <script setup>
+  import { computed } from "vue";
   import { useRouter } from 'vue-router'
   import StatusBanner from "@/components/StatusBanner.vue";
   
@@ -32,6 +39,10 @@
   })
   
   const router = useRouter()
+
+  const lastMessageSenderIndicator = computed(() => {
+    return props.conversation.lastMessageFromYou ? 'You' : props.conversation.withUserName
+  })
   
   const goToConversation = () => {
     router.push({

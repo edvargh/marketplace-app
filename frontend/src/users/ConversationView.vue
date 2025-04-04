@@ -95,7 +95,6 @@ const isSending = ref(false)
 
 const imageBaseURL = import.meta.env.VITE_API_BASE_URL + '/uploads/'
 
-// Fetch messages
 const fetchConversation = async () => {
   try {
     const rawMessages = await messageStore.fetchConversationWithUser(itemId, withUserId)
