@@ -91,7 +91,7 @@ export const useUserStore = defineStore('user', () => {
       email: rawFormData.email,
       password: rawFormData.password,
       phoneNumber: rawFormData.phoneNumber,
-      preferredLanguage: rawFormData.language,
+      preferredLanguage: rawFormData.preferredLanguage,
     }
     formDataToSend.append(
       'dto',

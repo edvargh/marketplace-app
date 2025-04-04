@@ -111,8 +111,8 @@ onMounted(() => {
     fullName.value = userStore.user.fullName || ''
     email.value = userStore.user.email || ''
     phoneNumber.value = userStore.user.phoneNumber || ''
-    language.value = userStore.user.language || 'english'
-    locale.value = userStore.user.language || 'english'
+    language.value = userStore.user.preferredLanguage || 'english'
+    locale.value = userStore.user.preferredLanguage || 'english'
     profileImage.value = userStore.user.profilePicture || '/default-picture.jpg'
   }
   loading.value = false
@@ -143,11 +143,12 @@ const handleUpdateProfile = async () => {
       email: email.value,
       password: password.value || undefined,
       phoneNumber: phoneNumber.value,
-      language: language.value,
+      preferredLanguage: language.value,
       profilePicture: selectedImageFile.value 
     }
 
     await userStore.updateUser(updateData)
+    locale.value = language.value
     showPopup.value = true
   } catch (err) {
     errorMessage.value = err.message
