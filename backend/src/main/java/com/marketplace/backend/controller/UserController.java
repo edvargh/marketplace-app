@@ -3,12 +3,14 @@ package com.marketplace.backend.controller;
 import com.marketplace.backend.dto.UserResponseDto;
 import com.marketplace.backend.dto.UserUpdateDto;
 import com.marketplace.backend.service.UserService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.marketplace.backend.security.JwtService;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Controller for handling user related requests.
@@ -61,12 +63,18 @@ public class UserController {
    * @param dto the updated user data
    * @return a 200 response with the updated user if successful, 404 otherwise
    */
-  @PutMapping("/{id}")
-  public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserUpdateDto dto) {
+  @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<UserResponseDto> updateUser(
+      @PathVariable Long id,
+      @RequestPart("dto") UserUpdateDto dto,
+      @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
+  ) {
+    dto.setProfilePicture(profilePicture);
     Optional<UserResponseDto> updatedUser = userService.updateUser(id, dto);
     return updatedUser.map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.notFound().build());
   }
+
 
   /**
    * Get the current user.
