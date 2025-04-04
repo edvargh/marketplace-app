@@ -17,14 +17,14 @@ export const useUserStore = defineStore('user', () => {
       try {
         const errorData = await response.json()
         errorMessage = errorData.message || errorMessage
-      } catch (e) {
+      } catch {
         errorMessage = 'Oops! Email or password is incorrect'
       }
       throw new Error(errorMessage)
     }
 
     const data = await response.json()
-    localStorage.setItem('token', data.token) 
+    localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify(data.user))
     user.value = data.user
     isAuthenticated.value = true
@@ -41,7 +41,6 @@ export const useUserStore = defineStore('user', () => {
       const errorData = await response.json()
       throw new Error(errorData.message || 'Registration failed')
     }
-
     return await response.json()
   }
 
@@ -73,32 +72,20 @@ export const useUserStore = defineStore('user', () => {
       user.value = data
       localStorage.setItem('user', JSON.stringify(data))
       isAuthenticated.value = true
-    } catch (error) {
+    } catch {
       logout()
     }
   }
 
-
   const updateUser = async (rawFormData) => {
-    // 1) Grab the token (required for the Authorization header)
     const token = localStorage.getItem('token')
-    console.log('[UpdateUser] Using token:', token?.substring(0, 10), '...') // or the full token
     if (!token) throw new Error('No authentication token found')
 
-    // 2) If no user is loaded from store, we can’t proceed
     const currentUser = user.value
-    if (!currentUser?.id) {
-      console.error('[UpdateUser] Missing user ID - not authenticated')
-      throw new Error('Not authenticated')
-    }
-
-    // 3) Build the formData, just like itemStore
-    console.log('[UpdateUser] Building FormData just like itemStore...')
+    if (!currentUser?.id) throw new Error('Not authenticated')
 
     const formDataToSend = new FormData()
 
-    // We'll create an object for the "dto" field
-    // Notice we are using the same keys as your Java `UserUpdateDto`
     const userData = {
       fullName: rawFormData.fullName,
       email: rawFormData.email,
@@ -106,55 +93,38 @@ export const useUserStore = defineStore('user', () => {
       phoneNumber: rawFormData.phoneNumber,
       preferredLanguage: rawFormData.language,
     }
-
-    // Turn the userData object into a JSON blob and append as 'dto'
     formDataToSend.append(
       'dto',
       new Blob([JSON.stringify(userData)], { type: 'application/json' })
     )
 
-    // 4) If the user selected a new profile picture file, append it
-    if (rawFormData.profilePicture && rawFormData.profilePicture instanceof File) {
-      console.log('[UpdateUser] Appending profilePicture file:', rawFormData.profilePicture.name)
+    if (rawFormData.profilePicture instanceof File) {
       formDataToSend.append('profilePicture', rawFormData.profilePicture)
-    } else {
-      console.log('[UpdateUser] No new profile picture selected')
     }
 
-    // 5) Perform the fetch PUT request
-    console.log('[UpdateUser] Sending request to /api/users/' + currentUser.id)
     const response = await fetch(`http://localhost:8080/api/users/${currentUser.id}`, {
       method: 'PUT',
       headers: {
-        // Let the browser set Content-Type/boundary automatically
         'Authorization': `Bearer ${token}`
       },
       body: formDataToSend
     })
-    console.log('[UpdateUser] PUT -> /api/users/' + currentUser.id)
 
-
-    // 6) Check for errors
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('[UpdateUser] Update failed:', errorText)
+      const errorText = await response.text().catch(() => null)
+      let errorMsg = errorText || 'Update failed'
       try {
         const errorData = JSON.parse(errorText)
-        throw new Error(errorData.message || 'Update failed')
-      } catch {
-        throw new Error(errorText || 'Update failed')
-      }
+        errorMsg = errorData.message || errorMsg
+      } catch {}
+      throw new Error(errorMsg)
     }
 
-    // 7) Success! parse the updated user data
     const updatedUser = await response.json()
     user.value = updatedUser
     localStorage.setItem('user', JSON.stringify(updatedUser))
-
-    console.log('[UpdateUser] Success. Updated user:', updatedUser)
     return updatedUser
   }
-  
 
   return {
     user,
@@ -164,6 +134,5 @@ export const useUserStore = defineStore('user', () => {
     logout,
     checkAuth,
     updateUser
-
   }
 })
