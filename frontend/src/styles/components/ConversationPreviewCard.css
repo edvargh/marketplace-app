@@ -3,32 +3,61 @@
     padding: 1rem;
     border-radius: 8px;
     cursor: pointer;
-    display: flex;
-    gap: 1rem;
     background:
-    linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
-    linear-gradient(to right, #4facfe, #00f2fe) border-box;;
+            linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
+            linear-gradient(to right, #4facfe, #00f2fe) border-box;
+}
+
+.conversation-card {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.card-image-container {
+    flex-shrink: 0;
 }
 
 .card-image-container img {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 80px;
     object-fit: cover;
     border-radius: 8px;
 }
 
 .card-content {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
 }
 
 .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-weight: bold;
-    font-size: 1.1rem;
+    width: 100%;
+}
+
+.title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    font-weight: bold;
+}
+
+.price {
+    flex-shrink: 0;
+    margin-left: auto;
 }
 
 .latest-message {
-    font-style: italic;
     color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .with-user-name {

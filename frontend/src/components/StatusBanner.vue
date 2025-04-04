@@ -1,7 +1,7 @@
 <template>
-  <div class="status-banner">
+  <span class="status-banner">
     {{ formattedStatus }}
-  </div>
+  </span>
 </template>
 
 <script setup>
