@@ -32,6 +32,15 @@ public class Message {
   @Column(name = "sent_at", nullable = false)
   private LocalDateTime sentAt;
 
+  @Column(name = "is_reservation_request", nullable = false)
+  private boolean isReservationRequest = false;
+
+  @Enumerated(EnumType.STRING)
+  @Column(name = "reservation_status")
+  private ReservationStatus reservationStatus;
+
+
+
   /**
    * Default constructor.
    */
@@ -161,5 +170,41 @@ public class Message {
    */
   public void setSentAt(LocalDateTime sentAt) {
     this.sentAt = sentAt;
+  }
+
+  /**
+   * Get whether the message is a reservation request.
+   *
+   * @return whether the message is a reservation request
+   */
+  public boolean isReservationRequest() {
+    return isReservationRequest;
+  }
+
+  /**
+   * Set whether the message is a reservation request.
+   *
+   * @param reservationRequest whether the message is a reservation request
+   */
+  public void setReservationRequest(boolean reservationRequest) {
+    isReservationRequest = reservationRequest;
+  }
+
+  /**
+   * Get the reservation status of the message.
+   *
+   * @return the reservation status of the message
+   */
+  public ReservationStatus getReservationStatus() {
+    return reservationStatus;
+  }
+
+  /**
+   * Set the reservation status of the message.
+   *
+   * @param reservationStatus the reservation status of the message
+   */
+  public void setReservationStatus(ReservationStatus reservationStatus) {
+    this.reservationStatus = reservationStatus;
   }
 }
