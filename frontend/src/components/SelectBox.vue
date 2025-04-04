@@ -1,12 +1,6 @@
 <template>
-  <div
-      class="InputBox-wrapper"
-      ref="dropdownRef"
-  >
-    <div
-        class="InputBox"
-        @click="isOpen = !isOpen"
-    >
+  <div class="InputBox-wrapper" ref="dropdownRef">
+    <div class="InputBox" @click="isOpen = !isOpen">
       <input
           type="text"
           class="InputBox-input"
@@ -17,10 +11,7 @@
       <span class="dropdown-arrow">▼</span>
     </div>
 
-    <ul
-        v-if="isOpen"
-        class="custom-dropdown-menu"
-    >
+    <ul v-if="isOpen" class="custom-dropdown-menu">
       <li
           v-for="option in options"
           :key="getOptionValue(option)"
@@ -57,15 +48,11 @@ const emit = defineEmits(['update:modelValue']);
 const isOpen = ref(false);
 const dropdownRef = ref(null);
 
-// Get the display value for the selected option
 const displayValue = computed(() => {
   if (!props.modelValue) return '';
-
-  // Find the selected option in options array
   const selected = props.options.find(option =>
       getOptionValue(option) === props.modelValue
   );
-
   return selected ? getOptionLabel(selected) : props.modelValue;
 });
 

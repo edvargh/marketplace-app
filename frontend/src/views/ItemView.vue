@@ -16,7 +16,7 @@
       <div class="overview-content">
         <div class="price-status">
           <span class="price">{{ item.price }} kr</span>
-          <span class="status">{{ item.status }}</span>
+          <StatusBanner :status="item.status" />
         </div>
         <FavoriteBtn v-if="!isMyItem" :isFavorite="isFavorite" @update:isFavorite="updateFavoriteStatus" />
       </div>
@@ -69,6 +69,7 @@ import { useMessageStore } from '@/stores/messageStore';
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
 import LoadingState from "@/components/LoadingState.vue";
 import LocationDisplay from "@/components/LocationDisplay.vue";
+import StatusBanner from "@/components/StatusBanner.vue";
 
 const route = useRoute();
 const itemStore = useItemStore();

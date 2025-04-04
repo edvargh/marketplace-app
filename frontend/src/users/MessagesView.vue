@@ -1,12 +1,9 @@
 <template>
-    <div class="messages-view-container">
+  <LoadingState :loading="loading" :error="error" loadingMessage="Loading messages..."/>
+
+  <div v-if="!loading && !error" class="messages-view-container">
       <h3 class="Message-header">Messages</h3>
-  
-      <div v-if="loading" class="loading-message">Loading conversations...</div>
-      <div v-else-if="error" class="error-message">
-        Something went wrong while loading your messages. Please try again later.
-      </div>
-      <div v-else class="messages-container">
+      <div class="messages-container">
         <ConversationPreviewCard
           v-for="conv in conversations"
           :key="conv.withUserId + '-' + conv.item.id"
@@ -22,10 +19,10 @@
   import { useMessageStore } from '@/stores/messageStore'
   import { useItemStore } from '@/stores/itemStore'
   import ConversationPreviewCard from '@/components/ConversationPreviewCard.vue'
+  import LoadingState from "@/components/LoadingState.vue";
   
   const messageStore = useMessageStore()
   const itemStore = useItemStore()
-  
   const conversations = ref([])
   const loading = ref(true)
   const error = ref(false)
@@ -62,5 +59,4 @@
   
   <style scoped>
   @import '../styles/users/MessagesView.css';
-
   </style>

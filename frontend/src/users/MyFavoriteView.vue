@@ -13,7 +13,7 @@
       </div>
   
       <div v-else class="no-favorite-items-message">
-        You don't have any items favorited yet.
+        You have not favorited any items yet.
       </div>
     </div>
   </template>

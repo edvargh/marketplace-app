@@ -5,33 +5,33 @@
     cursor: pointer;
     display: flex;
     gap: 1rem;
-    background:  
+    background:
     linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
     linear-gradient(to right, #4facfe, #00f2fe) border-box;;
-  }
-  
-  .card-image-container img {
+}
+
+.card-image-container img {
     width: 60px;
     height: 60px;
     object-fit: cover;
     border-radius: 8px;
-  }
-  
-  .card-content {
+}
+
+.card-content {
     flex: 1;
-  }
-  
-  .card-header {
+}
+
+.card-header {
     font-weight: bold;
     font-size: 1.1rem;
-  }
-  
-  .latest-message {
+}
+
+.latest-message {
     font-style: italic;
     color: #555;
-  }
-  
-  .with-user-name {
+}
+
+.with-user-name {
     color: #888;
     font-size: 0.9rem;
-  }
+}

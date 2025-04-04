@@ -74,8 +74,8 @@
         {{ errorMessage }}
       </div>
       <div>
-        <p class="AllreadyHaveAccountText">
-          Allready have an account? <router-link to="/login">Login here</router-link>
+        <p class="AlreadyHaveAccountText">
+          Already have an account? <router-link to="/login">Login here</router-link>
         </p>
       </div>
     </form>
