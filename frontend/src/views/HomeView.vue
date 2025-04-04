@@ -11,7 +11,7 @@
 
     <!-- ✅ FilterPanel with categories passed in -->
     <FilterPanel
-      v-if="showFilters"
+      v-if="showFilters  && categories.length > 0"
       :categories="categories"
       @applyFilters="handleApplyFilters"
     />
@@ -80,7 +80,11 @@ import { useItemStore } from "@/stores/itemStore"
 import FilterPanel from '@/components/FilterPanel.vue'
 import CustomButton from "@/components/CustomButton.vue"
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+
+
+const route = useRoute()
+const router = useRouter()
 
 
 const { t } = useI18n()
@@ -119,32 +123,56 @@ const toggleFilterPanel = () => {
   showFilters.value = !showFilters.value
 }
 
-const router = useRouter()
 
+// This is the handleApplyFilters function that should be used in both views
 const handleApplyFilters = (filters) => {
-  console.log('Applied filters:', filters)
+  const query = {
+    ...route.query,
+    searchQuery: route.query.searchQuery || ''
+  }
 
-  const query = {}
-
-  if (filters.categories?.length) {
+  // Handle categories - ensure they're properly processed
+  if (filters.categories && filters.categories.length) {
+    // Convert all categories to strings for URL
     query.categories = filters.categories
-  }
-  if (filters.priceMin !== '') {
-    query.minPrice = filters.priceMin
-  }
-  if (filters.priceMax !== '') {
-    query.maxPrice = filters.priceMax
-  }
-  if (filters.latitude != null) {
-    query.latitude = filters.latitude
-  }
-  if (filters.longitude != null) {
-    query.longitude = filters.longitude
-  }
-  if (filters.distanceKm !== '') {
-    query.distanceKm = filters.distanceKm
+      .map(id => id.toString())
+      .join(',')
+  } else {
+    delete query.categories
   }
 
+  // Add other filters
+  if (filters.priceMin !== null && filters.priceMin !== undefined && filters.priceMin !== '') {
+    query.minPrice = filters.priceMin
+  } else {
+    delete query.minPrice
+  }
+  
+  if (filters.priceMax !== null && filters.priceMax !== undefined && filters.priceMax !== '') {
+    query.maxPrice = filters.priceMax
+  } else {
+    delete query.maxPrice
+  }
+  
+  if (filters.distanceKm !== null && filters.distanceKm !== undefined && filters.distanceKm !== '') {
+    query.distanceKm = filters.distanceKm
+  } else {
+    delete query.distanceKm
+  }
+  
+  if (filters.latitude !== null && filters.latitude !== undefined) {
+    query.latitude = filters.latitude
+  } else {
+    delete query.latitude
+  }
+  
+  if (filters.longitude !== null && filters.longitude !== undefined) {
+    query.longitude = filters.longitude
+  } else {
+    delete query.longitude
+  }
+
+  // Update the URL with the new query parameters
   router.push({ path: '/items', query })
 }
 </script>
