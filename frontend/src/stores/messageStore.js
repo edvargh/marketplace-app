@@ -59,11 +59,43 @@ export const useMessageStore = defineStore('messageStore', () => {
       return []
     }
   }
+
+  const sendReservationRequest = async (itemId, receiverId) => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.post(
+          `${API_BASE}/reserve`,
+          { itemId, receiverId },
+          { headers }
+      );
+      return response.status === 200;
+    } catch (err) {
+      console.error('Error sending reservation:', err);
+      return false;
+    }
+  };
+
+  const updateReservationStatus = async (messageId, status) => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.patch(
+          `${API_BASE}/reserve/${messageId}`,
+          { status },
+          { headers }
+      );
+      return response.status === 200;
+    } catch (err) {
+      console.error('Error updating reservation:', err);
+      return false;
+    }
+  };
   
   return {
     fetchUserConversations,
     fetchConversationWithUser,
     sendMessage,
-    ensureConversationExists
+    ensureConversationExists,
+    sendReservationRequest,
+    updateReservationStatus
   }
 })

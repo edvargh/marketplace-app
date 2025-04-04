@@ -34,6 +34,15 @@
         {{ t('ConversationView.noMessages') }}
       </div>
       <div v-else>
+        <ReserveBox
+            v-if="hasReservationRequest"
+            :itemId="itemId"
+            :buyerId="currentUserId"
+            :buyerName="userStore.user.fullName"
+            :isSellerView="isCurrentUserSeller"
+            :initialStatus="reservationStatus"
+            @status-changed="handleReservationStatusChange"
+        />
         <div v-for="msg in messages" :key="msg.id">
           <div v-if="msg.isDateDivider" class="date-divider">
             {{ msg.date }}
@@ -78,6 +87,7 @@ import { useMessageStore } from '@/stores/messageStore'
 import { useUserStore } from '@/stores/userStore'
 import { useItemStore } from '@/stores/itemStore'
 import LoadingState from "@/components/LoadingState.vue";
+import ReserveBox from '@/components/ReserveBox.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -99,6 +109,15 @@ const isSending = ref(false)
 
 const imageBaseURL = import.meta.env.VITE_API_BASE_URL + '/uploads/'
 
+const isCurrentUserSeller = computed(() => currentUserId === item.value?.sellerId)
+const hasReservationRequest = computed(() => {
+  return messages.value.some(msg => msg.isReservationRequest)
+})
+const reservationStatus = computed(() => {
+  const reservationMsg = messages.value.find(msg => msg.isReservationRequest)
+  return reservationMsg?.reservationStatus || 'pending'
+})
+
 const fetchConversation = async () => {
   try {
     const rawMessages = await messageStore.fetchConversationWithUser(itemId, withUserId)
@@ -108,7 +127,13 @@ const fetchConversation = async () => {
       fromYou: msg.fromYou,
       senderId: msg.fromYou ? currentUserId : item.value?.sellerId,
       content: msg.text,
-      sentAt: msg.sentAt
+      sentAt: msg.sentAt,
+      isReservationRequest: msg.text === '[RESERVATION_REQUEST]',
+      reservationStatus: msg.text === '[RESERVATION_ACCEPTED]'
+          ? 'ACCEPTED'
+          : msg.text === '[RESERVATION_DECLINED]'
+              ? 'DECLINED'
+              : null
     }))
 
     const grouped = []

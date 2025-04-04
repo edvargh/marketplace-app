@@ -14,6 +14,7 @@ import FrontPageView from "@/views/FrontPageView.vue";
 import MessagesView from '@/users/MessagesView.vue'
 import ConverSationView from '@/users/ConversationView.vue'
 import CategoriesAdminView from "@/views/CategoriesAdminView.vue";
+import ReserveBox from "@/components/ReserveBox.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
