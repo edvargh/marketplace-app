@@ -82,6 +82,7 @@ export const useUserStore = defineStore('user', () => {
   const updateUser = async (rawFormData) => {
     // 1) Grab the token (required for the Authorization header)
     const token = localStorage.getItem('token')
+    console.log('[UpdateUser] Using token:', token?.substring(0, 10), '...') // or the full token
     if (!token) throw new Error('No authentication token found')
 
     // 2) If no user is loaded from store, we can’t proceed
@@ -130,6 +131,8 @@ export const useUserStore = defineStore('user', () => {
       },
       body: formDataToSend
     })
+    console.log('[UpdateUser] PUT -> /api/users/' + currentUser.id)
+
 
     // 6) Check for errors
     if (!response.ok) {

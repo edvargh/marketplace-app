@@ -171,6 +171,8 @@ const handleUpdateProfile = async () => {
       language: language.value,
       profilePicture: selectedImageFile.value // File or null
     }
+    console.log('[ProfileView] Submitting update with rawFormData:', rawFormData)
+
 
     // 2) Just pass that object to updateUser
     await userStore.updateUser(rawFormData)
