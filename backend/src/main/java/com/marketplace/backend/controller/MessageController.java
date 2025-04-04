@@ -2,6 +2,7 @@ package com.marketplace.backend.controller;
 
 import com.marketplace.backend.dto.MessageSendDto;
 import com.marketplace.backend.dto.MessageResponseDto;
+import com.marketplace.backend.model.ReservationStatus;
 import com.marketplace.backend.service.MessageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,29 @@ public class MessageController {
     messageService.sendMessage(dto);
     return ResponseEntity.ok().build();
   }
+
+  /**
+   * Update the reservation status of a message.
+   */
+  @PutMapping("/{messageId}/update-reservation-status")
+  public ResponseEntity<Void> updateReservationStatus(
+      @PathVariable Long messageId,
+      @RequestParam ReservationStatus status
+  ) {
+    messageService.updateReservationStatus(messageId, status);
+    return ResponseEntity.ok().build();
+  }
+
+
+  /**
+   * Send a reservation request message to another user about an item.
+   */
+  @PostMapping("/send-reservation-request")
+  public ResponseEntity<Void> sendReservationRequest(@RequestBody MessageSendDto dto) {
+    messageService.sendReservationRequest(dto);
+    return ResponseEntity.ok().build();
+  }
+
 
   /**
    * Get all messages between the current user and another user for a specific item.

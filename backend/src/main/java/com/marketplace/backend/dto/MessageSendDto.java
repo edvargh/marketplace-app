@@ -1,5 +1,7 @@
 package com.marketplace.backend.dto;
 
+import com.marketplace.backend.model.ReservationStatus;
+
 /**
  * DTO for sending messages.
  */
@@ -7,6 +9,8 @@ public class MessageSendDto {
   private Long receiverId;
   private Long itemId;
   private String messageText;
+  private boolean isReservationRequest;
+  private ReservationStatus reservationStatus;
 
   /**
    * Default constructor.
@@ -65,5 +69,41 @@ public class MessageSendDto {
    */
   public void setMessageText(String messageText) {
     this.messageText = messageText;
+  }
+
+  /**
+   * Get whether the message is a reservation request.
+   *
+   * @return whether the message is a reservation request
+   */
+  public boolean isReservationRequest() {
+    return isReservationRequest;
+  }
+
+  /**
+   * Set whether the message is a reservation request.
+   *
+   * @param isReservationRequest whether the message is a reservation request
+   */
+  public void setReservationRequest(boolean isReservationRequest) {
+    this.isReservationRequest = isReservationRequest;
+  }
+
+  /**
+   * Get the reservation status of the message.
+   *
+   * @return the reservation status of the message
+   */
+  public ReservationStatus getReservationStatus() {
+    return reservationStatus;
+  }
+
+  /**
+   * Set the reservation status of the message.
+   *
+   * @param reservationStatus the reservation status of the message
+   */
+  public void setReservationStatus(ReservationStatus reservationStatus) {
+    this.reservationStatus = reservationStatus;
   }
 }
