@@ -137,6 +137,38 @@ class ItemControllerTest {
         .andExpect(jsonPath("$[0].sellerName").value("Alice"));
   }
 
+  /**
+   * Test to get items by category.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReturnItemsInSelectedCategoriesOnly() throws Exception {
+    Category otherCategory = categoryRepository.save(new Category(null, "Furniture"));
+
+    User otherUser = userRepository.save(new User("Emma", "emma@example.com", "pw", Role.USER, "999", null, "english"));
+
+    Item electronicsItem = new Item(otherUser, "Speaker", "Loud one", testCategory, 150.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    electronicsItem.setStatus(ItemStatus.FOR_SALE);
+
+    Item furnitureItem = new Item(otherUser, "Chair", "Comfy", otherCategory, 75.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    furnitureItem.setStatus(ItemStatus.FOR_SALE);
+
+    itemRepository.saveAll(List.of(electronicsItem, furnitureItem));
+
+    mockMvc.perform(get("/api/items")
+            .param("categoryIds", testCategory.getId().toString())
+            .param("categoryIds", otherCategory.getId().toString()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.length()").value(2))
+        .andExpect(jsonPath("$[0].title").exists())
+        .andExpect(jsonPath("$[1].title").exists());
+  }
+
+
 
   /**
    * Test to get an item by its ID.

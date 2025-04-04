@@ -38,7 +38,7 @@ public class ItemController {
    *
    * @param minPrice    the minimum price
    * @param maxPrice    the maximum price
-   * @param categoryId  the category ID
+   * @param categoryIds  the category ID
    * @param searchQuery the search query
    * @param latitude    the latitude
    * @param longitude   the longitude
@@ -49,14 +49,14 @@ public class ItemController {
   public ResponseEntity<List<ItemResponseDto>> getFilteredItems(
       @RequestParam(required = false) Double minPrice,
       @RequestParam(required = false) Double maxPrice,
-      @RequestParam(required = false) Long categoryId,
+      @RequestParam(required = false) List<Long> categoryIds,
       @RequestParam(required = false) String searchQuery,
       @RequestParam(required = false) BigDecimal latitude,
       @RequestParam(required = false) BigDecimal longitude,
       @RequestParam(required = false) Double distanceKm
   ) {
     List<ItemResponseDto> items = itemService.getFilteredItems(
-        minPrice, maxPrice, categoryId, searchQuery, latitude, longitude, distanceKm
+        minPrice, maxPrice, categoryIds, searchQuery, latitude, longitude, distanceKm
     );
 
     return ResponseEntity.ok(items);

@@ -77,7 +77,7 @@ public class ItemService {
    * @return a list of items as DTOs
    */
   public List<ItemResponseDto> getFilteredItems(Double minPrice, Double maxPrice,
-                                                Long categoryId, String searchQuery,
+                                                List <Long> categoryIds, String searchQuery,
                                                 BigDecimal latitude, BigDecimal longitude,
                                                 Double distanceKm) {
 
@@ -88,7 +88,7 @@ public class ItemService {
         currentUser.getId(),
         minPrice,
         maxPrice,
-        categoryId,
+        categoryIds != null && !categoryIds.isEmpty() ? categoryIds : null,
         (searchQuery != null && !searchQuery.isBlank()) ? searchQuery : null,
         latitude,
         longitude,
