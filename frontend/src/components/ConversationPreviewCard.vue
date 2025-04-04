@@ -17,7 +17,7 @@
           <p class="latest-message">{{ conversation.latestMessage }}</p>
           <p class="with-user-name">With: {{ conversation.withUserName }}</p>
           <p class="price">Price: {{ conversation.item.price }} kr</p>
-          <p class="status">Status: {{ conversation.item.status }}</p>
+          <StatusBanner :status="conversation.item.status" />
         </div>
       </div>
     </div>
@@ -25,6 +25,7 @@
   
   <script setup>
   import { useRouter } from 'vue-router'
+  import StatusBanner from "@/components/StatusBanner.vue";
   
   const props = defineProps({
     conversation: Object,

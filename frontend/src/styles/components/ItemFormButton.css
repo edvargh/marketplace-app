@@ -9,22 +9,33 @@
     min-width: 120px;
     text-align: center;
     font-family: inherit;
+    color: white;
+}
+
+.action-button:hover {
+    transform: scale(1.03);
 }
 
 .button-primary {
     background-color: #2e7d15;
-    color: white;
 }
 
 .button-primary:hover {
     background-color: #45a049;
-    transform: scale(1.03);
 }
 
 .button-primary:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
     transform: none;
+}
+
+.button-cancel {
+    background-color: #444444;
+}
+
+.button-cancel:hover {
+    background-color: #555555;
 }
 
 .button-danger {
@@ -34,7 +45,6 @@
 
 .button-danger:hover {
     background-color: #f44336;
-    transform: scale(1.03);
 }
 
 .button-danger:disabled {

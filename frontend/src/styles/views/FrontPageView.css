@@ -1,0 +1,65 @@
+.front-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #555;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.about-us, .how-it-works, .start-now {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.about-us-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.team-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.how-it-works {
+    text-align: right;
+}
+
+.start-now {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.start-now h3 {
+    margin-bottom: 10px;
+}
+
+.button-container {
+    display: flex;
+    gap: 20px;
+}

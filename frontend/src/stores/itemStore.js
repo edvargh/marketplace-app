@@ -13,12 +13,16 @@ export const useItemStore = defineStore('items', () => {
     };
   };
 
-  const fetchAllItems = async () => {
+  const fetchMarketItems = async () => {
     try {
+      const token = localStorage.getItem('token');
+      console.log("Token:", token); 
+
       const headers = getAuthHeaders();
       const response = await axios.get('http://localhost:8080/api/items', { headers });
-      return response.data;
+      console.log("API response:", response);
 
+      return response.data;
     } catch (err) {
       console.error('Error fetching all items:', err);
       return [];
@@ -179,7 +183,7 @@ export const useItemStore = defineStore('items', () => {
   };
 
   return {
-    fetchAllItems,
+    fetchMarketItems,
     fetchItemById,
     fetchUserItems,
     createItem,

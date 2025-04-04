@@ -6,124 +6,124 @@
     min-height: 100vh;
     padding: 6rem 2rem 2rem;
     font-family: 'Abel', sans-serif;
-  }
-  
-  .profile-view h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    font-family: 'Montagu Slab', serif;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  .profile-view form {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  label {
-    font-weight: 600;
-    color: #444;
-    margin-left: 0.5rem;
-  }
-  
-  button[type='submit'] {
-    padding: 0.75rem;
-    background: linear-gradient(to right, #4caf50, #81c784);
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  button[type='submit']:hover {
-    background: linear-gradient(to right, #388e3c, #66bb6a);
-  }
-  
-  .error-message {
-    color: red;
-    text-align: center;
-    font-size: 0.95rem;
-  }
+}
 
-  .SelectBox {
-    border-radius: 9999px;
-    padding: 1rem 2rem;
-    border: 1px solid transparent;
-    background:
-      linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
-      linear-gradient(to right, #4facfe, #00f2fe) border-box;
-    background-clip: padding-box, border-box;
-    width: 100%;
-    max-width: 600px;
-    margin: 1rem auto;
-    box-sizing: border-box;
-  }
-  
-  .dropdown-select {
-    width: 100%;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-size: 1rem;
-    font-family: 'Abel', sans-serif;
-    color: #333;
-  }
-  .profile-picture-wrapper {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  .profile-picture-container {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid #4facfe;
-  }
-  
-  .profile-picture {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 50%;
-  }
-  
-  .edit-icon {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    width: 32px;
-    height: 32px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    cursor: pointer;
-    background: white;
-    border-radius: 9999px;
-    padding: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Show edit icon on hover */
-  .profile-picture-container:hover .edit-icon {
-    opacity: 1;
-  }
+.profile-view h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-family: 'Montagu Slab', serif;
+  font-weight: bold;
+  text-align: center;
+}
 
-  .input-error {
-    border: 1px solid red !important;
-    box-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
-  }
-  
-  .input-error-text {
-    color: red;
-    font-size: 0.9rem;
-    margin: -0.5rem 0 1rem 0.5rem;
-  }
+.profile-view form {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+label {
+  font-weight: 600;
+  color: #444;
+  margin-left: 0.5rem;
+}
+
+button[type='submit'] {
+  padding: 0.75rem;
+  background: linear-gradient(to right, #4caf50, #81c784);
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button[type='submit']:hover {
+  background: linear-gradient(to right, #388e3c, #66bb6a);
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.SelectBox {
+  border-radius: 9999px;
+  padding: 1rem 2rem;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
+    linear-gradient(to right, #4facfe, #00f2fe) border-box;
+  background-clip: padding-box, border-box;
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto;
+  box-sizing: border-box;
+}
+
+.dropdown-select {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  font-family: 'Abel', sans-serif;
+  color: #333;
+}
+.profile-picture-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.profile-picture-container {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #4facfe;
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 50%;
+}
+
+.edit-icon {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  background: white;
+  border-radius: 9999px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Show edit icon on hover */
+.profile-picture-container:hover .edit-icon {
+  opacity: 1;
+}
+
+.input-error {
+  border: 1px solid red !important;
+  box-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
+}
+
+.input-error-text {
+  color: red;
+  font-size: 0.9rem;
+  margin: -0.5rem 0 1rem 0.5rem;
+}

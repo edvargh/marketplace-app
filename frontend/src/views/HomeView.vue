@@ -52,9 +52,9 @@
         <div class="section-header">
           <h2>{{t('homeView.Market')}}</h2>
         </div>
-        <div v-if="allItems.length > 0" class="compact-cards-container">
+        <div v-if="marketItems.length > 0" class="compact-cards-container">
           <CompactItemCard
-              v-for="item in allItems"
+              v-for="item in marketItems"
               :key="item.id"
               :item="item"
           />
@@ -86,7 +86,7 @@ const itemStore = useItemStore();
 const categories = ref([]);
 const recommendedItems = ref([]);
 const mostLikedItems = ref([]);
-const allItems = ref([]);
+const marketItems = ref([]);
 const showFilters = ref(false);
 const loading = ref(true);
 const error = ref(null);
@@ -98,8 +98,8 @@ onMounted(async () => {
       categories.value = cats;
     });
 
-    const itemsPromise = itemStore.fetchAllItems().then(items => {
-      allItems.value = items || [];
+    const itemsPromise = itemStore.fetchMarketItems().then(items => {
+      marketItems.value = items || [];
     });
 
     await Promise.all([categoriesPromise, itemsPromise]);

@@ -77,7 +77,7 @@ const handleLogin = async () => {
 
   try {
     await userStore.login(email.value, password.value)
-    router.push('/')
+    await router.push('/')
   } catch (err) {
     errorMessage.value = err.message || 'Login failed'
   } finally {

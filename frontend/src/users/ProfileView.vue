@@ -23,7 +23,6 @@
       </div>
     </div>
 
-
     <form @submit.prevent="handleUpdateProfile">
       <label for="fullName">{{ t('profile.fullName') }}</label>
       <InputBox
@@ -88,7 +87,6 @@
       </div>
     </form>
   </div>
-
 </template>
 
 

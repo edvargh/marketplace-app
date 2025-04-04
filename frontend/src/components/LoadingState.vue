@@ -1,13 +1,11 @@
 <template>
-  <div v-if="loading" class="loading">
+  <div v-if="loading" class="state loading">
     <p>{{ loadingMessage }}</p>
   </div>
-  <div v-else-if="error" class="error">
+  <div v-else-if="error" class="state error">
     <div class="error-icon">⚠️</div>
     <p>{{ error }}</p>
-    <button v-if="showRetry" @click="$emit('retry')" class="retry-button">
-      Try Again
-    </button>
+    <!--TODO: Add button and implement function in views/components that uses this component, or keep as is -->
   </div>
 </template>
 

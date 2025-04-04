@@ -47,20 +47,20 @@
   background: linear-gradient(to right, #00f2fe, #4facfe);
 }
 
-.AllreadyHaveAccountText {
+.AlreadyHaveAccountText {
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.95rem;
   color: #555;
 }
 
-.AllreadyHaveAccountText a {
+.AlreadyHaveAccountText a {
   color: #4facfe;
   font-weight: 500;
   text-decoration: none;
 }
 
-.AllreadyHaveAccountText a:hover {
+.AlreadyHaveAccountText a:hover {
   text-decoration: underline;
 }
 
