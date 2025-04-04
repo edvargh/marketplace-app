@@ -187,43 +187,48 @@ export const useItemStore = defineStore('items', () => {
 
   const searchItems = async (filters) => {
     try {
-      console.log('[searchItems] Filters:', filters)
-  
-      const queryParams = new URLSearchParams()
-      if (filters.searchQuery) queryParams.append('searchQuery', filters.searchQuery)
-      if (filters.categoryId != null) queryParams.append('categoryId', filters.categoryId)
-      if (filters.minPrice != null) queryParams.append('minPrice', filters.minPrice)
-      if (filters.maxPrice != null) queryParams.append('maxPrice', filters.maxPrice)
-      if (filters.latitude != null) queryParams.append('latitude', filters.latitude)
-      if (filters.longitude != null) queryParams.append('longitude', filters.longitude)
-      if (filters.distanceKm != null) queryParams.append('distanceKm', filters.distanceKm)
-  
-      const url = `http://localhost:8080/api/items?${queryParams.toString()}`
-      const headers = getAuthHeaders()
-      const res = await fetch(url, {
-        method: 'GET',
-        headers,
-      })
-  
-      const rawText = await res.text()
-      console.log('[searchItems] Raw response text:', rawText)
-  
-      if (!res.ok) {
-        console.error('[searchItems] Response error:', res.status)
-        items.value = []
-        return
+      console.log('[searchItems] Filters:', filters);
+      
+      // Create URLSearchParams with proper parameter names
+      const queryParams = new URLSearchParams();
+      
+      if (filters.searchQuery) queryParams.append('searchQuery', filters.searchQuery);
+      
+      // Handle categoryIds - ensuring they're properly processed for OR logic
+      if (filters.categoryIds && Array.isArray(filters.categoryIds)) {
+        // Add each category ID as a separate parameter with the same name
+        // This creates ?categoryIds=1&categoryIds=2 format for OR logic
+        filters.categoryIds.forEach(id => {
+          queryParams.append('categoryIds', id);
+        });
       }
-  
-      items.value = JSON.parse(rawText)
-      console.log('[searchItems] Parsed items:', items.value)
-  
+      
+      // Handle price parameters
+      if (filters.minPrice != null && filters.minPrice !== '') queryParams.append('minPrice', filters.minPrice);
+      if (filters.maxPrice != null && filters.maxPrice !== '') queryParams.append('maxPrice', filters.maxPrice);
+      
+      // Handle location parameters
+      if (filters.latitude != null) queryParams.append('latitude', filters.latitude);
+      if (filters.longitude != null) queryParams.append('longitude', filters.longitude);
+      if (filters.distanceKm != null && filters.distanceKm !== '') queryParams.append('distanceKm', filters.distanceKm);
+      
+      console.log('[searchItems] Query params:', queryParams.toString());
+      
+      const url = `http://localhost:8080/api/items?${queryParams.toString()}`;
+      const headers = getAuthHeaders();
+      
+      const response = await axios.get(url, { headers });
+      console.log('[searchItems] Response:', response);
+      
+      items.value = response.data;
+      return response.data;
+      
     } catch (err) {
-      console.error('[searchItems] Request failed:', err)
-      items.value = []
+      console.error('[searchItems] Request failed:', err);
+      items.value = [];
+      throw err;
     }
   }
-  
-  
 
   return {
     items,

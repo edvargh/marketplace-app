@@ -48,6 +48,8 @@
     "Min-price": "Min price (kr)",
     "Max-price": "Max price (kr)",
     "Apply-filters": "Apply filters",
-    "Select-all": "Select all"
+    "Select-all": "Select all",
+    "Distance": "Distance" 
+
   }
 }

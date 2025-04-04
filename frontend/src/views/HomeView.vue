@@ -124,56 +124,55 @@ const toggleFilterPanel = () => {
 }
 
 
-// This is the handleApplyFilters function that should be used in both views
+// This should be used in both HomeView.vue and SearchResultView.vue
+
+// This should be the same in both components
 const handleApplyFilters = (filters) => {
   const query = {
     ...route.query,
     searchQuery: route.query.searchQuery || ''
-  }
+  };
 
-  // Handle categories - ensure they're properly processed
-  if (filters.categories && filters.categories.length) {
-    // Convert all categories to strings for URL
-    query.categories = filters.categories
-      .map(id => id.toString())
-      .join(',')
+  // Handle categories consistently
+  if (filters.categoryIds && filters.categoryIds.length) {
+    query.categoryIds = filters.categoryIds.map(id => id.toString());
   } else {
-    delete query.categories
+    delete query.categoryIds;
   }
-
-  // Add other filters
+  
+  // Handle other filters
   if (filters.priceMin !== null && filters.priceMin !== undefined && filters.priceMin !== '') {
-    query.minPrice = filters.priceMin
+    query.minPrice = filters.priceMin;
   } else {
-    delete query.minPrice
+    delete query.minPrice;
   }
   
   if (filters.priceMax !== null && filters.priceMax !== undefined && filters.priceMax !== '') {
-    query.maxPrice = filters.priceMax
+    query.maxPrice = filters.priceMax;
   } else {
-    delete query.maxPrice
+    delete query.maxPrice;
   }
   
   if (filters.distanceKm !== null && filters.distanceKm !== undefined && filters.distanceKm !== '') {
-    query.distanceKm = filters.distanceKm
+    query.distanceKm = filters.distanceKm;
   } else {
-    delete query.distanceKm
+    delete query.distanceKm;
   }
   
   if (filters.latitude !== null && filters.latitude !== undefined) {
-    query.latitude = filters.latitude
+    query.latitude = filters.latitude;
   } else {
-    delete query.latitude
+    delete query.latitude;
   }
   
   if (filters.longitude !== null && filters.longitude !== undefined) {
-    query.longitude = filters.longitude
+    query.longitude = filters.longitude;
   } else {
-    delete query.longitude
+    delete query.longitude;
   }
 
-  // Update the URL with the new query parameters
-  router.push({ path: '/items', query })
+  // Navigate to search results
+  router.push({ path: '/items', query });
 }
 </script>
 

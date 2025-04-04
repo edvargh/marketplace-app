@@ -66,77 +66,86 @@ const toggleFilterPanel = () => {
 
 // Called when user hits "Apply Filters" in FilterPanel
 // This is the handleApplyFilters function that should be used in both views
+// This should be used in both HomeView.vue and SearchResultView.vue
+
+// This should be the same in both components
 const handleApplyFilters = (filters) => {
   const query = {
     ...route.query,
     searchQuery: route.query.searchQuery || ''
-  }
+  };
 
-  // Handle categories - ensure they're properly processed
-  if (filters.categories && filters.categories.length) {
-    // Convert all categories to strings for URL
-    query.categories = filters.categories
-      .map(id => id.toString())
-      .join(',')
+  // Handle categories consistently
+  if (filters.categoryIds && filters.categoryIds.length) {
+    query.categoryIds = filters.categoryIds.map(id => id.toString());
   } else {
-    delete query.categories
+    delete query.categoryIds;
   }
-
-  // Add other filters
+  
+  // Handle other filters
   if (filters.priceMin !== null && filters.priceMin !== undefined && filters.priceMin !== '') {
-    query.minPrice = filters.priceMin
+    query.minPrice = filters.priceMin;
   } else {
-    delete query.minPrice
+    delete query.minPrice;
   }
   
   if (filters.priceMax !== null && filters.priceMax !== undefined && filters.priceMax !== '') {
-    query.maxPrice = filters.priceMax
+    query.maxPrice = filters.priceMax;
   } else {
-    delete query.maxPrice
+    delete query.maxPrice;
   }
   
   if (filters.distanceKm !== null && filters.distanceKm !== undefined && filters.distanceKm !== '') {
-    query.distanceKm = filters.distanceKm
+    query.distanceKm = filters.distanceKm;
   } else {
-    delete query.distanceKm
+    delete query.distanceKm;
   }
   
   if (filters.latitude !== null && filters.latitude !== undefined) {
-    query.latitude = filters.latitude
+    query.latitude = filters.latitude;
   } else {
-    delete query.latitude
+    delete query.latitude;
   }
   
   if (filters.longitude !== null && filters.longitude !== undefined) {
-    query.longitude = filters.longitude
+    query.longitude = filters.longitude;
   } else {
-    delete query.longitude
+    delete query.longitude;
   }
 
-  // Update the URL with the new query parameters
-  router.push({ path: '/items', query })
+  // Navigate to search results
+  router.push({ path: '/items', query });
 }
 
-// Fetch items based on current route query
 const fetchItems = async () => {
-  const params = { ...route.query }
+  const params = { ...route.query };
   
-  // Convert categories string to array of numbers for the API
-  if (params.categories) {
-    params.categories = params.categories
-      .split(',')
-      .map(id => parseInt(id.trim(), 10))
-      .filter(id => !isNaN(id))
+  // Convert categoryIds string to array of numbers for the API
+  if (params.categoryIds) {
+    // Handle both array and string formats
+    const categoryIdArray = Array.isArray(params.categoryIds) 
+      ? params.categoryIds.map(id => parseInt(id, 10))
+      : [parseInt(params.categoryIds, 10)];
+    
+    // Remove the original parameter
+    delete params.categoryIds;
+    
+    // Add the array directly
+    params.categoryIds = categoryIdArray;
   }
   
-  // Convert numeric parameters to numbers
-  if (params.minPrice) params.minPrice = Number(params.minPrice)
-  if (params.maxPrice) params.maxPrice = Number(params.maxPrice)
-  if (params.distanceKm) params.distanceKm = Number(params.distanceKm)
-  if (params.latitude) params.latitude = Number(params.latitude)
-  if (params.longitude) params.longitude = Number(params.longitude)
+  // Convert numeric parameters to proper types
+  if (params.minPrice) params.minPrice = Number(params.minPrice);
+  if (params.maxPrice) params.maxPrice = Number(params.maxPrice);
+  if (params.distanceKm) params.distanceKm = Number(params.distanceKm);
+  if (params.latitude) params.latitude = Number(params.latitude);
+  if (params.longitude) params.longitude = Number(params.longitude);
   
-  await itemStore.searchItems(params)
+  try {
+    await itemStore.searchItems(params);
+  } catch (error) {
+    console.error('Error fetching items:', error);
+  }
 }
 
 // On first load, fetch categories and initialize filter store from the URL

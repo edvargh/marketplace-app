@@ -48,6 +48,7 @@
     "Min-price":"Min pris (kr)",
     "Max-price":"Maks pris (kr)",
     "Apply-filters":"Bruk filtre",
-    "Select-all":"Velg alle"
+    "Select-all":"Velg alle",
+    "Distance":"Avstand"
   }
 }

@@ -60,18 +60,22 @@
           <label>Latitude</label>
           <input
             type="number"
-            v-model.number="latitude"
+            v-model="latitudeInput"
             placeholder="Latitude"
             class="geo-input"
+            step="0.000001"
+            @change="handleLatLongChange"
           />
         </div>
         <div class="geo-input-wrapper">
           <label>Longitude</label>
           <input
             type="number"
-            v-model.number="longitude"
+            v-model="longitudeInput"
             placeholder="Longitude"
             class="geo-input"
+            step="0.000001"
+            @change="handleLatLongChange"
           />
         </div>
       </div>
@@ -88,11 +92,12 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useFilterStore } from '@/stores/filterStore'
 import CheckboxGroup from '@/components/CheckboxGroup.vue'
 import CustomButton from '@/components/CustomButton.vue'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   categories: { type: Array, default: () => [] }
@@ -100,36 +105,55 @@ const props = defineProps({
 
 const emit = defineEmits(['applyFilters'])
 const { t } = useI18n()
+const route = useRoute()
 
 const store = useFilterStore()
-
-// Computed binding to Pinia
-const selectedCategoryIds = computed({
-  get: () => store.selectedCategoryIds,
-  set: val => store.selectedCategoryIds = val
-})
-const priceMin = computed({
-  get: () => store.priceMin,
-  set: val => store.priceMin = val
-})
-const priceMax = computed({
-  get: () => store.priceMax,
-  set: val => store.priceMax = val
-})
-const distanceKm = computed({
-  get: () => store.distanceKm,
-  set: val => store.distanceKm = val
-})
-const latitude = computed({
-  get: () => store.latitude,
-  set: val => store.latitude = val
-})
-const longitude = computed({
-  get: () => store.longitude,
-  set: val => store.longitude = val
-})
-
 const MAX_PRICE = 10_000_000
+
+// Use local refs to avoid recursive updates
+const selectedCategoryIds = ref([...store.selectedCategoryIds])
+const priceMin = ref(store.priceMin)
+const priceMax = ref(store.priceMax)
+const distanceKm = ref(store.distanceKm)
+
+// Special handling for lat/long to fix parsing issues
+const latitudeInput = ref('')
+const longitudeInput = ref('')
+const latitude = ref(null)
+const longitude = ref(null)
+
+// Initialize from URL on mount
+onMounted(() => {
+  // Parse categoryIds from URL (if any)
+  if (route.query.categoryIds) {
+    const ids = Array.isArray(route.query.categoryIds) 
+      ? route.query.categoryIds 
+      : [route.query.categoryIds]
+    
+    selectedCategoryIds.value = ids.map(id => parseInt(id, 10))
+  }
+  
+  // Initialize other filter values from URL
+  if (route.query.minPrice) priceMin.value = Number(route.query.minPrice)
+  if (route.query.maxPrice) priceMax.value = Number(route.query.maxPrice)
+  if (route.query.distanceKm) distanceKm.value = Number(route.query.distanceKm)
+  
+  // Handle lat/long specially
+  if (route.query.latitude) {
+    const lat = Number(route.query.latitude)
+    latitude.value = lat
+    latitudeInput.value = lat.toString()
+  }
+  
+  if (route.query.longitude) {
+    const lng = Number(route.query.longitude)
+    longitude.value = lng
+    longitudeInput.value = lng.toString()
+  }
+  
+  // Sync with store
+  syncToStore()
+})
 
 const validatePriceInput = () => {
   if (priceMin.value > MAX_PRICE) priceMin.value = MAX_PRICE
@@ -145,12 +169,65 @@ const priceError = computed(() => {
   return ''
 })
 
+// Handle latitude and longitude changes
+const handleLatLongChange = () => {
+  // Parse values to numbers or null
+  latitude.value = latitudeInput.value ? parseFloat(latitudeInput.value) : null
+  longitude.value = longitudeInput.value ? parseFloat(longitudeInput.value) : null
+}
+
+// Sync local values to store without creating circular dependencies
+const syncToStore = () => {
+  store.selectedCategoryIds = [...selectedCategoryIds.value]
+  store.priceMin = priceMin.value
+  store.priceMax = priceMax.value
+  store.distanceKm = distanceKm.value
+  store.latitude = latitude.value
+  store.longitude = longitude.value
+}
+
+// Watch store for external changes (from other components)
+watch(() => store.selectedCategoryIds, (newVal) => {
+  if (JSON.stringify(newVal) !== JSON.stringify(selectedCategoryIds.value)) {
+    selectedCategoryIds.value = [...newVal]
+  }
+}, { deep: true })
+
+// Watch for lat/long from store
+watch(() => store.latitude, (newVal) => {
+  if (newVal !== latitude.value) {
+    latitude.value = newVal
+    latitudeInput.value = newVal !== null ? newVal.toString() : ''
+  }
+})
+
+watch(() => store.longitude, (newVal) => {
+  if (newVal !== longitude.value) {
+    longitude.value = newVal
+    longitudeInput.value = newVal !== null ? newVal.toString() : ''
+  }
+})
+
+// Watch for category changes
+watch(() => props.categories, () => {
+  if (props.categories && props.categories.length) {
+    const validIds = props.categories.map(cat => cat.id)
+    selectedCategoryIds.value = selectedCategoryIds.value.filter(id => validIds.includes(id))
+  }
+}, { immediate: true })
+
 const applyFilters = () => {
+  // Make sure lat/long are properly parsed before applying
+  handleLatLongChange()
+  
+  // Sync to store before emitting
+  syncToStore()
+  
   emit('applyFilters', {
-    categories: selectedCategoryIds.value,
-    priceMin: priceMin.value,
-    priceMax: priceMax.value,
-    distanceKm: distanceKm.value,
+    categoryIds: selectedCategoryIds.value,
+    priceMin: priceMin.value !== '' ? priceMin.value : null,
+    priceMax: priceMax.value !== '' ? priceMax.value : null,
+    distanceKm: distanceKm.value !== '' ? distanceKm.value : null,
     latitude: latitude.value,
     longitude: longitude.value
   })

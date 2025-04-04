@@ -18,6 +18,7 @@
         type="checkbox"
         :value="getValue(option)"
         v-model="localValue"
+        @change="updateValue"
       />
       {{ getLabel(option) }}
     </label>
@@ -39,8 +40,15 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-// Use local ref instead of toRef for modelValue to prevent direct mutation
-const localValue = ref([...props.modelValue])
+// Use local ref for modelValue
+const localValue = ref([])
+
+// Initialize localValue
+watch(() => props.modelValue, (newVal) => {
+  if (JSON.stringify(newVal) !== JSON.stringify(localValue.value)) {
+    localValue.value = [...newVal]
+  }
+}, { immediate: true, deep: true })
 
 const getLabel = (option) =>
   typeof option === 'object' ? option[props.optionLabel] : option
@@ -55,43 +63,23 @@ const allSelected = computed(() =>
 
 const toggleAll = () => {
   if (allSelected.value) {
-    emit('update:modelValue', [])
     localValue.value = []
   } else {
-    const all = props.options.map(getValue)
-    emit('update:modelValue', all)
-    localValue.value = [...all]
+    localValue.value = props.options.map(getValue)
   }
+  emit('update:modelValue', [...localValue.value])
 }
 
-// Update local value when modelValue changes
-watch(
-  () => props.modelValue,
-  (newVal) => {
-    localValue.value = [...newVal]
-  }
-)
+const updateValue = () => {
+  emit('update:modelValue', [...localValue.value])
+}
 
-// Update local value when options change
-watch(
-  () => props.options,
-  () => {
-    // Ensure we maintain valid selections when options change
-    const validValues = props.options.map(getValue)
-    const filteredValues = localValue.value.filter(val => validValues.includes(val))
-    localValue.value = filteredValues
-    emit('update:modelValue', filteredValues)
-  }
-)
-
-// Emit changes when localValue changes
-watch(
-  localValue,
-  (newVal) => {
-    emit('update:modelValue', [...newVal])
-  },
-  { deep: true }
-)
+// Ensure valid selections when options change
+watch(() => props.options, () => {
+  const validValues = props.options.map(getValue)
+  localValue.value = localValue.value.filter(val => validValues.includes(val))
+  emit('update:modelValue', [...localValue.value])
+}, { deep: true })
 </script>
 
 <style scoped>
