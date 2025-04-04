@@ -9,16 +9,19 @@
     <ul class="nav-right" v-if="!isMobile">
       <template v-if="isAuthenticated">
         <CustomButton>
-          <router-link to="/favorites" class="navbar-favorites">{{ t('navbar.favorites') }}</router-link>
+          <router-link to="/favorites" class="navbar-button">{{ t('navbar.favorites') }}</router-link>
         </CustomButton>
         <CustomButton>
-          <router-link to ="/my-items" class="navbar-my-items">{{ t('navbar.my-items') }}</router-link>
+          <router-link to ="/my-items" class="navbar-button">{{ t('navbar.my-items') }}</router-link>
         </CustomButton>
         <CustomButton>
-          <router-link to="/create" class="navbar-create-item">{{ t('navbar.create-listing') }}</router-link>
+          <router-link to="/create" class="navbar-button">{{ t('navbar.create-listing') }}</router-link>
         </CustomButton>
         <CustomButton>
-          <router-link to="/messages/conversations" class="navbar-messages">{{ t('navbar.messages') }}</router-link>
+          <router-link to="/messages/conversations" class="navbar-button">{{ t('navbar.messages') }}</router-link>
+        </CustomButton>
+        <CustomButton>
+          <router-link to="/categories" class="navbar-button">Categories</router-link>
         </CustomButton>
         <li class="account-dropdown" ref="dropdownRef">
           <div class = "dropdown-wrapper">
@@ -60,6 +63,9 @@
         </li>
         <li v-if="isAuthenticated">
           <router-link to="/messages/conversations" @click="showMobileMenu = false">{{ t('navbar.messages') }}</router-link>
+        </li>
+        <li>
+          <router-link to="/categories" @click="showMobileMenu = false">Categories</router-link>
         </li>
         <li v-if="isAuthenticated">
           <router-link to="/profile" @click="showMobileMenu = false">{{ t('navbar.profile') }}</router-link>
@@ -122,7 +128,7 @@ onUnmounted(() => {
 })
 
 const checkScreenSize = () => {
-  isMobile.value = window.innerWidth <= 768
+  isMobile.value = window.innerWidth <= 1070
   if (!isMobile.value) showMobileMenu.value = false
 }
 

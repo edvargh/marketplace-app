@@ -4,7 +4,7 @@
     padding: 2rem;
     font-family: 'Abel', sans-serif;
 }
-  
+
 .messages-view-container h3 {
     font-size: 2rem;
     font-weight: bold;
@@ -13,36 +13,31 @@
     text-align: center;
 }
   
-  .messages-container {
+.messages-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
     width: 100%;
-  }
-  
-  .no-messages {
+}
+
+.no-messages {
     text-align: center;
     color: #999;
     font-size: 1.2rem;
     padding: 2rem;
-  }
-  
-  .Message-header{
+}
+
+.Message-header{
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
     font-size: 1.2rem;
     font-weight: bold;
-  }
+}
 
-  .loading-message,
-  .error-message,
-  .no-messages {
+.no-messages {
     text-align: center;
     padding: 1rem;
     font-style: italic;
-  }
-  .error-message {
-    color: red;
-  }
+}

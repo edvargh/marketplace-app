@@ -22,9 +22,7 @@
             <span class="price">{{ item.price }} kr</span>
           </div>
 
-          <div class="status-banner">
-            {{ item.status }}
-          </div>
+          <StatusBanner :status="item.status" />
         </div>
 
       </div>
@@ -34,6 +32,8 @@
 
 
 <script setup>
+import StatusBanner from "@/components/StatusBanner.vue";
+
 defineProps({
   item: {
     type: Object,

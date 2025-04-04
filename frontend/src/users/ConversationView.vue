@@ -1,5 +1,7 @@
 <template>
-  <div class="conversation-container">
+  <LoadingState :loading="isLoading" :error="hasError" loadingMessage="Loading conversation..."/>
+
+  <div v-if="!isLoading && !hasError" class="conversation-container">
     <!-- Participant info -->
     <div class="participant-info">
       <img
@@ -28,9 +30,7 @@
 
     <!-- Messages -->
     <div class="messages-section">
-      <div v-if="isLoading" class="loading-state">Loading messages...</div>
-      <div v-else-if="hasError" class="error-state">Something went wrong. Please try again.</div>
-      <div v-else-if="messages.length === 0" class="empty-state">No messages here yet</div>
+      <div v-if="messages.length === 0" class="empty-state">No messages here yet</div>
       <div v-else>
         <div v-for="msg in messages" :key="msg.id">
           <div v-if="msg.isDateDivider" class="date-divider">
@@ -75,6 +75,7 @@ import { useRoute } from 'vue-router'
 import { useMessageStore } from '@/stores/messageStore'
 import { useUserStore } from '@/stores/userStore'
 import { useItemStore } from '@/stores/itemStore'
+import LoadingState from "@/components/LoadingState.vue";
 
 const route = useRoute()
 const itemId = Number(route.query.itemId)
