@@ -1,5 +1,5 @@
 <template>
-  <LoadingState :loading="isLoading" :error="hasError" :loadingMessage="t('ConversationView.loadingMessage')"/>
+  <LoadingState :loading="isLoading" :error="hasError" loadingMessage="Loading conversation..."/>
 
   <div v-if="!isLoading && !hasError" class="conversation-container">
     <!-- Participant info -->
@@ -10,7 +10,7 @@
         @error="$event.target.src = '/default-picture.jpg'"
       />
       <h2>{{ item.sellerName || 'Unknown Seller' }}</h2>
-  	</div>
+    </div>
 
     <!-- Item preview -->
     <RouterLink
@@ -30,19 +30,8 @@
 
     <!-- Messages -->
     <div class="messages-section">
-      <div v-if="messages.length === 0" class="empty-state">
-        {{ t('ConversationView.noMessages') }}
-      </div>
-      <div v-else>
-        <ReserveBox
-            v-if="hasReservationRequest"
-            :itemId="itemId"
-            :buyerId="currentUserId"
-            :buyerName="userStore.user.fullName"
-            :isSellerView="isCurrentUserSeller"
-            :initialStatus="reservationStatus"
-            @status-changed="handleReservationStatusChange"
-        />
+      <div v-if="messages.length === 0" class="empty-state">No messages here yet</div>
+      <template v-else>
         <div v-for="msg in messages" :key="msg.id">
           <div v-if="msg.isDateDivider" class="date-divider">
             {{ msg.date }}
@@ -57,28 +46,64 @@
               <div class="bubble-time">
                 {{ new Date(msg.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
               </div>
-              <div class="bubble-text">{{ msg.content }}</div>
+
+              <!-- Display regular message or ReserveBox -->
+              <div v-if="msg.isReservationRequest">
+                <ReserveBox
+                  :itemId="itemId"
+                  :buyerId="msg.fromYou ? currentUserId : withUserId"
+                  :buyerName="msg.fromYou ? userStore.user.fullName : item.sellerName"
+                  :isSellerView="!msg.fromYou"
+                  :initialStatus="msg.reservationStatus"
+                  :reservationMessage="msg.content"
+                  @accept="handleAcceptReservation(msg.id)"
+                  @decline="handleDeclineReservation(msg.id)"
+                />
+              </div>
+
+                <div class="bubble-text">{{ msg.content }}</div>
+
+
               <div class="sender-name">{{ getSenderName(msg.senderId) }}</div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
 
-    <!-- Message input -->
     <div class="message-input-wrapper">
-      <input
-        v-model="newMessage"
-        @keyup.enter="sendMessage"
-        :placeholder="t('ConversationView.messagePlaceholder')"
-        class="message-input"
-      />
-      <button @click="sendMessage" :disabled="isSending" class="send-button">
-        {{ isSending ? t('ConversationView.sending') : t('ConversationView.send') }}
+      <div class="message-input-container">
+        <!-- Display ReserveBox if the user clicked from ReserveButton in ItemView -->
+        <ReserveBox
+          v-if="showReserveInput"
+          :itemId="itemId"
+          :buyerId="currentUserId"
+          :buyerName="userStore.user.fullName"
+          :isSellerView="false"
+          :initialStatus="'PENDING'"
+          :showCancel="true"
+          @cancel="showReserveInput = false"
+        />
+
+        <input
+          v-model="newMessage"
+          @keyup.enter="sendMessage"
+          placeholder="Type your message..."
+          class="message-input"
+        />
+      </div>
+
+      <button
+        @click="sendMessage"
+        :disabled="isSending"
+        class="send-button"
+      >
+        {{ isSending ? 'Sending...' : 'Send' }}
       </button>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue'
@@ -88,9 +113,7 @@ import { useUserStore } from '@/stores/userStore'
 import { useItemStore } from '@/stores/itemStore'
 import LoadingState from "@/components/LoadingState.vue";
 import ReserveBox from '@/components/ReserveBox.vue'
-import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
 const route = useRoute()
 const itemId = Number(route.query.itemId)
 const withUserId = Number(route.query.withUserId)
@@ -106,35 +129,28 @@ const newMessage = ref('')
 const isLoading = ref(true)
 const hasError = ref(false)
 const isSending = ref(false)
+const isReserveMode = ref(route.query.reserve === 'true')
+const showReserveInput = ref(isReserveMode.value)
 
 const imageBaseURL = import.meta.env.VITE_API_BASE_URL + '/uploads/'
-
-const isCurrentUserSeller = computed(() => currentUserId === item.value?.sellerId)
-const hasReservationRequest = computed(() => {
-  return messages.value.some(msg => msg.isReservationRequest)
-})
-const reservationStatus = computed(() => {
-  const reservationMsg = messages.value.find(msg => msg.isReservationRequest)
-  return reservationMsg?.reservationStatus || 'pending'
-})
 
 const fetchConversation = async () => {
   try {
     const rawMessages = await messageStore.fetchConversationWithUser(itemId, withUserId)
+    console.log('Raw messages from API:', rawMessages)
 
+    // Fix: Preserve reservation properties in normalized messages
     const normalized = rawMessages.map(msg => ({
       id: msg.id,
       fromYou: msg.fromYou,
       senderId: msg.fromYou ? currentUserId : item.value?.sellerId,
       content: msg.text,
       sentAt: msg.sentAt,
-      isReservationRequest: msg.text === '[RESERVATION_REQUEST]',
-      reservationStatus: msg.text === '[RESERVATION_ACCEPTED]'
-          ? 'ACCEPTED'
-          : msg.text === '[RESERVATION_DECLINED]'
-              ? 'DECLINED'
-              : null
+      isReservationRequest: msg.reservationStatus, // use the DTO field directly
+      reservationStatus: msg.reservationStatus || 'PENDING'
     }))
+
+    console.log('Normalized messages:', normalized)
 
     const grouped = []
     let lastDate = ''
@@ -150,6 +166,7 @@ const fetchConversation = async () => {
 
     messages.value = grouped
   } catch (err) {
+    console.error('Error fetching conversation:', err)
     hasError.value = true
   }
 }
@@ -159,23 +176,55 @@ const fetchItem = async () => {
   try {
     item.value = await itemStore.fetchItemById(itemId)
   } catch (err) {
+    console.error('Error fetching item:', err)
     hasError.value = true
   }
 }
 
 // Send message
 const sendMessage = async () => {
-  if (!newMessage.value.trim() || isSending.value) return
+  if ((!newMessage.value.trim() && !showReserveInput.value) || isSending.value) return
 
   isSending.value = true
   try {
-    await messageStore.sendMessage(itemId, withUserId, newMessage.value)
-    newMessage.value = ''
+    if (showReserveInput.value) {
+      const messageText = newMessage.value.trim() || "I would like to reserve this item"
+      const result = await messageStore.sendReservationRequest(
+        itemId,
+        withUserId,
+        messageText
+      )
+      console.log('Reservation request sent:', result)
+      showReserveInput.value = false // Hide reserve input after sending
+      newMessage.value = '' // Clear input
+    } else {
+      await messageStore.sendMessage(itemId, withUserId, newMessage.value)
+      newMessage.value = ''
+    }
     await fetchConversation()
+  } catch (err) {
+    console.error('Error sending message:', err)
   } finally {
-    setTimeout(() => {
-      isSending.value = false
-    }, 500)
+    isSending.value = false
+  }
+}
+
+// Handle reservation responses
+const handleAcceptReservation = async (messageId) => {
+  try {
+    await messageStore.updateReservationStatus(messageId, 'ACCEPTED')
+    await fetchConversation() // Refresh messages to show updated status
+  } catch (err) {
+    console.error('Error accepting reservation:', err)
+  }
+}
+
+const handleDeclineReservation = async (messageId) => {
+  try {
+    await messageStore.updateReservationStatus(messageId, 'DECLINED')
+    await fetchConversation() // Refresh messages to show updated status
+  } catch (err) {
+    console.error('Error declining reservation:', err)
   }
 }
 
@@ -214,13 +263,13 @@ onMounted(async () => {
   try {
     await Promise.all([fetchItem(), fetchConversation()])
   } catch (err) {
+    console.error('Error in component mounting:', err)
     hasError.value = true
   } finally {
     isLoading.value = false
   }
 })
 </script>
-
 <style scoped>
 @import '../styles/users/ConversationView.css';
 </style>

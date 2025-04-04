@@ -182,6 +182,22 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
+  const updateItemStatus = async (itemId, status) => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.put(
+        `http://localhost:8080/api/items/${itemId}/status`,
+        { status },
+        { headers }
+      );
+      return response.status === 200;
+    } catch (err) {
+      console.error('Error updating item status:', err);
+      return false;
+    }
+  };
+
+
   return {
     fetchMarketItems,
     fetchItemById,
@@ -190,6 +206,7 @@ export const useItemStore = defineStore('items', () => {
     updateItem,
     deleteItem,
     fetchUserFavoriteItems,
-    toggleFavorite
+    toggleFavorite,
+    updateItemStatus
   };
 });

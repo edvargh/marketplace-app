@@ -143,22 +143,20 @@ const handleReserveItem = async () => {
 
     await messageStore.ensureConversationExists(itemId, sellerId)
 
-    const success = await messageStore.sendReservationRequest(itemId, sellerId);
-
-    if (success) {
-      await router.push({
-        name: 'ConversationView',
-        query: {
-          itemId: itemId.toString(),
-          withUserId: sellerId.toString()
-        }
-      });
-    }
+    await router.push({
+      name: 'ConversationView',
+      query: {
+        itemId: itemId.toString(),
+        withUserId: sellerId.toString(),
+        reserve: 'true'
+      }
+    })
   } catch (err) {
     console.error('Error handling reservation:', err)
     alert("Could not reserve the item. Please try again.")
   }
 }
+
 
 const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;

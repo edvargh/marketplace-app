@@ -60,36 +60,38 @@ export const useMessageStore = defineStore('messageStore', () => {
     }
   }
 
-  const sendReservationRequest = async (itemId, receiverId) => {
+  const sendReservationRequest = async (itemId, receiverId, messageText) => {
     try {
-      const headers = getAuthHeaders();
-      const response = await axios.post(
-          `${API_BASE}/reserve`,
-          { itemId, receiverId },
-          { headers }
-      );
-      return response.status === 200;
+      const headers = getAuthHeaders()
+      const payload = {
+        itemId,
+        receiverId,
+        messageText,
+        isReservationRequest: true,
+        reservationStatus: "PENDING"
+      }
+      const response = await axios.post(`${API_BASE}/send-reservation-request`, payload, { headers })
+      return response.status === 200
     } catch (err) {
-      console.error('Error sending reservation:', err);
-      return false;
+      console.error('Error sending reservation request:', err)
+      return false
     }
-  };
+  }
 
   const updateReservationStatus = async (messageId, status) => {
     try {
-      const headers = getAuthHeaders();
-      const response = await axios.patch(
-          `${API_BASE}/reserve/${messageId}`,
-          { status },
-          { headers }
-      );
-      return response.status === 200;
+      const headers = getAuthHeaders()
+      const response = await axios.put(`${API_BASE}/${messageId}/update-reservation-status`,
+        { status },
+        { headers }
+      )
+      return response.status === 200
     } catch (err) {
-      console.error('Error updating reservation:', err);
-      return false;
+      console.error('Error updating reservation status:', err)
+      return false
     }
-  };
-  
+  }
+
   return {
     fetchUserConversations,
     fetchConversationWithUser,
