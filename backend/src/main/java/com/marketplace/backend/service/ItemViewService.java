@@ -30,25 +30,49 @@ public class ItemViewService {
   }
 
   /**
-   * Returns a list of recommended items for a user based on recently viewed categories.
+   * Returns a list of up to 8 recommended items for a user.
+   * If the user has no recent views, fall back to most viewed items globally.
    */
   public List<Item> getRecommendedItems(User user) {
     List<ItemView> recentViews = itemViewRepository.findTop10ByUserOrderByViewedAtDesc(user);
 
-    Set<Long> viewedItemIds = recentViews.stream()
-        .map(iv -> iv.getItem().getId())
-        .collect(Collectors.toSet());
+    if (recentViews.isEmpty()) {
+      return getMostViewedItemsExcludingUser(user, 8);
+    }
 
     Set<Long> categoryIds = recentViews.stream()
         .map(iv -> iv.getItem().getCategory().getId())
         .collect(Collectors.toSet());
 
-    return itemRepository.findAll().stream()
-        .filter(item ->
-            categoryIds.contains(item.getCategory().getId()) &&
-                !viewedItemIds.contains(item.getId()) &&
-                !item.getSeller().getId().equals(user.getId()))
-        .limit(10)
+    List<Item> categoryBased = itemRepository.findAll().stream()
+        .filter(item -> categoryIds.contains(item.getCategory().getId()))
+        .filter(item -> !item.getSeller().getId().equals(user.getId()))
+        .limit(8)
+        .collect(Collectors.toList());
+
+    if (categoryBased.size() >= 8) return categoryBased;
+
+    Set<Long> alreadyIncluded = categoryBased.stream().map(Item::getId).collect(Collectors.toSet());
+    List<Item> fallback = getMostViewedItemsExcludingUser(user, 8 - categoryBased.size()).stream()
+        .filter(item -> !alreadyIncluded.contains(item.getId()))
+        .collect(Collectors.toList());
+
+    List<Item> combined = new ArrayList<>(categoryBased);
+    combined.addAll(fallback);
+    return combined;
+  }
+
+  /**
+   * Returns the most viewed items globally, excluding those from the given user.
+   */
+  private List<Item> getMostViewedItemsExcludingUser(User user, int limit) {
+    return itemViewRepository.findItemIdsWithViewCountsDesc().stream()
+        .map(obj -> (Long) obj[0])
+        .map(itemRepository::findById)
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .filter(item -> !item.getSeller().getId().equals(user.getId()))
+        .limit(limit)
         .collect(Collectors.toList());
   }
 }
