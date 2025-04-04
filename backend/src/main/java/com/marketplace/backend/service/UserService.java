@@ -4,6 +4,7 @@ import com.marketplace.backend.dto.UserResponseDto;
 import com.marketplace.backend.dto.UserUpdateDto;
 import com.marketplace.backend.model.User;
 import com.marketplace.backend.repository.UserRepository;
+import java.io.IOException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service for handling user related business logic.
@@ -21,14 +23,16 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+  private final CloudinaryService cloudinaryService;
 
   /**
    * Constructor for UserService.
    *
    * @param userRepository the repository for user data
    */
-  public UserService(UserRepository userRepository) {
+  public UserService(UserRepository userRepository, CloudinaryService cloudinaryService) {
     this.userRepository = userRepository;
+    this.cloudinaryService = cloudinaryService;
   }
 
   /**
@@ -65,13 +69,28 @@ public class UserService {
       if (dto.getEmail() != null) user.setEmail(dto.getEmail());
       if (dto.getPassword() != null) user.setPassword(passwordEncoder.encode(dto.getPassword()));
       if (dto.getPhoneNumber() != null) user.setPhoneNumber(dto.getPhoneNumber());
-      if (dto.getProfilePicture() != null) user.setProfilePicture(dto.getProfilePicture());
       if (dto.getPreferredLanguage() != null) user.setPreferredLanguage(dto.getPreferredLanguage());
+
+      // 🌤 Upload new profile picture if present
+      MultipartFile picture = dto.getProfilePicture();
+      if (picture != null && !picture.isEmpty()) {
+        try {
+          if (user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
+            String publicId = extractPublicIdFromUrl(user.getProfilePicture());
+            cloudinaryService.deleteImage(publicId);
+          }
+          String url = cloudinaryService.uploadImage(user.getId(), picture);
+          user.setProfilePicture(url);
+        } catch (IOException e) {
+          throw new RuntimeException("Failed to upload profile picture", e);
+        }
+      }
 
       User updated = userRepository.save(user);
       return UserResponseDto.fromEntity(updated);
     });
   }
+
 
   /**
    * Get the current user.
@@ -92,5 +111,14 @@ public class UserService {
   private String getAuthenticatedEmail() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return authentication.getName(); // Spring extracts username from token
+  }
+
+  private String extractPublicIdFromUrl(String imageUrl) {
+    try {
+      String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+      return filename.substring(0, filename.lastIndexOf(".")); // remove file extension
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Invalid Cloudinary URL: " + imageUrl, e);
+    }
   }
 }

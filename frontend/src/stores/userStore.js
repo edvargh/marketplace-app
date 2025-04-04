@@ -17,14 +17,14 @@ export const useUserStore = defineStore('user', () => {
       try {
         const errorData = await response.json()
         errorMessage = errorData.message || errorMessage
-      } catch (e) {
+      } catch {
         errorMessage = 'Oops! Email or password is incorrect'
       }
       throw new Error(errorMessage)
     }
 
     const data = await response.json()
-    localStorage.setItem('token', data.token) 
+    localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify(data.user))
     user.value = data.user
     isAuthenticated.value = true
@@ -41,7 +41,6 @@ export const useUserStore = defineStore('user', () => {
       const errorData = await response.json()
       throw new Error(errorData.message || 'Registration failed')
     }
-
     return await response.json()
   }
 
@@ -73,62 +72,59 @@ export const useUserStore = defineStore('user', () => {
       user.value = data
       localStorage.setItem('user', JSON.stringify(data))
       isAuthenticated.value = true
-    } catch (error) {
+    } catch {
       logout()
     }
   }
 
-  const updateUser = async (updateData) => {
-    const token = localStorage.getItem('token');
-    const currentUser = user.value;
-    
-  
-    if (!token || !currentUser?.id) {
-      console.error('[UpdateUser] Missing token or user ID - not authenticated');
-      throw new Error('Not authenticated');
+  const updateUser = async (rawFormData) => {
+    const token = localStorage.getItem('token')
+    if (!token) throw new Error('No authentication token found')
+
+    const currentUser = user.value
+    if (!currentUser?.id) throw new Error('Not authenticated')
+
+    const formDataToSend = new FormData()
+
+    const userData = {
+      fullName: rawFormData.fullName,
+      email: rawFormData.email,
+      password: rawFormData.password,
+      phoneNumber: rawFormData.phoneNumber,
+      preferredLanguage: rawFormData.preferredLanguage,
     }
-  
-    try {
-      const requestBody = {
-        id: currentUser.id,
-        fullName: updateData.fullName || currentUser.fullName,
-        email: updateData.email || currentUser.email,
-        phoneNumber: updateData.phoneNumber || currentUser.phoneNumber,
-        language: updateData.language || currentUser.language,
-        password: updateData.password ? updateData.password : undefined
-      };
-  
-      const response = await fetch(`http://localhost:8080/api/users/${currentUser.id}`, {
-        method: 'PUT',  
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(requestBody)
-      });
-  
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[UpdateUser] Update failed:', errorText);
-        try {
-          const errorData = JSON.parse(errorText);
-          throw new Error(errorData.message || 'Update failed');
-        } catch {
-          throw new Error(errorText || 'Update failed');
-        }
-      }
-  
-      const updatedUser = await response.json();
-  
-      user.value = updatedUser;  
-      localStorage.setItem('user', JSON.stringify(user.value));
-      return updatedUser;
-    } catch (error) {
-      console.error('[UpdateUser] Error:', error);
-      throw error;
+    formDataToSend.append(
+      'dto',
+      new Blob([JSON.stringify(userData)], { type: 'application/json' })
+    )
+
+    if (rawFormData.profilePicture instanceof File) {
+      formDataToSend.append('profilePicture', rawFormData.profilePicture)
     }
-  };
+
+    const response = await fetch(`http://localhost:8080/api/users/${currentUser.id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formDataToSend
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => null)
+      let errorMsg = errorText || 'Update failed'
+      try {
+        const errorData = JSON.parse(errorText)
+        errorMsg = errorData.message || errorMsg
+      } catch {}
+      throw new Error(errorMsg)
+    }
+
+    const updatedUser = await response.json()
+    user.value = updatedUser
+    localStorage.setItem('user', JSON.stringify(updatedUser))
+    return updatedUser
+  }
 
   return {
     user,
@@ -138,6 +134,5 @@ export const useUserStore = defineStore('user', () => {
     logout,
     checkAuth,
     updateUser
-
   }
 })
