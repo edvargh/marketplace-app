@@ -55,6 +55,16 @@ public class ItemService {
   }
 
   /**
+   * Find an item by its ID.
+   *
+   * @param id the ID of the item
+   * @return an optional item if found
+   */
+  public Optional<Item> findById(Long id) {
+    return itemRepository.findById(id);
+  }
+
+  /**
    * Get all items, optionally filtered by price, category, search query, location, and distance.
    *
    * @param minPrice    the minimum price
@@ -211,7 +221,6 @@ public class ItemService {
    */
   public Optional<ItemResponseDto> updateItem(Long id, ItemUpdateDto dto) {
     return itemRepository.findById(id).map(item -> {
-      // Update basic fields
       if (dto.getTitle() != null) item.setTitle(dto.getTitle());
       if (dto.getDescription() != null) item.setDescription(dto.getDescription());
       if (dto.getPrice() != null) item.setPrice(dto.getPrice());
@@ -219,20 +228,17 @@ public class ItemService {
       if (dto.getLongitude() != null) item.setLongitude(dto.getLongitude());
       if (dto.getStatus() != null) item.setStatus(dto.getStatus());
 
-      // 🧹 Delete old images from Cloudinary
       item.getImages().forEach(image -> {
         image.setItem(null);
         try {
           String publicId = extractPublicIdFromUrl(image.getImageUrl());
           cloudinaryService.deleteImage(publicId);
         } catch (IOException e) {
-          // Optionally log the error instead of crashing the update
           throw new RuntimeException("Failed to delete old image from Cloudinary", e);
         }
       });
       item.getImages().clear();
 
-      // 📤 Upload new images
       if (dto.getImages() != null && !dto.getImages().isEmpty()) {
         Long userId = item.getSeller().getId();
         for (MultipartFile imageFile : dto.getImages()) {
@@ -269,7 +275,7 @@ public class ItemService {
     Item item = itemOpt.get();
 
     if (!item.getSeller().getId().equals(user.getId())) {
-      return false; // Only the seller can delete
+      return false;
     }
 
     itemRepository.delete(item);
