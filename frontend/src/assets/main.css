@@ -59,5 +59,11 @@ html, body {
   cursor: pointer;
 }
 
+@media (max-width: 600px), (max-height: 800px) {
+  #app {
+    padding: 0.5rem;
+  }
+}
+
 
 

@@ -1,5 +1,5 @@
 .item-card {
-    min-width: 0;
+    width: 100%;
     max-width: 100%;
     border-radius: 16px;
     overflow: hidden;
@@ -90,5 +90,52 @@
 
 .price {
     font-weight: 700;
+}
+
+@media (max-width: 620px) or (max-height: 800px) {
+    .card-image-container {
+        height: 100px;
+    }
+
+    :deep(.status-banner) {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+
+    .card-header {
+        gap: 5px;
+        margin-bottom: 5px;
+    }
+
+    .title {
+        font-size: 13px;
+    }
+
+    .card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .price-frame {
+        padding-left: 0;
+        padding-top: 0;
+    }
+
+    .price-label {
+        font-size: 11px;
+    }
+
+    .price {
+        font-size: 13px;
+    }
+
+    .profile-badge {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
 }
 

@@ -29,7 +29,7 @@
           :key="item.id"
           :item="item"
         />
-    </HorizontalPagination>
+      </HorizontalPagination>
     
     <div v-if="recommendedItems.length === 0" class="no-items-message">
         {{ t('homeView.No-recommendet-items-found') }}

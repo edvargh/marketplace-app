@@ -4,7 +4,7 @@
   align-items: center;
   gap: 20px;
   min-height: 100vh;
-  margin-top: 100px;
+  margin-top: 70px;
   margin-bottom: 5px;
   width: 100%;
   max-width: 1200px;
@@ -55,6 +55,28 @@
   font-size: 1.2rem;
   width: 100%;
 }
+
+@media (max-width: 600px) or (max-height: 800px) {
+  .home-container {
+    margin-top: 20px;
+  }
+
+  .search-filter-container {
+    gap: 0.1rem
+  }
+
+  .detailed-cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+
+  .compact-cards-container {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+}
+
 
 
 

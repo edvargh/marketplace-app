@@ -11,7 +11,7 @@
         <div class="original-container" ref="originalContainerRef">
           <slot></slot>
         </div>
-        
+
         <div class="clone-container end-clone" ref="endCloneRef">
           <slot name="clone-start"></slot>
         </div>
@@ -33,7 +33,7 @@
   const scrollOffset = 300
   
   const isScrolling = ref(false)
-  
+
   function scrollLeft() {
     if (scrollContainerRef.value) {
       isScrolling.value = true
@@ -41,7 +41,7 @@
         left: -scrollOffset,
         behavior: 'smooth'
       })
-      
+
       setTimeout(() => {
         isScrolling.value = false
       }, 500)
@@ -55,7 +55,7 @@
         left: scrollOffset,
         behavior: 'smooth'
       })
-      
+
       setTimeout(() => {
         isScrolling.value = false
       }, 500)
@@ -160,5 +160,5 @@
   </script>
   
   <style>
-  @import '../styles/components/HorizontalPagination.css'
+  @import '../styles/components/HorizontalPagination.css';
   </style>
