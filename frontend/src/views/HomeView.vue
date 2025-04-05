@@ -22,14 +22,16 @@
       <div class="section-header">
         <h2>{{ t('homeView.Your-recommendations') }}</h2>
       </div>
-      <div v-if="recommendedItems.length > 0" class="detailed-cards-container">
+
+      <HorizontalPagination>
         <DetailedItemCard
           v-for="item in recommendedItems"
           :key="item.id"
           :item="item"
         />
-      </div>
-      <div v-else class="no-items-message">
+    </HorizontalPagination>
+    
+    <div v-if="recommendedItems.length === 0" class="no-items-message">
         {{ t('homeView.No-recommendet-items-found') }}
       </div>
     </section>
@@ -78,6 +80,7 @@ import { useCategoryStore } from "@/stores/categoryStore"
 import { useItemStore } from "@/stores/itemStore"
 import FilterPanel from '@/components/FilterPanel.vue'
 import CustomButton from "@/components/CustomButton.vue"
+import HorizontalPagination from '@/components/HorizontalPagination.vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { useFilterStore } from '@/stores/filterStore'
