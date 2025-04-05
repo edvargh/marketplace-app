@@ -137,8 +137,6 @@ const imageBaseURL = import.meta.env.VITE_API_BASE_URL + '/uploads/'
 const fetchConversation = async () => {
   try {
     const rawMessages = await messageStore.fetchConversationWithUser(itemId, withUserId)
-    console.log('Raw messages from API:', rawMessages)
-
     const normalized = rawMessages.map(msg => ({
       messageId: msg.messageId,
       fromYou: msg.fromYou,
@@ -148,8 +146,6 @@ const fetchConversation = async () => {
       isReservationRequest: msg.reservationStatus,
       reservationStatus: msg.reservationStatus || 'PENDING'
     }))
-
-    console.log('Normalized messages:', normalized)
 
     const grouped = []
     let lastDate = ''
@@ -212,8 +208,7 @@ const sendMessage = async () => {
 const handleAcceptReservation = async (messageId) => {
   try {
     await messageStore.updateReservationStatus(messageId, 'ACCEPTED');
-
-    // TODO: Backend method for updating status of an item
+    await itemStore.updateItemStatus(itemId, 'RESERVED');
     await Promise.all([fetchConversation(), fetchItem()]);
 
   } catch (err) {
