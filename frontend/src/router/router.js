@@ -113,14 +113,21 @@ router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore(pinia)
 
   await userStore.checkAuth()
+  const userRole = userStore.user?.role
+
+  console.log(userRole)
 
   if (userStore.isAuthenticated) {
     // Redirect to HomePage if trying to access login/register/frontpage
     if (to.name === 'login' || to.name === 'register' || to.name === 'frontpage') {
       next({ name: 'home' })
+    } else if (to.meta.role && to.meta.role !== userRole) {
+      // User is logged in, but does not have the required role
+      next({ name: 'home' })
     } else {
       next()
     }
+
   } else {
     if (to.meta.requiresAuth) {
       // Redirect to login page if page requires authentication
