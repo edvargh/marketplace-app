@@ -75,7 +75,7 @@ class ItemViewControllerTest {
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldLogItemView() throws Exception {
-    mockMvc.perform(post("/api/items/" + testItem.getId()))
+    mockMvc.perform(post("/api/items/" + testItem.getId() + "/view"))
         .andExpect(status().isOk());
   }
 
@@ -94,7 +94,7 @@ class ItemViewControllerTest {
     otherItem.setStatus(ItemStatus.FOR_SALE);
     itemRepository.save(otherItem);
 
-    mockMvc.perform(post("/api/items/" + testItem.getId()))
+    mockMvc.perform(post("/api/items/" + testItem.getId() + "/view"))
         .andExpect(status().isOk());
 
     mockMvc.perform(get("/api/items/recommended"))

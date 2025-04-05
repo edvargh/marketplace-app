@@ -49,6 +49,10 @@ public class Item {
   @ManyToMany(mappedBy = "favoriteItems")
   private List<User> favoritedByUsers = new ArrayList<>();
 
+  @ManyToOne
+  @JoinColumn(name = "reserved_by_id")
+  private User reservedBy;
+
 
   /**
    * Default constructor.
@@ -294,6 +298,14 @@ public class Item {
 
   public void setFavoritedByUsers(List<User> likedByUsers) {
     this.favoritedByUsers = likedByUsers;
+  }
+
+  public User getReservedBy() {
+    return reservedBy;
+  }
+
+  public void setReservedBy(User reservedBy) {
+    this.reservedBy = reservedBy;
   }
 
 }

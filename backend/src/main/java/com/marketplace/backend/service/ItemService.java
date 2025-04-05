@@ -199,7 +199,7 @@ public class ItemService {
     item.setStatus(ItemStatus.FOR_SALE);
 
     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-      Long userId = seller.getId(); // 👈 get the user ID for namespacing
+      Long userId = seller.getId();
       for (MultipartFile imageFile : dto.getImages()) {
         String url = cloudinaryService.uploadImage(userId, imageFile);
         Image image = new Image(item, url);
@@ -226,7 +226,6 @@ public class ItemService {
       if (dto.getPrice() != null) item.setPrice(dto.getPrice());
       if (dto.getLatitude() != null) item.setLatitude(dto.getLatitude());
       if (dto.getLongitude() != null) item.setLongitude(dto.getLongitude());
-      if (dto.getStatus() != null) item.setStatus(dto.getStatus());
 
       item.getImages().forEach(image -> {
         image.setItem(null);
@@ -289,24 +288,36 @@ public class ItemService {
    * @param newStatus the new status of the item
    * @return true if the status was updated, false otherwise
    */
-  public boolean updateItemStatus(Long itemId, ItemStatus newStatus) {
+  public boolean updateItemStatus(Long itemId, ItemStatus newStatus, Long buyerId) {
     String email = getAuthenticatedEmail();
-    Optional<User> userOpt = userRepository.findByEmail(email);
+    Optional<User> sellerOpt = userRepository.findByEmail(email);
     Optional<Item> itemOpt = itemRepository.findById(itemId);
 
-    if (userOpt.isEmpty() || itemOpt.isEmpty()) return false;
+    if (sellerOpt.isEmpty() || itemOpt.isEmpty()) return false;
 
-    User user = userOpt.get();
+    User seller = sellerOpt.get();
     Item item = itemOpt.get();
 
-    if (!item.getSeller().getId().equals(user.getId())) {
+    if (!item.getSeller().getId().equals(seller.getId())) {
       return false;
     }
 
     item.setStatus(newStatus);
+
+    if (newStatus == ItemStatus.RESERVED) {
+      if (buyerId == null) return false;
+      Optional<User> buyerOpt = userRepository.findById(buyerId);
+      if (buyerOpt.isEmpty()) return false;
+
+      item.setReservedBy(buyerOpt.get());
+    } else {
+      item.setReservedBy(null);
+    }
+
     itemRepository.save(item);
     return true;
   }
+
 
   /**
    * Get the email of the authenticated user.
