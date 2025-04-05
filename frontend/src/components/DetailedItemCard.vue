@@ -1,9 +1,7 @@
 <template>
   <router-link :to="{ name: 'ItemView', params: { id: item.id } }" class="item-card-link">
     <div class="item-card">
-      <div class="status-banner">
-        {{ item.status }}
-      </div>
+      <StatusBanner :status="item.status" />
 
       <div class="card-image-container">
         <img :src="item.imageUrls && item.imageUrls.length > 0 ? item.imageUrls[0] : '/no-image.png'" alt="Image" class="card-image" />
@@ -30,6 +28,8 @@
 
 
 <script setup>
+import StatusBanner from '@/components/StatusBanner.vue'
+
 defineProps({
   item: {
     type: Object,
