@@ -41,3 +41,8 @@
     padding: 1rem;
     font-style: italic;
 }
+
+.status-banner-container :deep(.status-banner) {
+    align-self: flex-end;
+}
+

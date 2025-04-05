@@ -81,11 +81,14 @@ export const useMessageStore = defineStore('messageStore', () => {
   const updateReservationStatus = async (messageId, status) => {
     try {
       const headers = getAuthHeaders()
-      const response = await axios.put(`${API_BASE}/${messageId}/update-reservation-status`,
-        { status },
+
+      const response = await axios.put(
+        `${API_BASE}/${messageId}/update-reservation-status?status=${status}`,
+        {},
         { headers }
       )
       return response.status === 200
+
     } catch (err) {
       console.error('Error updating reservation status:', err)
       return false

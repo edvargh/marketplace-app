@@ -6,13 +6,14 @@
     <div class="participant-info">
       <img
         class="profile-pic"
-        :src="getProfileImage(item.value?.sellerId)"
+        :src="getProfileImage(withUserId)"
         @error="$event.target.src = '/default-picture.jpg'"
       />
-      <h2>{{ item.sellerName || 'Unknown Seller' }}</h2>
+      <h2>{{ getSenderName(withUserId) }}</h2>
     </div>
 
     <!-- Item preview -->
+    <!-- TODO: Own component? Same component as ConversationPreviewCard? -->
     <RouterLink
       :to="`/item/${itemId}`"
       class="item-preview"
@@ -20,10 +21,10 @@
     >
       <img :src="item.imageUrls?.[0] || '/no-image.png'" alt="item" />
       <div class="item-details-wrapper">
-        <div class="item-details">
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.price }} kr</p>
-          <p>Status: {{ item.status }}</p>
+        <h3 class="item-title">{{ item.title }}</h3>
+        <div class="price-status-wrapper">
+          <p class="price">{{ item.price }} kr</p>
+          <StatusBanner :status="item.status" class="status-banner"></StatusBanner>
         </div>
       </div>
     </RouterLink>
@@ -47,7 +48,7 @@
                 {{ new Date(msg.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
               </div>
 
-              <!-- Display regular message or ReserveBox -->
+              <!-- Display regular message or ReserveBox with message -->
               <div v-if="msg.isReservationRequest">
                 <ReserveBox
                   :itemId="itemId"
@@ -56,14 +57,12 @@
                   :isSellerView="!msg.fromYou"
                   :initialStatus="msg.reservationStatus"
                   :reservationMessage="msg.content"
-                  @accept="handleAcceptReservation(msg.id)"
-                  @decline="handleDeclineReservation(msg.id)"
+                  @accept="handleAcceptReservation(msg.messageId)"
+                  @decline="handleDeclineReservation(msg.messageId)"
                 />
               </div>
 
-                <div class="bubble-text">{{ msg.content }}</div>
-
-
+              <div class="bubble-text">{{ msg.content }}</div>
               <div class="sender-name">{{ getSenderName(msg.senderId) }}</div>
             </div>
           </div>
@@ -113,6 +112,7 @@ import { useUserStore } from '@/stores/userStore'
 import { useItemStore } from '@/stores/itemStore'
 import LoadingState from "@/components/LoadingState.vue";
 import ReserveBox from '@/components/ReserveBox.vue'
+import StatusBanner from '@/components/StatusBanner.vue'
 
 const route = useRoute()
 const itemId = Number(route.query.itemId)
@@ -139,14 +139,13 @@ const fetchConversation = async () => {
     const rawMessages = await messageStore.fetchConversationWithUser(itemId, withUserId)
     console.log('Raw messages from API:', rawMessages)
 
-    // Fix: Preserve reservation properties in normalized messages
     const normalized = rawMessages.map(msg => ({
-      id: msg.id,
+      messageId: msg.messageId,
       fromYou: msg.fromYou,
       senderId: msg.fromYou ? currentUserId : item.value?.sellerId,
       content: msg.text,
       sentAt: msg.sentAt,
-      isReservationRequest: msg.reservationStatus, // use the DTO field directly
+      isReservationRequest: msg.reservationStatus,
       reservationStatus: msg.reservationStatus || 'PENDING'
     }))
 
@@ -163,8 +162,8 @@ const fetchConversation = async () => {
       }
       grouped.push(msg)
     }
-
     messages.value = grouped
+
   } catch (err) {
     console.error('Error fetching conversation:', err)
     hasError.value = true
@@ -209,20 +208,24 @@ const sendMessage = async () => {
   }
 }
 
-// Handle reservation responses
+// Accept reservation
 const handleAcceptReservation = async (messageId) => {
   try {
-    await messageStore.updateReservationStatus(messageId, 'ACCEPTED')
-    await fetchConversation() // Refresh messages to show updated status
+    await messageStore.updateReservationStatus(messageId, 'ACCEPTED');
+
+    // TODO: Backend method for updating status of an item
+    await Promise.all([fetchConversation(), fetchItem()]);
+
   } catch (err) {
-    console.error('Error accepting reservation:', err)
+    console.error('Error accepting reservation:', err);
   }
 }
 
+// Decline reservation
 const handleDeclineReservation = async (messageId) => {
   try {
     await messageStore.updateReservationStatus(messageId, 'DECLINED')
-    await fetchConversation() // Refresh messages to show updated status
+    await fetchConversation()
   } catch (err) {
     console.error('Error declining reservation:', err)
   }
@@ -236,6 +239,7 @@ const getSenderName = (senderId) => {
 }
 
 // Get profile image
+// TODO: Get to work
 const getProfileImage = (userId) => {
   const defaultImage = '/default-picture.jpg'
   if (userId === currentUserId) {
@@ -243,7 +247,6 @@ const getProfileImage = (userId) => {
       ? `${imageBaseURL}${userStore.user.profileImage}`
       : defaultImage
   }
-
   return item.value?.sellerId === userId && item.value?.sellerProfileImage
     ? `${imageBaseURL}${item.value.sellerProfileImage}`
     : defaultImage
@@ -270,6 +273,7 @@ onMounted(async () => {
   }
 })
 </script>
+
 <style scoped>
 @import '../styles/users/ConversationView.css';
 </style>
