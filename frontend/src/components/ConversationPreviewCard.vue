@@ -6,7 +6,7 @@
             :src="conversation.item.imageUrls && conversation.item.imageUrls.length > 0
               ? conversation.item.imageUrls[0]
               : '/no-image.png'"
-            alt="Item image"
+            alt="t('ConversationPreviewCard.itemImageAlt')"
         />
       </div>
 
@@ -16,9 +16,6 @@
           <p class="price">{{ conversation.item.price }} kr</p>
         </div>
         <p class="latest-message">
-            <span class="sender-indicator">
-              {{ lastMessageSenderIndicator }}:
-            </span>
           {{ conversation.latestMessage }}
         </p>
         <div class="status-banner-container">
@@ -30,8 +27,8 @@
 </template>
   
   <script setup>
-  import { computed } from "vue";
   import { useRouter } from 'vue-router'
+  import { useI18n } from 'vue-i18n'
   import StatusBanner from "@/components/StatusBanner.vue";
   
   const props = defineProps({
@@ -39,10 +36,7 @@
   })
   
   const router = useRouter()
-
-  const lastMessageSenderIndicator = computed(() => {
-    return props.conversation.lastMessageFromYou ? 'You' : props.conversation.withUserName
-  })
+  const { t } = useI18n()
   
   const goToConversation = () => {
     router.push({
@@ -57,12 +51,5 @@
   
   <style scoped>
   @import '../styles/components/ConversationPreviewCard.css';
-  
-  .card-image-container img {
-    max-width: 100px;
-    max-height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
   </style>
   

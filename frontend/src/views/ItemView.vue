@@ -24,7 +24,7 @@
       <div class="action-buttons">
         <template v-if="!isMyItem">
           <button class="message-btn" @click="handleMessageSeller">Send message</button>
-          <button class="reserve-btn">Reserve item</button>
+          <button class="reserve-btn" @click="handleReserveItem">Reserve item</button>
           <button class="blue-btn">Buy Now</button>
         </template>
         <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
@@ -123,7 +123,7 @@ const handleMessageSeller = async () => {
   try {
     await messageStore.ensureConversationExists(itemId, sellerId);
 
-    router.push({
+    await router.push({
       name: 'ConversationView',
       query: {
         itemId: itemId.toString(),
@@ -135,6 +135,28 @@ const handleMessageSeller = async () => {
     alert("Could not start a conversation with the seller.");
   }
 };
+
+const handleReserveItem = async () => {
+  try {
+    const itemId = item.value.id
+    const sellerId = item.value.sellerId
+
+    await messageStore.ensureConversationExists(itemId, sellerId)
+
+    await router.push({
+      name: 'ConversationView',
+      query: {
+        itemId: itemId.toString(),
+        withUserId: sellerId.toString(),
+        reserve: 'true'
+      }
+    })
+  } catch (err) {
+    console.error('Error handling reservation:', err)
+    alert("Could not reserve the item. Please try again.")
+  }
+}
+
 
 const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;

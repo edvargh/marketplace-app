@@ -20,7 +20,7 @@
 
 .card-image-container img {
     width: 70px;
-    height: 80px;
+    height: 70px;
     object-fit: cover;
     border-radius: 8px;
 }
@@ -30,21 +30,13 @@
     display: flex;
     flex-direction: column;
     gap: 0;
+    min-width: 0;
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: bold;
-    width: 100%;
-}
-
-.title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
     font-weight: bold;
 }
 
@@ -53,14 +45,25 @@
     margin-left: auto;
 }
 
-.latest-message {
-    color: #555;
-    white-space: nowrap;
+.title {
     overflow: hidden;
     text-overflow: ellipsis;
+    flex: 1;
+    font-weight: bold;
+    white-space: nowrap;
+    padding-right: 20px;
 }
+
+.latest-message {
+    color: #555;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 
 .with-user-name {
     color: #888;
     font-size: 0.9rem;
 }
+
