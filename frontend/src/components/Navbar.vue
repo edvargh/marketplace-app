@@ -48,7 +48,7 @@
       </template>
     </ul>
     <!-- Mobile Nav -->
-    <div class="hamburger-menu" v-if="isMobile">
+    <div class="hamburger-menu" v-if="isMobile" ref="mobileMenuRef">
       <CustomButton @click="toggleMobileMenu">☰</CustomButton>
       <Teleport to="body">
       <ul v-if="showMobileMenu" class="mobile-dropdown">
@@ -93,13 +93,12 @@ import { Teleport } from 'vue'
 
 const userStore = useUserStore()
 const router = useRouter()
-
 const { t } = useI18n()
-
-const isAuthenticated = computed(() => userStore.isAuthenticated)
-
+const mobileMenuRef = ref(null)
 const showMobileMenu = ref(false)
 const isMobile = ref(false)
+
+const isAuthenticated = computed(() => userStore.isAuthenticated)
 
 const handleLogout = async () => {
   userStore.logout()
@@ -116,6 +115,9 @@ const toggleDropdown = () => {
 const handleClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     dropdownOpen.value = false
+  }
+  if (mobileMenuRef.value && !mobileMenuRef.value.contains(event.target)) {
+    showMobileMenu.value = false
   }
 }
 
