@@ -22,6 +22,7 @@ public class ItemView {
   @JoinColumn(name = "item_id")
   private Item item;
 
+  @Column(name = "viewed_at")
   private LocalDateTime viewedAt = LocalDateTime.now();
 
   /**
