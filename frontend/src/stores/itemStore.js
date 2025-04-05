@@ -46,6 +46,31 @@ export const useItemStore = defineStore('items', () => {
     }
   }
 
+  const fetchRecommendedItems = async () => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.get(`http://localhost:8080/api/items/recommended`, { headers });
+      return response.data;
+    } catch (err) {
+      console.error('Failed to fetch recommended items:', err);
+      return [];
+    }
+  }
+
+  const logItemView = async (itemId) => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.post(
+        `http://localhost:8080/api/items/${itemId}/view`, 
+        {}, 
+        { headers }
+      );
+      return response.status === 200;
+    } catch (err) {
+      return false;
+    }
+  };
+
   const fetchUserFavoriteItems = async () => {
     try {
       const headers = getAuthHeaders();
@@ -231,6 +256,8 @@ export const useItemStore = defineStore('items', () => {
     fetchMarketItems,
     fetchItemById,
     fetchUserItems,
+    fetchRecommendedItems,
+    logItemView,
     createItem,
     updateItem,
     deleteItem,
