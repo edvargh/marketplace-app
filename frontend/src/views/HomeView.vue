@@ -15,7 +15,7 @@
       @applyFilters="handleApplyFilters"
     />
 
-    <Categories :categories="categories" />
+    <Categories :categories="categories" @category-click="handleCategoryClick" />
 
     <!-- Recommended Items -->
     <section class="recommendations">
@@ -135,6 +135,15 @@ function handleApplyFilters() {
 
   router.push({ path: '/items', query })
 }
+
+function handleCategoryClick(category) {
+  const query = {
+    categoryIds: category.id.toString(),
+    searchQuery: ''
+  };
+  router.push({ path: '/items', query });
+}
+
 </script>
 
 <style scoped>
