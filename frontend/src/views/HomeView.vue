@@ -9,7 +9,6 @@
       </CustomButton>
     </div>
 
-    <!-- ✅ FilterPanel with categories passed in -->
     <FilterPanel
       v-if="showFilters  && categories.length > 0"
       :categories="categories"
@@ -81,11 +80,13 @@ import FilterPanel from '@/components/FilterPanel.vue'
 import CustomButton from "@/components/CustomButton.vue"
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
+import { useFilterStore } from '@/stores/filterStore'
 
 
 const route = useRoute()
 const router = useRouter()
 
+const filterStore = useFilterStore()
 
 const { t } = useI18n()
 
@@ -123,56 +124,12 @@ const toggleFilterPanel = () => {
   showFilters.value = !showFilters.value
 }
 
-
-// This should be used in both HomeView.vue and SearchResultView.vue
-
-// This should be the same in both components
-const handleApplyFilters = (filters) => {
-  const query = {
-    ...route.query,
+function handleApplyFilters() {
+  const query = filterStore.buildFiltersQuery({
     searchQuery: route.query.searchQuery || ''
-  };
+  })
 
-  // Handle categories consistently
-  if (filters.categoryIds && filters.categoryIds.length) {
-    query.categoryIds = filters.categoryIds.map(id => id.toString());
-  } else {
-    delete query.categoryIds;
-  }
-  
-  // Handle other filters
-  if (filters.priceMin !== null && filters.priceMin !== undefined && filters.priceMin !== '') {
-    query.minPrice = filters.priceMin;
-  } else {
-    delete query.minPrice;
-  }
-  
-  if (filters.priceMax !== null && filters.priceMax !== undefined && filters.priceMax !== '') {
-    query.maxPrice = filters.priceMax;
-  } else {
-    delete query.maxPrice;
-  }
-  
-  if (filters.distanceKm !== null && filters.distanceKm !== undefined && filters.distanceKm !== '') {
-    query.distanceKm = filters.distanceKm;
-  } else {
-    delete query.distanceKm;
-  }
-  
-  if (filters.latitude !== null && filters.latitude !== undefined) {
-    query.latitude = filters.latitude;
-  } else {
-    delete query.latitude;
-  }
-  
-  if (filters.longitude !== null && filters.longitude !== undefined) {
-    query.longitude = filters.longitude;
-  } else {
-    delete query.longitude;
-  }
-
-  // Navigate to search results
-  router.push({ path: '/items', query });
+  router.push({ path: '/items', query })
 }
 </script>
 

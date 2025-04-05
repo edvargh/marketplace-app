@@ -1,5 +1,3 @@
-// stores/filterStore.js - Assuming this file exists, here's how it should handle state
-
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
@@ -11,20 +9,63 @@ export const useFilterStore = defineStore('filter', () => {
   const latitude = ref(null)
   const longitude = ref(null)
 
-  // Set all filters at once
-  function setFilters(filters) {
-    if (filters.categoryIds) {
-      // Ensure they're numbers
-      selectedCategoryIds.value = Array.isArray(filters.categoryIds) 
-        ? filters.categoryIds.map(id => typeof id === 'string' ? parseInt(id, 10) : id)
-        : []
+  function setFilters(filters = {}) {
+    selectedCategoryIds.value = Array.isArray(filters.categoryIds)
+      ? filters.categoryIds.map(id => Number(id))
+      : []
+    priceMin.value = filters.priceMin ?? ''
+    priceMax.value = filters.priceMax ?? ''
+    distanceKm.value = filters.distanceKm ?? ''
+    latitude.value = filters.latitude ?? null
+    longitude.value = filters.longitude ?? null
+  }
+
+  function buildFiltersQuery(baseQuery = {}) {
+    const query = { ...baseQuery }
+
+    // Categories
+    if (selectedCategoryIds.value.length) {
+      query.categoryIds = selectedCategoryIds.value.map(id => String(id))
+    } else {
+      delete query.categoryIds
     }
-    
-    priceMin.value = filters.priceMin !== undefined ? filters.priceMin : ''
-    priceMax.value = filters.priceMax !== undefined ? filters.priceMax : ''
-    distanceKm.value = filters.distanceKm !== undefined ? filters.distanceKm : ''
-    latitude.value = filters.latitude !== undefined ? filters.latitude : null
-    longitude.value = filters.longitude !== undefined ? filters.longitude : null
+
+    // Price min
+    if (priceMin.value !== '') {
+      query.minPrice = priceMin.value
+    } else {
+      delete query.minPrice
+    }
+
+    // Price max
+    if (priceMax.value !== '') {
+      query.maxPrice = priceMax.value
+    } else {
+      delete query.maxPrice
+    }
+
+    // Distance
+    if (distanceKm.value !== '') {
+      query.distanceKm = distanceKm.value
+    } else {
+      delete query.distanceKm
+    }
+
+    // Latitude
+    if (latitude.value !== null) {
+      query.latitude = latitude.value
+    } else {
+      delete query.latitude
+    }
+
+    // Longitude
+    if (longitude.value !== null) {
+      query.longitude = longitude.value
+    } else {
+      delete query.longitude
+    }
+
+    return query
   }
 
   return {
@@ -34,6 +75,7 @@ export const useFilterStore = defineStore('filter', () => {
     distanceKm,
     latitude,
     longitude,
-    setFilters
+    setFilters,
+    buildFiltersQuery
   }
 })

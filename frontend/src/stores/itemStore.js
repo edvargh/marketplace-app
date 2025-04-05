@@ -18,16 +18,10 @@ export const useItemStore = defineStore('items', () => {
 
   const fetchMarketItems = async () => {
     try {
-      const token = localStorage.getItem('token');
-      console.log("Token:", token); 
-
       const headers = getAuthHeaders();
       const response = await axios.get('http://localhost:8080/api/items', { headers });
-      console.log("API response:", response);
-
       return response.data;
     } catch (err) {
-      console.error('Error fetching all items:', err);
       return [];
     }
   };
@@ -38,7 +32,6 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.get(`http://localhost:8080/api/items/${id}`, { headers });
       return response.data;
     } catch (err) {
-      console.error(`Error fetching item with ID ${id}:`, err);
       throw err;
     }
   };
@@ -49,7 +42,6 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.get(`http://localhost:8080/api/items/my-items`, { headers });
       return response.data;
     } catch (err) {
-      console.error(`Error fetching items:`, err);
       throw err;
     }
   }
@@ -60,7 +52,6 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.get(`http://localhost:8080/api/items/favorites`, { headers });
       return response.data;
     } catch (err) {
-      console.error(`Error fetching favorite items:`, err);
       throw err;
     }
   }
@@ -71,7 +62,6 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.put(`http://localhost:8080/api/items/${itemId}/favorite-toggle`, {}, { headers });
       return response.status === 200;
     } catch (err) {
-      console.error(`Error toggling favorite status for item ${itemId}:`, err);
       throw err;
     }
   }
@@ -120,7 +110,6 @@ export const useItemStore = defineStore('items', () => {
       return await response.json();
 
     } catch (error) {
-      console.error('Failed to create item:', error);
       throw error;
     }
   };
@@ -168,7 +157,6 @@ export const useItemStore = defineStore('items', () => {
       return await response.json();
 
     } catch (error) {
-      console.error(`Failed to update item ${id}:`, error);
       throw error;
     }
   };
@@ -180,51 +168,40 @@ export const useItemStore = defineStore('items', () => {
       return response.status === 204;
 
     } catch (err) {
-      console.error(`Failed to delete item ${id}:`, err);
       throw err;
     }
   };
 
   const searchItems = async (filters) => {
     try {
-      console.log('[searchItems] Filters:', filters);
       
-      // Create URLSearchParams with proper parameter names
       const queryParams = new URLSearchParams();
       
       if (filters.searchQuery) queryParams.append('searchQuery', filters.searchQuery);
       
-      // Handle categoryIds - ensuring they're properly processed for OR logic
       if (filters.categoryIds && Array.isArray(filters.categoryIds)) {
-        // Add each category ID as a separate parameter with the same name
-        // This creates ?categoryIds=1&categoryIds=2 format for OR logic
         filters.categoryIds.forEach(id => {
           queryParams.append('categoryIds', id);
         });
       }
       
-      // Handle price parameters
       if (filters.minPrice != null && filters.minPrice !== '') queryParams.append('minPrice', filters.minPrice);
       if (filters.maxPrice != null && filters.maxPrice !== '') queryParams.append('maxPrice', filters.maxPrice);
-      
-      // Handle location parameters
       if (filters.latitude != null) queryParams.append('latitude', filters.latitude);
       if (filters.longitude != null) queryParams.append('longitude', filters.longitude);
       if (filters.distanceKm != null && filters.distanceKm !== '') queryParams.append('distanceKm', filters.distanceKm);
       
-      console.log('[searchItems] Query params:', queryParams.toString());
+
       
       const url = `http://localhost:8080/api/items?${queryParams.toString()}`;
       const headers = getAuthHeaders();
       
       const response = await axios.get(url, { headers });
-      console.log('[searchItems] Response:', response);
       
       items.value = response.data;
       return response.data;
       
     } catch (err) {
-      console.error('[searchItems] Request failed:', err);
       items.value = [];
       throw err;
     }

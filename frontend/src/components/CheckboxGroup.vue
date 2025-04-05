@@ -40,10 +40,8 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-// Use local ref for modelValue
 const localValue = ref([])
 
-// Initialize localValue
 watch(() => props.modelValue, (newVal) => {
   if (JSON.stringify(newVal) !== JSON.stringify(localValue.value)) {
     localValue.value = [...newVal]
@@ -74,7 +72,6 @@ const updateValue = () => {
   emit('update:modelValue', [...localValue.value])
 }
 
-// Ensure valid selections when options change
 watch(() => props.options, () => {
   const validValues = props.options.map(getValue)
   localValue.value = localValue.value.filter(val => validValues.includes(val))

@@ -110,21 +110,17 @@ const route = useRoute()
 const store = useFilterStore()
 const MAX_PRICE = 10_000_000
 
-// Use local refs to avoid recursive updates
 const selectedCategoryIds = ref([...store.selectedCategoryIds])
 const priceMin = ref(store.priceMin)
 const priceMax = ref(store.priceMax)
 const distanceKm = ref(store.distanceKm)
 
-// Special handling for lat/long to fix parsing issues
 const latitudeInput = ref('')
 const longitudeInput = ref('')
 const latitude = ref(null)
 const longitude = ref(null)
 
-// Initialize from URL on mount
 onMounted(() => {
-  // Parse categoryIds from URL (if any)
   if (route.query.categoryIds) {
     const ids = Array.isArray(route.query.categoryIds) 
       ? route.query.categoryIds 
@@ -133,12 +129,10 @@ onMounted(() => {
     selectedCategoryIds.value = ids.map(id => parseInt(id, 10))
   }
   
-  // Initialize other filter values from URL
   if (route.query.minPrice) priceMin.value = Number(route.query.minPrice)
   if (route.query.maxPrice) priceMax.value = Number(route.query.maxPrice)
   if (route.query.distanceKm) distanceKm.value = Number(route.query.distanceKm)
   
-  // Handle lat/long specially
   if (route.query.latitude) {
     const lat = Number(route.query.latitude)
     latitude.value = lat
@@ -151,7 +145,6 @@ onMounted(() => {
     longitudeInput.value = lng.toString()
   }
   
-  // Sync with store
   syncToStore()
 })
 
@@ -169,14 +162,11 @@ const priceError = computed(() => {
   return ''
 })
 
-// Handle latitude and longitude changes
 const handleLatLongChange = () => {
-  // Parse values to numbers or null
   latitude.value = latitudeInput.value ? parseFloat(latitudeInput.value) : null
   longitude.value = longitudeInput.value ? parseFloat(longitudeInput.value) : null
 }
 
-// Sync local values to store without creating circular dependencies
 const syncToStore = () => {
   store.selectedCategoryIds = [...selectedCategoryIds.value]
   store.priceMin = priceMin.value
@@ -186,14 +176,12 @@ const syncToStore = () => {
   store.longitude = longitude.value
 }
 
-// Watch store for external changes (from other components)
 watch(() => store.selectedCategoryIds, (newVal) => {
   if (JSON.stringify(newVal) !== JSON.stringify(selectedCategoryIds.value)) {
     selectedCategoryIds.value = [...newVal]
   }
 }, { deep: true })
 
-// Watch for lat/long from store
 watch(() => store.latitude, (newVal) => {
   if (newVal !== latitude.value) {
     latitude.value = newVal
@@ -208,7 +196,6 @@ watch(() => store.longitude, (newVal) => {
   }
 })
 
-// Watch for category changes
 watch(() => props.categories, () => {
   if (props.categories && props.categories.length) {
     const validIds = props.categories.map(cat => cat.id)
@@ -217,10 +204,8 @@ watch(() => props.categories, () => {
 }, { immediate: true })
 
 const applyFilters = () => {
-  // Make sure lat/long are properly parsed before applying
   handleLatLongChange()
   
-  // Sync to store before emitting
   syncToStore()
   
   emit('applyFilters', {
