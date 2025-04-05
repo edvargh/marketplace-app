@@ -105,7 +105,22 @@
     text-overflow: ellipsis;
 }
 
-@media (max-width: 600px), (max-height: 800px) {
+@media (max-width: 770px), (max-height: 800px) {
+    .item-card {
+        width: 180px;
+    }
+
+    .card-content {
+        padding: 0 10px 10px 10px;
+        gap: 5px;
+    }
+
+    .title {
+        font-size: 16px !important;
+    }
+}
+
+@media (max-width: 600px), (max-height: 700px) {
     .item-card {
         width: 150px;
     }
@@ -131,6 +146,4 @@
     .card-description {
         font-size: 11px;
     }
-
-
 }
