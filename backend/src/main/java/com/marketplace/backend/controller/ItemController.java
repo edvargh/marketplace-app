@@ -171,9 +171,10 @@ public class ItemController {
   @PutMapping("/{id}/status")
   public ResponseEntity<Void> updateItemStatus(
       @PathVariable Long id,
-      @RequestParam("value") ItemStatus newStatus
+      @RequestParam("value") ItemStatus newStatus,
+      @RequestParam(value = "buyerId", required = false) Long buyerId
   ) {
-    boolean updated = itemService.updateItemStatus(id, newStatus);
+    boolean updated = itemService.updateItemStatus(id, newStatus, buyerId);
     return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
   }
 }

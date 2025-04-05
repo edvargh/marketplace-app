@@ -27,6 +27,8 @@ public class ItemResponseDto {
   private String sellerName;
   private List<String> imageUrls;
   private boolean favoritedByCurrentUser;
+  private Long reservedById;
+
 
 
   /**
@@ -64,6 +66,8 @@ public class ItemResponseDto {
         item.getFavoritedByUsers().contains(currentUser);
 
     dto.setFavoritedByCurrentUser(isFavorited);
+    dto.setReservedById(item.getReservedBy() != null ? item.getReservedBy().getId() : null);
+
     return dto;
   }
 
@@ -277,4 +281,21 @@ public class ItemResponseDto {
     this.favoritedByCurrentUser = favoritedByCurrentUser;
   }
 
+  /**
+   * Get the ID of the user who reserved the item.
+   *
+   * @return the ID of the user who reserved the item
+   */
+  public Long getReservedById() {
+    return reservedById;
+  }
+
+  /**
+   * Set the ID of the user who reserved the item.
+   *
+   * @param reservedById the ID of the user who reserved the item
+   */
+  public void setReservedById(Long reservedById) {
+    this.reservedById = reservedById;
+  }
 }

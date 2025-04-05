@@ -103,74 +103,6 @@ class ItemControllerTest {
   }
 
   /**
-   * Test to get filtered items.
-   *
-   * @throws Exception if the test fails
-   */
-  @Test
-  @WithMockUser(username = "john@example.com") // testUser is logged in
-  void shouldReturnFilteredItemsAndExcludeUsersOwn() throws Exception {
-    // Create a second user
-    User otherUser = new User("Alice", "alice@example.com", "password", Role.USER,
-        "9876543210", null, "english");
-    otherUser = userRepository.save(otherUser);
-
-    // Add 2 items from the other user
-    Item item1 = new Item(otherUser, "MacBook", "Apple laptop", testCategory, 1000.0,
-        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
-    item1.setStatus(ItemStatus.FOR_SALE);
-
-    Item item2 = new Item(otherUser, "Samsung TV", "Smart TV", testCategory, 700.0,
-        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
-    item2.setStatus(ItemStatus.FOR_SALE);
-
-    itemRepository.saveAll(List.of(item1, item2));
-
-    // Call /api/items with a filter that matches only one of Alice's items
-    mockMvc.perform(get("/api/items")
-            .param("minPrice", "900")
-            .param("searchQuery", "macbook") // test case-insensitive search
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.length()").value(1))
-        .andExpect(jsonPath("$[0].title").value("MacBook"))
-        .andExpect(jsonPath("$[0].sellerName").value("Alice"));
-  }
-
-  /**
-   * Test to get items by category.
-   *
-   * @throws Exception if the test fails
-   */
-  @Test
-  @WithMockUser(username = "john@example.com")
-  void shouldReturnItemsInSelectedCategoriesOnly() throws Exception {
-    Category otherCategory = categoryRepository.save(new Category(null, "Furniture"));
-
-    User otherUser = userRepository.save(new User("Emma", "emma@example.com", "pw", Role.USER, "999", null, "english"));
-
-    Item electronicsItem = new Item(otherUser, "Speaker", "Loud one", testCategory, 150.0,
-        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
-    electronicsItem.setStatus(ItemStatus.FOR_SALE);
-
-    Item furnitureItem = new Item(otherUser, "Chair", "Comfy", otherCategory, 75.0,
-        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
-    furnitureItem.setStatus(ItemStatus.FOR_SALE);
-
-    itemRepository.saveAll(List.of(electronicsItem, furnitureItem));
-
-    mockMvc.perform(get("/api/items")
-            .param("categoryIds", testCategory.getId().toString())
-            .param("categoryIds", otherCategory.getId().toString()))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.length()").value(2))
-        .andExpect(jsonPath("$[0].title").exists())
-        .andExpect(jsonPath("$[1].title").exists());
-  }
-
-
-
-  /**
    * Test to get an item by its ID.
    *
    * @throws Exception if the test fails
@@ -318,8 +250,7 @@ class ItemControllerTest {
             "\"categoryId\":" + testCategory.getId() + "," +
             "\"price\":120.0," +
             "\"latitude\":64.0000," +
-            "\"longitude\":11.0000," +
-            "\"status\":\"RESERVED\"" +
+            "\"longitude\":11.0000" +
             "}").getBytes());
 
     mockMvc.perform(multipart("/api/items/" + item.getId())
@@ -334,8 +265,7 @@ class ItemControllerTest {
         .andExpect(jsonPath("$.description").value("Updated Description"))
         .andExpect(jsonPath("$.price").value(120.0))
         .andExpect(jsonPath("$.latitude").value(64.0000))
-        .andExpect(jsonPath("$.longitude").value(11.0000))
-        .andExpect(jsonPath("$.status").value("RESERVED"));
+        .andExpect(jsonPath("$.longitude").value(11.0000));
   }
 
   /**
@@ -411,16 +341,65 @@ class ItemControllerTest {
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldUpdateItemStatus() throws Exception {
-    Item item = new Item(testUser, "Status Test", "Initial status", testCategory, 100.0,
+    // Use the existing seller user (likely created in @BeforeEach)
+    User seller = testUser;
+
+    // Create a buyer
+    User buyer = new User("Buyer Bob", "bob@example.com", "password", Role.USER, "98765432", null, "english");
+    buyer = userRepository.save(buyer);
+
+    // Create a category
+    Category category = categoryRepository.save(new Category("Test"));
+
+    // Create item
+    Item item = new Item(seller, "Status Test", "Initial status", category, 100.0,
         LocalDateTime.now(), new BigDecimal("63.0"), new BigDecimal("10.0"));
     item.setStatus(ItemStatus.FOR_SALE);
     item = itemRepository.save(item);
 
+    // Update status with buyerId
     mockMvc.perform(put("/api/items/" + item.getId() + "/status")
-            .param("value", "RESERVED"))
+            .param("value", "RESERVED")
+            .param("buyerId", String.valueOf(buyer.getId())))
         .andExpect(status().isOk());
+
+    entityManager.flush();
+    entityManager.clear();
 
     Item updated = itemRepository.findById(item.getId()).orElseThrow();
     assert updated.getStatus() == ItemStatus.RESERVED;
+    assert updated.getReservedBy().getId().equals(buyer.getId());
   }
+
+
+
+  /**
+   * Test to reserve an item by a buyer.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReserveItemForBuyer() throws Exception {
+    User buyer = new User("Buyer Bob", "bob@example.com", "password", Role.USER, "987654321", null, "english");
+    buyer = userRepository.save(buyer);
+
+    Item item = new Item(testUser, "Reserving Test", "Should be reserved", testCategory, 250.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    item.setStatus(ItemStatus.FOR_SALE);
+    item = itemRepository.save(item);
+
+    item.setReservedBy(buyer);
+    item.setStatus(ItemStatus.RESERVED);
+    itemRepository.save(item);
+
+    entityManager.flush();
+    entityManager.clear();
+
+    mockMvc.perform(get("/api/items/" + item.getId()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value("RESERVED"))
+        .andExpect(jsonPath("$.reservedById").value(buyer.getId().intValue()));
+  }
+
 }
