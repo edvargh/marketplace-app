@@ -20,7 +20,7 @@
         <CustomButton>
           <router-link to="/messages/conversations" class="navbar-button">{{ t('navbar.messages') }}</router-link>
         </CustomButton>
-        <CustomButton>
+        <CustomButton v-if="userStore.role === 'ADMIN'">
           <router-link to="/categories" class="navbar-button">Categories</router-link>
         </CustomButton>
         <li class="account-dropdown" ref="dropdownRef">
@@ -64,7 +64,7 @@
         <li v-if="isAuthenticated">
           <router-link to="/messages/conversations" @click="showMobileMenu = false">{{ t('navbar.messages') }}</router-link>
         </li>
-        <li>
+        <li v-if="userStore.role === 'ADMIN'">
           <router-link to="/categories" @click="showMobileMenu = false">Categories</router-link>
         </li>
         <li v-if="isAuthenticated">

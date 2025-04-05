@@ -199,7 +199,6 @@ export const useItemStore = defineStore('items', () => {
 
   const searchItems = async (filters) => {
     try {
-      
       const queryParams = new URLSearchParams();
       
       if (filters.searchQuery) queryParams.append('searchQuery', filters.searchQuery);
@@ -216,8 +215,6 @@ export const useItemStore = defineStore('items', () => {
       if (filters.longitude != null) queryParams.append('longitude', filters.longitude);
       if (filters.distanceKm != null && filters.distanceKm !== '') queryParams.append('distanceKm', filters.distanceKm);
       
-
-      
       const url = `http://localhost:8080/api/items?${queryParams.toString()}`;
       const headers = getAuthHeaders();
       
@@ -231,6 +228,7 @@ export const useItemStore = defineStore('items', () => {
       throw err;
     }
   }
+
   const updateItemStatus = async (id, newStatus) => {
     try {
       const headers = getAuthHeaders();
@@ -248,8 +246,6 @@ export const useItemStore = defineStore('items', () => {
       throw err;
     }
   };
-
-
 
   return {
     items,

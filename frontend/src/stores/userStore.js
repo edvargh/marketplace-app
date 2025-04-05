@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref(null)
   const isAuthenticated = ref(false)
+  const role = computed(() => user.value?.role || null)
 
   const login = async (email, password) => {
     const response = await fetch('http://localhost:8080/api/auth/login', {
@@ -128,6 +129,7 @@ export const useUserStore = defineStore('user', () => {
 
   return {
     user,
+    role,
     isAuthenticated,
     login,
     register,

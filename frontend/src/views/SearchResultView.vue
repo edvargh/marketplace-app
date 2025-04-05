@@ -14,6 +14,7 @@
     />
 
     <h2 v-if="search">Results for "{{ search }}"</h2>
+    <h2 v-else-if="selectedCategoryName">Results for category "{{ selectedCategoryName }}"</h2>
 
     <LoadingState 
       :loading="isLoading" 
@@ -51,7 +52,6 @@ import CustomButton from '@/components/CustomButton.vue'
 import LoadingState from '@/components/LoadingState.vue'
 
 const { t } = useI18n()
-
 const route = useRoute()
 const router = useRouter()
 const categoryStore = useCategoryStore()
@@ -75,7 +75,6 @@ function handleApplyFilters() {
   const query = filterStore.buildFiltersQuery({
     searchQuery: route.query.searchQuery || ''
   })
-
   router.push({ path: '/items', query })
 }
 
@@ -91,7 +90,6 @@ const fetchItems = async () => {
       : [parseInt(params.categoryIds, 10)];
     
     delete params.categoryIds;
-    
     params.categoryIds = categoryIdArray;
   }
   
@@ -132,7 +130,6 @@ onMounted(async () => {
 
     await fetchItems();
   } catch (err) {
-    console.error('Error initializing search view:', err);
     error.value = "Failed to initialize search. Please try again.";
   } finally {
     isLoading.value = false;
@@ -156,6 +153,17 @@ watch(
   },
   { deep: true }
 )
+
+const selectedCategoryName = computed(() => {
+  const categoryIdParam = route.query.categoryIds;
+  const categoryId = Array.isArray(categoryIdParam)
+    ? parseInt(categoryIdParam[0], 10)
+    : parseInt(categoryIdParam, 10);
+  if (!categoryId || !categories.value.length) return '';
+  const match = categories.value.find(cat => cat.id === categoryId);
+  return match ? match.name : '';
+});
+
 </script>
 
 <style>

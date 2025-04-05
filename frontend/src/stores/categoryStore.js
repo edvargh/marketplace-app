@@ -13,7 +13,6 @@ export const useCategoryStore = defineStore('categories', () => {
     };
   };
 
-
   const fetchCategories = async () => {
     try {
       const headers = getAuthHeaders();  // Now required
