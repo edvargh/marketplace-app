@@ -3,6 +3,7 @@ package com.marketplace.backend.controller;
 import com.marketplace.backend.dto.ItemCreateDto;
 import com.marketplace.backend.dto.ItemUpdateDto;
 import com.marketplace.backend.dto.ItemResponseDto;
+import com.marketplace.backend.model.ItemStatus;
 import com.marketplace.backend.service.ItemService;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -38,7 +39,7 @@ public class ItemController {
    *
    * @param minPrice    the minimum price
    * @param maxPrice    the maximum price
-   * @param categoryId  the category ID
+   * @param categoryIds  the category ID
    * @param searchQuery the search query
    * @param latitude    the latitude
    * @param longitude   the longitude
@@ -49,14 +50,14 @@ public class ItemController {
   public ResponseEntity<List<ItemResponseDto>> getFilteredItems(
       @RequestParam(required = false) Double minPrice,
       @RequestParam(required = false) Double maxPrice,
-      @RequestParam(required = false) Long categoryId,
+      @RequestParam(required = false) List<Long> categoryIds,
       @RequestParam(required = false) String searchQuery,
       @RequestParam(required = false) BigDecimal latitude,
       @RequestParam(required = false) BigDecimal longitude,
       @RequestParam(required = false) Double distanceKm
   ) {
     List<ItemResponseDto> items = itemService.getFilteredItems(
-        minPrice, maxPrice, categoryId, searchQuery, latitude, longitude, distanceKm
+        minPrice, maxPrice, categoryIds, searchQuery, latitude, longitude, distanceKm
     );
 
     return ResponseEntity.ok(items);
@@ -158,5 +159,21 @@ public class ItemController {
     boolean deleted = itemService.deleteItem(id);
     return deleted ? ResponseEntity.noContent().build()
         : ResponseEntity.notFound().build();
+  }
+
+  /**
+   * Update the status of an item.
+   *
+   * @param id the ID of the item to update
+   * @param newStatus the new status of the item
+   * @return a 200 response if successful, 404 otherwise
+   */
+  @PutMapping("/{id}/status")
+  public ResponseEntity<Void> updateItemStatus(
+      @PathVariable Long id,
+      @RequestParam("value") ItemStatus newStatus
+  ) {
+    boolean updated = itemService.updateItemStatus(id, newStatus);
+    return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
   }
 }
