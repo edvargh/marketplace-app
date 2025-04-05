@@ -71,7 +71,7 @@
           <router-link to="/profile" @click="showMobileMenu = false">{{ t('navbar.profile') }}</router-link>
         </li>
         <li v-if="isAuthenticated">
-          <button @click="handleLogout">{{ t('navbar.logout') }}</button>
+          <button @click="handleLogout" class="mobile-logout-button">{{ t('navbar.logout') }}</button>
         </li>
         <li v-else>
           <router-link to="/login" @click="showMobileMenu = false">{{ t('navbar.login') }}</router-link>

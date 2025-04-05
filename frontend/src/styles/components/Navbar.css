@@ -177,12 +177,12 @@
   color: white !important;
 }
 
-.mobile-dropdown button[onclick*="handleLogout"] {
+.mobile-logout-button {
   background-color: #d32f2f !important;
   color: white !important;
 }
 
-.mobile-dropdown button[onclick*="handleLogout"]:hover {
+.mobile-logout-button:hover {
   background-color: #f44336 !important;
   color: white !important;
 }
