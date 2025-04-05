@@ -3,6 +3,7 @@ package com.marketplace.backend.controller;
 import com.marketplace.backend.dto.ItemCreateDto;
 import com.marketplace.backend.dto.ItemUpdateDto;
 import com.marketplace.backend.dto.ItemResponseDto;
+import com.marketplace.backend.model.ItemStatus;
 import com.marketplace.backend.service.ItemService;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -158,5 +159,21 @@ public class ItemController {
     boolean deleted = itemService.deleteItem(id);
     return deleted ? ResponseEntity.noContent().build()
         : ResponseEntity.notFound().build();
+  }
+
+  /**
+   * Update the status of an item.
+   *
+   * @param id the ID of the item to update
+   * @param newStatus the new status of the item
+   * @return a 200 response if successful, 404 otherwise
+   */
+  @PutMapping("/{id}/status")
+  public ResponseEntity<Void> updateItemStatus(
+      @PathVariable Long id,
+      @RequestParam("value") ItemStatus newStatus
+  ) {
+    boolean updated = itemService.updateItemStatus(id, newStatus);
+    return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
   }
 }

@@ -403,4 +403,24 @@ class ItemControllerTest {
     verify(cloudinaryService).deleteImage("abc123");
   }
 
+  /**
+   * Test to update the status of an item.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldUpdateItemStatus() throws Exception {
+    Item item = new Item(testUser, "Status Test", "Initial status", testCategory, 100.0,
+        LocalDateTime.now(), new BigDecimal("63.0"), new BigDecimal("10.0"));
+    item.setStatus(ItemStatus.FOR_SALE);
+    item = itemRepository.save(item);
+
+    mockMvc.perform(put("/api/items/" + item.getId() + "/status")
+            .param("value", "RESERVED"))
+        .andExpect(status().isOk());
+
+    Item updated = itemRepository.findById(item.getId()).orElseThrow();
+    assert updated.getStatus() == ItemStatus.RESERVED;
+  }
 }
