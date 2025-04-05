@@ -29,7 +29,9 @@
     <table>
       <tbody>
       <tr v-for="category in categories" :key="category.id">
-        <td>{{ category.name }}</td>
+        <td>
+          <div class="category-name">{{ category.name }}</div>
+        </td>
         <td>
           <CustomButton @click="editCategory(category)" class="edit-button">Edit</CustomButton>
         </td>

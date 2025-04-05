@@ -115,8 +115,6 @@ router.beforeEach(async (to, from, next) => {
   await userStore.checkAuth()
   const userRole = userStore.user?.role
 
-  console.log(userRole)
-
   if (userStore.isAuthenticated) {
     // Redirect to HomePage if trying to access login/register/frontpage
     if (to.name === 'login' || to.name === 'register' || to.name === 'frontpage') {

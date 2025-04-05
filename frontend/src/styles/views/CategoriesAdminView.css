@@ -24,6 +24,19 @@
     margin-top: 2rem;
 }
 
+.category-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.2;
+    max-height: calc(1.2em * 2);
+}
+
+
 .categories-page th,
 .categories-page td {
     padding: 12px 20px;
