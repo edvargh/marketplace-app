@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
+import { ref } from 'vue';
 
 export const useItemStore = defineStore('items', () => {
   const getAuthHeaders = () => {
@@ -13,18 +14,14 @@ export const useItemStore = defineStore('items', () => {
     };
   };
 
+  const items = ref([])
+
   const fetchMarketItems = async () => {
     try {
-      const token = localStorage.getItem('token');
-      console.log("Token:", token); 
-
       const headers = getAuthHeaders();
       const response = await axios.get('http://localhost:8080/api/items', { headers });
-      console.log("API response:", response);
-
       return response.data;
     } catch (err) {
-      console.error('Error fetching all items:', err);
       return [];
     }
   };
@@ -35,7 +32,6 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.get(`http://localhost:8080/api/items/${id}`, { headers });
       return response.data;
     } catch (err) {
-      console.error(`Error fetching item with ID ${id}:`, err);
       throw err;
     }
   };
@@ -46,7 +42,6 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.get(`http://localhost:8080/api/items/my-items`, { headers });
       return response.data;
     } catch (err) {
-      console.error(`Error fetching items:`, err);
       throw err;
     }
   }
@@ -57,7 +52,6 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.get(`http://localhost:8080/api/items/favorites`, { headers });
       return response.data;
     } catch (err) {
-      console.error(`Error fetching favorite items:`, err);
       throw err;
     }
   }
@@ -68,7 +62,6 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.put(`http://localhost:8080/api/items/${itemId}/favorite-toggle`, {}, { headers });
       return response.status === 200;
     } catch (err) {
-      console.error(`Error toggling favorite status for item ${itemId}:`, err);
       throw err;
     }
   }
@@ -117,7 +110,6 @@ export const useItemStore = defineStore('items', () => {
       return await response.json();
 
     } catch (error) {
-      console.error('Failed to create item:', error);
       throw error;
     }
   };
@@ -165,7 +157,6 @@ export const useItemStore = defineStore('items', () => {
       return await response.json();
 
     } catch (error) {
-      console.error(`Failed to update item ${id}:`, error);
       throw error;
     }
   };
@@ -177,11 +168,44 @@ export const useItemStore = defineStore('items', () => {
       return response.status === 204;
 
     } catch (err) {
-      console.error(`Failed to delete item ${id}:`, err);
       throw err;
     }
   };
 
+  const searchItems = async (filters) => {
+    try {
+      
+      const queryParams = new URLSearchParams();
+      
+      if (filters.searchQuery) queryParams.append('searchQuery', filters.searchQuery);
+      
+      if (filters.categoryIds && Array.isArray(filters.categoryIds)) {
+        filters.categoryIds.forEach(id => {
+          queryParams.append('categoryIds', id);
+        });
+      }
+      
+      if (filters.minPrice != null && filters.minPrice !== '') queryParams.append('minPrice', filters.minPrice);
+      if (filters.maxPrice != null && filters.maxPrice !== '') queryParams.append('maxPrice', filters.maxPrice);
+      if (filters.latitude != null) queryParams.append('latitude', filters.latitude);
+      if (filters.longitude != null) queryParams.append('longitude', filters.longitude);
+      if (filters.distanceKm != null && filters.distanceKm !== '') queryParams.append('distanceKm', filters.distanceKm);
+      
+
+      
+      const url = `http://localhost:8080/api/items?${queryParams.toString()}`;
+      const headers = getAuthHeaders();
+      
+      const response = await axios.get(url, { headers });
+      
+      items.value = response.data;
+      return response.data;
+      
+    } catch (err) {
+      items.value = [];
+      throw err;
+    }
+  }
   const updateItemStatus = async (id, newStatus) => {
     try {
       const headers = getAuthHeaders();
@@ -203,6 +227,7 @@ export const useItemStore = defineStore('items', () => {
 
 
   return {
+    items,
     fetchMarketItems,
     fetchItemById,
     fetchUserItems,
@@ -211,6 +236,7 @@ export const useItemStore = defineStore('items', () => {
     deleteItem,
     fetchUserFavoriteItems,
     toggleFavorite,
+    searchItems,
     updateItemStatus
   };
 });

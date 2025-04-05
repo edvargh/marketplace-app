@@ -21,19 +21,21 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
       AND i.status = 'FOR_SALE'
       AND (:minPrice IS NULL OR i.price >= :minPrice)
       AND (:maxPrice IS NULL OR i.price <= :maxPrice)
-      AND (:categoryIds IS NULL OR i.category_id IN (:categoryIds))
+      AND (:searchQuery IS NULL OR
+           LOWER(i.title) LIKE LOWER(CONCAT('%', :searchQuery, '%')) OR
+           LOWER(i.description) LIKE LOWER(CONCAT('%', :searchQuery, '%')))
       AND (
-        :searchQuery IS NULL OR
-        LOWER(i.title) LIKE LOWER(CONCAT('%', :searchQuery, '%')) OR
-        LOWER(i.description) LIKE LOWER(CONCAT('%', :searchQuery, '%'))
+           :latitude IS NULL OR 
+           :longitude IS NULL OR 
+           :distanceKm IS NULL OR (
+             6371 * acos(
+               cos(radians(:latitude)) * cos(radians(i.latitude)) *
+               cos(radians(i.longitude) - radians(:longitude)) +
+               sin(radians(:latitude)) * sin(radians(i.latitude))
+             ) <= :distanceKm
+           )
       )
-      AND (:latitude IS NULL OR :longitude IS NULL OR (
-        6371 * acos(
-          cos(radians(:latitude)) * cos(radians(i.latitude)) *
-          cos(radians(i.longitude) - radians(:longitude)) +
-          sin(radians(:latitude)) * sin(radians(i.latitude))
-        )
-      ) <= :distanceKm)
+      AND (COALESCE(:categoryIds) IS NULL OR i.category_id IN (:categoryIds))
     """, nativeQuery = true)
   List<Item> findFilteredItems(
       @Param("currentUserId") Long currentUserId,

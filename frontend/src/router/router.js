@@ -14,6 +14,7 @@ import FrontPageView from "@/views/FrontPageView.vue";
 import MessagesView from '@/users/MessagesView.vue'
 import ConversationView from '@/users/ConversationView.vue'
 import CategoriesAdminView from "@/views/CategoriesAdminView.vue";
+import SearchResultView from '@/views/SearchResultView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -97,6 +98,12 @@ const router = createRouter({
       name: 'CategoriesAdminView',
       component: CategoriesAdminView,
       meta: { requiresAuth: true, role: 'ADMIN' }
+    },
+    {
+      path: '/items',
+      name: 'items',
+      component: SearchResultView,
+      meta: { requiresAuth: true },
     },
   ],
 })

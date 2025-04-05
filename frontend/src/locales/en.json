@@ -48,6 +48,7 @@
     "Min-price": "Min price (kr)",
     "Max-price": "Max price (kr)",
     "Apply-filters": "Apply filters",
+    "Distance": "Distance",
     "Select-all": "Select all"
   },
   "ConversationPreviewCard": {
