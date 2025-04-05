@@ -1,8 +1,7 @@
 .reserve-box {
-    border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 16px;
-    background-color: #CEEBF4;
+    background-color: var(--reserve-background);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     margin-bottom: 10px;
     width: 100%;
@@ -33,12 +32,12 @@ h3 {
 }
 
 .accepted-notice {
-    color: #4caf50;
+    color: var(--reserve-accept);
     font-weight: 500;
 }
 
 .declined-notice {
-    color: #f44336;
+    color: var(--reserve--decline);
     font-weight: 500;
 }
 
@@ -49,11 +48,11 @@ h3 {
 }
 
 .status-indicator.accepted {
-    color: #4caf50;
+    color: var(--reserve-accept);
 }
 
 .status-indicator.declined {
-    color: #f44336;
+    color: var(--reserve--decline);
 }
 
 .in-message p {

@@ -4,7 +4,7 @@
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    border: 2px solid #4facfe;
+    border: 2px solid var(--sky-blue);
     transition: transform 0.3s ease;
 }
 
@@ -16,7 +16,6 @@
     position: relative;
     height: 160px;
     overflow: hidden;
-    background: #f5f5f5;
 }
 
 .card-image {
@@ -73,6 +72,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    border-top: 1px solid var(--light-gray);
 }
 
 .price-frame {
@@ -81,7 +81,6 @@
     justify-content: space-between;
     padding-left: 10px;
     padding-top: 8px;
-    border-top: 1px solid #eee;
 }
 
 .price-label {

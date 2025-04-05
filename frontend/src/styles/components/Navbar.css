@@ -5,9 +5,9 @@
   padding: 1rem 2rem;
   border-radius: 9999px;
   backdrop-filter: blur(12px);
-  background: linear-gradient(to right, #e0f7ff, #f0f8ff);
-  border-bottom: 1px solid #d0e0f0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);  border-bottom: 1px solid #ddd; 
+  background: linear-gradient(to right, var(--navbar-1), var(--navbar-2));
+  border-bottom: 1px solid var(--navbar-border-bottom);
+  box-shadow: 0 2px 8px var(--navbar-shadow);
 }
 
 .nav-left {
@@ -38,11 +38,11 @@
   top: calc(100% + 0.5rem);
   left: 0;
   width: 100%;
-  background: linear-gradient(to bottom right, #e0f0ff, #e8f0ff);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to right, var(--navbar-1), var(--navbar-2));
+  border: 1px solid var(--navbar-border);
   border-radius: 16px;
   padding: 1rem;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px var(--navbar-shadow);
   backdrop-filter: blur(12px);
   z-index: 9999;
   transition: all 0.2s ease-in-out;
@@ -66,7 +66,7 @@
   border: none;
   border-radius: 12px;
   font-size: 1rem;
-  color: #333;
+  color: var(--navbar-link);
   text-align: left;
   background-color: transparent;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
@@ -75,38 +75,19 @@
 
 .dropdown-menu a:hover,
 .dropdown-menu button:hover {
-  background: rgba(79, 172, 254, 0.15); 
-  color: #000;
+  background: var(--navbar-hover);
+  color: var(--navbar-link);
 }
 
 .navbar-home-link {
   font-weight: bold;
-  color: black;
+  color: var(--navbar-link);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-.navbar-home-link:hover {
-  color: #5ca0db;
-}
-
-.navbar-login-link {
-  font-weight: 600;
-  padding: 0.5rem 1.2rem;
-  border-radius: 9999px;
-  background: linear-gradient(to right, #4facfe, #00f2fe);
-  color: white;
-  text-decoration: none;
-  transition: background 0.3s ease;
-}
-
-.navbar-login-link:hover {
-  background: linear-gradient(to right, #00f2fe, #4facfe);
-  color: white;
-}
-
 .navbar-button-link {
-  color: black;
+  color: var(--navbar-link);
   font-weight: bold;
   border: none;
   cursor: pointer;
@@ -116,7 +97,7 @@
 
 .navbar-button {
   font-weight: bold;
-  color: black;
+  color: var(--navbar-text);
   text-decoration: none;
   transition: background 0.3s ease;
 }
@@ -129,13 +110,13 @@
   position: fixed;
   top: 4.5rem;
   right: 1rem;
-  background: linear-gradient(to bottom right, #e0f0ff, #e8f0ff);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to right, var(--navbar-1), var(--navbar-2));
+  border: 1px solid var(--navbar-border);
   border-radius: 16px;
   padding: 1rem;
   font-family: 'Abel', sans-serif;
   font-weight: bold;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px var(--navbar-shadow);
   backdrop-filter: blur(12px);
   z-index: 9999;
   transition: all 0.2s ease-in-out;
@@ -155,7 +136,7 @@
   border-radius: 12px;
   text-decoration: none;
   background-color: transparent;
-  color: #333;
+  color: var(--navbar-text);
   cursor: pointer;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   width: 100%;
@@ -163,27 +144,27 @@
 
 .mobile-dropdown a:hover,
 .mobile-dropdown button:hover {
-  background: rgba(79, 172, 254, 0.15);
-  color: #000;
+  background: var(--navbar-hover);
+  color: var(--navbar-link);
 }
 
 .dropdown-logout-button {
-  background-color: #d32f2f !important;
+  background-color: var(--navbar-logout) !important;
   color: white !important;
 }
 
 .dropdown-logout-button:hover {
-  background-color: #f44336 !important;
+  background-color: var(--navbar-logout-hover) !important;
   color: white !important;
 }
 
 .mobile-logout-button {
-  background-color: #d32f2f !important;
+  background-color: var(--navbar-logout) !important;
   color: white !important;
 }
 
 .mobile-logout-button:hover {
-  background-color: #f44336 !important;
+  background-color: var(--navbar-logout-hover) !important;
   color: white !important;
 }
 

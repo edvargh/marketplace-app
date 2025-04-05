@@ -6,5 +6,5 @@
     letter-spacing: 0.5px;
     padding: 5px 10px;
     border-radius: 20px;
-    background-color: #cccccc;
+    background-color: var(--status-background);
 }

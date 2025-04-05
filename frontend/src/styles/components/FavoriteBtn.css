@@ -1,5 +1,4 @@
 .favorite-btn {
-    background-color: whitesmoke;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 20px;
@@ -15,12 +14,12 @@
 }
 
 .favorite-btn span {
-    color: darkgrey;
+    color: var(--medium-gray);
     font-size: 20px;
 }
 
 .favorite-btn .favorite {
-    color: red;
+    color: var(--bright-red);
 }
 
 

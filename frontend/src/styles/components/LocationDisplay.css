@@ -23,11 +23,11 @@ h3 {
 
 .coordinates-display {
     margin-bottom: 10px;
-    color: #444444;
+    color: var(--coordinates);
 }
 
 .error-message {
-    color: #e74c3c;
+    color: var(--error-msg);
     margin-top: 0.5rem;
     font-size: 0.9rem;
 }
