@@ -112,7 +112,11 @@ onMounted(async () => {
       marketItems.value = items || []
     })
 
-    await Promise.all([categoriesPromise, itemsPromise])
+    const recommendedPromise = itemStore.fetchRecommendedItems().then(items => {
+      recommendedItems.value = items || []
+    })
+
+    await Promise.all([categoriesPromise, itemsPromise, recommendedPromise])
   } catch (e) {
     error.value = "Something wrong happened while loading Home Page. Please try again."
   } finally {

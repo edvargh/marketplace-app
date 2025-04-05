@@ -99,6 +99,9 @@ onMounted(async () => {
       const favoriteItems = await itemStore.fetchUserFavoriteItems();
       isFavorite.value = favoriteItems.some(item => item.id === parseInt(itemId));
 
+    if (!isMyItem.value) {
+      await itemStore.logItemView(itemId);
+      }
     } else {
       throw new Error('Item not found');
     }
