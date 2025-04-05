@@ -36,7 +36,7 @@ public class ItemViewController {
   /**
    * Logs a view for the given item by the current user.
    */
-  @PostMapping("/{itemId}")
+  @PostMapping("/{itemId}/view")
   public ResponseEntity<Void> logItemView(@PathVariable Long itemId, @AuthenticationPrincipal UserDetails userDetails) {
     Optional<Item> itemOpt = itemService.findById(itemId);
     if (itemOpt.isEmpty()) return ResponseEntity.notFound().build();
