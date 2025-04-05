@@ -12,13 +12,6 @@
     margin-bottom: 1.5rem;
     text-align: center;
 }
-  
-.messages-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    width: 100%;
-}
 
 .no-messages {
     text-align: center;

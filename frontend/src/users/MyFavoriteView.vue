@@ -3,15 +3,13 @@
 
   <div v-if="!loading && !error" class="my-favorite-items-container">
       <h2 class="my-favorite-items-title">My Favorite Items</h2>
-  
-      <div v-if="myItems.length > 0" class="my-favorite-items-grid">
-        <CompactItemCard
-          v-for="item in myItems"
-          :key="item.id"
-          :item="item"
-        />
-      </div>
-  
+
+      <CardGrid
+        v-if="myItems.length > 0"
+        :items="myItems"
+        :cardComponent="CompactItemCard"
+        variant="compact"
+      />
       <div v-else class="no-favorite-items-message">
         You have not favorited any items yet.
       </div>
@@ -21,6 +19,7 @@
   <script setup>
   import { ref, onMounted } from 'vue'
   import CompactItemCard from '@/components/CompactItemCard.vue'
+  import CardGrid from '@/components/CardGrid.vue'
   import { useItemStore } from '@/stores/itemStore'
   import LoadingState from "@/components/LoadingState.vue";
   

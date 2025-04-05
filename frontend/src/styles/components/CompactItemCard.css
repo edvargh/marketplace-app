@@ -92,7 +92,7 @@
     font-weight: 700;
 }
 
-@media (max-width: 620px) or (max-height: 800px) {
+@media (max-width: 520px) or (max-height: 800px) {
     .card-image-container {
         height: 100px;
     }
