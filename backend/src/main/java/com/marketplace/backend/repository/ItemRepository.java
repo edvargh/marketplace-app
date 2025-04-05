@@ -35,7 +35,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
              ) <= :distanceKm
            )
       )
-      AND (:categoryIds IS NULL OR i.category_id IN (:categoryIds))
+      AND (COALESCE(:categoryIds) IS NULL OR i.category_id IN (:categoryIds))
     """, nativeQuery = true)
   List<Item> findFilteredItems(
       @Param("currentUserId") Long currentUserId,
