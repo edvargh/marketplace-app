@@ -40,10 +40,10 @@ public class SecurityConfig {
                                                   .requestMatchers(
                                                       "/api/auth/**",
                                                       "/api/items/**",
-                                                      "api/users/**",
-                                                      "api/categories/**",
-                                                        "api/messages/**")
-                                                  .permitAll() // Fixed missing slash
+                                                      "/api/users/**",
+                                                      "/api/categories/**",
+                                                      "/api/messages/**")
+                                                  .permitAll()
                                                   .anyRequest().authenticated()
                )
                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

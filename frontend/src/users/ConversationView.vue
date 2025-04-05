@@ -6,13 +6,14 @@
     <div class="participant-info">
       <img
         class="profile-pic"
-        :src="getProfileImage(item.value?.sellerId)"
+        :src="getProfileImage(withUserId)"
         @error="$event.target.src = '/default-picture.jpg'"
       />
-      <h2>{{ item.sellerName || 'Unknown Seller' }}</h2>
-  	</div>
+      <h2>{{ getSenderName(withUserId) }}</h2>
+    </div>
 
     <!-- Item preview -->
+    <!-- TODO: Own component? Same component as ConversationPreviewCard? -->
     <RouterLink
       :to="`/item/${itemId}`"
       class="item-preview"
@@ -20,10 +21,10 @@
     >
       <img :src="item.imageUrls?.[0] || '/no-image.png'" alt="item" />
       <div class="item-details-wrapper">
-        <div class="item-details">
-          <h3>{{ item.title }}</h3>
-          <p>{{ item.price }} kr</p>
-          <p>Status: {{ item.status }}</p>
+        <h3 class="item-title">{{ item.title }}</h3>
+        <div class="price-status-wrapper">
+          <p class="price">{{ item.price }} kr</p>
+          <StatusBanner :status="item.status" class="status-banner"></StatusBanner>
         </div>
       </div>
     </RouterLink>
@@ -31,7 +32,7 @@
     <!-- Messages -->
     <div class="messages-section">
       <div v-if="messages.length === 0" class="empty-state">No messages here yet</div>
-      <div v-else>
+      <template v-else>
         <div v-for="msg in messages" :key="msg.id">
           <div v-if="msg.isDateDivider" class="date-divider">
             {{ msg.date }}
@@ -46,28 +47,62 @@
               <div class="bubble-time">
                 {{ new Date(msg.sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }}
               </div>
+
+              <!-- Display regular message or ReserveBox with message -->
+              <div v-if="msg.isReservationRequest">
+                <ReserveBox
+                  :itemId="itemId"
+                  :buyerId="msg.fromYou ? currentUserId : withUserId"
+                  :buyerName="msg.fromYou ? userStore.user.fullName : item.sellerName"
+                  :isSellerView="!msg.fromYou"
+                  :initialStatus="msg.reservationStatus"
+                  :reservationMessage="msg.content"
+                  @accept="handleAcceptReservation(msg.messageId)"
+                  @decline="handleDeclineReservation(msg.messageId)"
+                />
+              </div>
+
               <div class="bubble-text">{{ msg.content }}</div>
               <div class="sender-name">{{ getSenderName(msg.senderId) }}</div>
             </div>
           </div>
         </div>
-      </div>
+      </template>
     </div>
 
-    <!-- Message input -->
     <div class="message-input-wrapper">
-      <input
-        v-model="newMessage"
-        @keyup.enter="sendMessage"
-        placeholder="Type your message..."
-        class="message-input"
-      />
-      <button @click="sendMessage" :disabled="isSending" class="send-button">
+      <div class="message-input-container">
+        <!-- Display ReserveBox if the user clicked from ReserveButton in ItemView -->
+        <ReserveBox
+          v-if="showReserveInput"
+          :itemId="itemId"
+          :buyerId="currentUserId"
+          :buyerName="userStore.user.fullName"
+          :isSellerView="false"
+          :initialStatus="'PENDING'"
+          :showCancel="true"
+          @cancel="showReserveInput = false"
+        />
+
+        <input
+          v-model="newMessage"
+          @keyup.enter="sendMessage"
+          placeholder="Type your message..."
+          class="message-input"
+        />
+      </div>
+
+      <button
+        @click="sendMessage"
+        :disabled="isSending"
+        class="send-button"
+      >
         {{ isSending ? 'Sending...' : 'Send' }}
       </button>
     </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue'
@@ -76,6 +111,8 @@ import { useMessageStore } from '@/stores/messageStore'
 import { useUserStore } from '@/stores/userStore'
 import { useItemStore } from '@/stores/itemStore'
 import LoadingState from "@/components/LoadingState.vue";
+import ReserveBox from '@/components/ReserveBox.vue'
+import StatusBanner from '@/components/StatusBanner.vue'
 
 const route = useRoute()
 const itemId = Number(route.query.itemId)
@@ -92,19 +129,22 @@ const newMessage = ref('')
 const isLoading = ref(true)
 const hasError = ref(false)
 const isSending = ref(false)
+const isReserveMode = ref(route.query.reserve === 'true')
+const showReserveInput = ref(isReserveMode.value)
 
 const imageBaseURL = import.meta.env.VITE_API_BASE_URL + '/uploads/'
 
 const fetchConversation = async () => {
   try {
     const rawMessages = await messageStore.fetchConversationWithUser(itemId, withUserId)
-
     const normalized = rawMessages.map(msg => ({
-      id: msg.id,
+      messageId: msg.messageId,
       fromYou: msg.fromYou,
       senderId: msg.fromYou ? currentUserId : item.value?.sellerId,
       content: msg.text,
-      sentAt: msg.sentAt
+      sentAt: msg.sentAt,
+      isReservationRequest: msg.reservationStatus,
+      reservationStatus: msg.reservationStatus || 'PENDING'
     }))
 
     const grouped = []
@@ -118,9 +158,10 @@ const fetchConversation = async () => {
       }
       grouped.push(msg)
     }
-
     messages.value = grouped
+
   } catch (err) {
+    console.error('Error fetching conversation:', err)
     hasError.value = true
   }
 }
@@ -130,23 +171,58 @@ const fetchItem = async () => {
   try {
     item.value = await itemStore.fetchItemById(itemId)
   } catch (err) {
+    console.error('Error fetching item:', err)
     hasError.value = true
   }
 }
 
 // Send message
 const sendMessage = async () => {
-  if (!newMessage.value.trim() || isSending.value) return
+  if ((!newMessage.value.trim() && !showReserveInput.value) || isSending.value) return
 
   isSending.value = true
   try {
-    await messageStore.sendMessage(itemId, withUserId, newMessage.value)
-    newMessage.value = ''
+    if (showReserveInput.value) {
+      const messageText = newMessage.value.trim() || "I would like to reserve this item"
+      const result = await messageStore.sendReservationRequest(
+        itemId,
+        withUserId,
+        messageText
+      )
+      console.log('Reservation request sent:', result)
+      showReserveInput.value = false // Hide reserve input after sending
+      newMessage.value = '' // Clear input
+    } else {
+      await messageStore.sendMessage(itemId, withUserId, newMessage.value)
+      newMessage.value = ''
+    }
     await fetchConversation()
+  } catch (err) {
+    console.error('Error sending message:', err)
   } finally {
-    setTimeout(() => {
-      isSending.value = false
-    }, 500)
+    isSending.value = false
+  }
+}
+
+// Accept reservation
+const handleAcceptReservation = async (messageId) => {
+  try {
+    await messageStore.updateReservationStatus(messageId, 'ACCEPTED');
+    await itemStore.updateItemStatus(itemId, 'RESERVED');
+    await Promise.all([fetchConversation(), fetchItem()]);
+
+  } catch (err) {
+    console.error('Error accepting reservation:', err);
+  }
+}
+
+// Decline reservation
+const handleDeclineReservation = async (messageId) => {
+  try {
+    await messageStore.updateReservationStatus(messageId, 'DECLINED')
+    await fetchConversation()
+  } catch (err) {
+    console.error('Error declining reservation:', err)
   }
 }
 
@@ -158,6 +234,7 @@ const getSenderName = (senderId) => {
 }
 
 // Get profile image
+// TODO: Get to work
 const getProfileImage = (userId) => {
   const defaultImage = '/default-picture.jpg'
   if (userId === currentUserId) {
@@ -165,7 +242,6 @@ const getProfileImage = (userId) => {
       ? `${imageBaseURL}${userStore.user.profileImage}`
       : defaultImage
   }
-
   return item.value?.sellerId === userId && item.value?.sellerProfileImage
     ? `${imageBaseURL}${item.value.sellerProfileImage}`
     : defaultImage
@@ -185,6 +261,7 @@ onMounted(async () => {
   try {
     await Promise.all([fetchItem(), fetchConversation()])
   } catch (err) {
+    console.error('Error in component mounting:', err)
     hasError.value = true
   } finally {
     isLoading.value = false

@@ -12,7 +12,7 @@ import EditItemView from "@/views/EditItemView.vue";
 import MyFavoriteView from '@/users/MyFavoriteView.vue'
 import FrontPageView from "@/views/FrontPageView.vue";
 import MessagesView from '@/users/MessagesView.vue'
-import ConverSationView from '@/users/ConversationView.vue'
+import ConversationView from '@/users/ConversationView.vue'
 import CategoriesAdminView from "@/views/CategoriesAdminView.vue";
 import SearchResultView from '@/views/SearchResultView.vue'
 
@@ -90,7 +90,7 @@ const router = createRouter({
     {
       path: '/messages/conversation',
       name: 'ConversationView',
-      component: ConverSationView,
+      component: ConversationView,
       meta: { requiresAuth: true },
     },
     {

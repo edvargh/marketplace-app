@@ -41,14 +41,29 @@
   "categories":{
     "Most-popular-categories": "Mest populære kategorier"
   },
-    "FilterPanel":{
+  "FilterPanel":{
     "Categories": "Kategorier",
     "Locations": "Steder",
     "Price-range":"Prisområde", 
     "Min-price":"Min pris (kr)",
     "Max-price":"Maks pris (kr)",
     "Apply-filters":"Bruk filtre",
-    "Select-all":"Velg alle",
-    "Distance":"Avstand"
+    "Distance":"Avstand",
+    "Select-all":"Velg alle"
+  },
+  "ConversationPreviewCard": {
+    "itemImageAlt": "Varebilde"
+  },
+  "MessagesView": {
+    "title": "Meldinger",
+    "loadingMessage": "Laster meldinger...",
+    "noMessages": "Ingen meldinger ennå."
+  },
+  "ConversationView": {
+    "loadingMessage": "Laster samtale...",
+    "noMessages": "Ingen meldinger her ennå",
+    "messagePlaceholder": "Skriv her...",
+    "sending": "Sender...",
+    "send": "Send"
   }
 }

@@ -283,6 +283,32 @@ public class ItemService {
   }
 
   /**
+   * Update the status of an item.
+   *
+   * @param itemId the ID of the item to update
+   * @param newStatus the new status of the item
+   * @return true if the status was updated, false otherwise
+   */
+  public boolean updateItemStatus(Long itemId, ItemStatus newStatus) {
+    String email = getAuthenticatedEmail();
+    Optional<User> userOpt = userRepository.findByEmail(email);
+    Optional<Item> itemOpt = itemRepository.findById(itemId);
+
+    if (userOpt.isEmpty() || itemOpt.isEmpty()) return false;
+
+    User user = userOpt.get();
+    Item item = itemOpt.get();
+
+    if (!item.getSeller().getId().equals(user.getId())) {
+      return false;
+    }
+
+    item.setStatus(newStatus);
+    itemRepository.save(item);
+    return true;
+  }
+
+  /**
    * Get the email of the authenticated user.
    *
    * @return the email of the authenticated user
@@ -292,6 +318,12 @@ public class ItemService {
     return authentication.getName();
   }
 
+  /**
+   * Extract the public ID from a Cloudinary URL.
+   *
+   * @param imageUrl the Cloudinary URL
+   * @return the public ID
+   */
   private String extractPublicIdFromUrl(String imageUrl) {
     try {
       String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
@@ -300,5 +332,4 @@ public class ItemService {
       throw new IllegalArgumentException("Invalid Cloudinary URL: " + imageUrl, e);
     }
   }
-
 }

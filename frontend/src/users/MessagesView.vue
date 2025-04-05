@@ -1,15 +1,15 @@
 <template>
-  <LoadingState :loading="loading" :error="error" loadingMessage="Loading messages..."/>
+  <LoadingState :loading="loading" :error="error" :loadingMessage="t('MessagesView.loadingMessage')"/>
 
   <div v-if="!loading && !error" class="messages-view-container">
-      <h3 class="Message-header">Messages</h3>
+      <h3 class="Message-header">{{ t("MessagesView.title") }}</h3>
       <div class="messages-container">
         <ConversationPreviewCard
           v-for="conv in conversations"
           :key="conv.withUserId + '-' + conv.item.id"
           :conversation="conv"
         />
-        <div v-if="conversations.length === 0" class="no-messages">No conversations yet.</div>
+        <div v-if="conversations.length === 0" class="no-messages">{{ t("MessagesView.noMessages") }}</div>
       </div>
     </div>
   </template>
@@ -18,11 +18,13 @@
   import { ref, onMounted } from 'vue'
   import { useMessageStore } from '@/stores/messageStore'
   import { useItemStore } from '@/stores/itemStore'
+  import { useI18n } from 'vue-i18n'
   import ConversationPreviewCard from '@/components/ConversationPreviewCard.vue'
   import LoadingState from "@/components/LoadingState.vue";
   
   const messageStore = useMessageStore()
   const itemStore = useItemStore()
+  const { t } = useI18n()
   const conversations = ref([])
   const loading = ref(true)
   const error = ref(false)

@@ -129,20 +129,21 @@ public class MessageService {
     Item item = itemRepository.findById(itemId).orElseThrow();
 
     List<Message> messages = messageRepository
-        .findByItemAndSenderAndReceiverOrItemAndSenderAndReceiverOrderBySentAt(
-            item, currentUser, otherUser,
-            item, otherUser, currentUser
-        );
+            .findByItemAndSenderAndReceiverOrItemAndSenderAndReceiverOrderBySentAt(
+                    item, currentUser, otherUser,
+                    item, otherUser, currentUser
+            );
 
     return messages.stream()
-        .map(msg -> new MessageResponseDto(
-            msg.getSender().getId().equals(currentUser.getId()),
-            msg.getMessageText(),
-            msg.getSentAt(),
-            msg.isReservationRequest(),
-            msg.getReservationStatus()
-        ))
-        .collect(Collectors.toList());
+            .map(msg -> new MessageResponseDto(
+                    msg.getId(),
+                    msg.getSender().getId().equals(currentUser.getId()),
+                    msg.getMessageText(),
+                    msg.getSentAt(),
+                    msg.isReservationRequest(),
+                    msg.getReservationStatus()
+            ))
+            .collect(Collectors.toList());
   }
 
   /**

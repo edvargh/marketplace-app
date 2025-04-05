@@ -167,6 +167,26 @@
   color: #000;
 }
 
+.dropdown-logout-button {
+  background-color: #d32f2f !important;
+  color: white !important;
+}
+
+.dropdown-logout-button:hover {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
+.mobile-dropdown button[onclick*="handleLogout"] {
+  background-color: #d32f2f !important;
+  color: white !important;
+}
+
+.mobile-dropdown button[onclick*="handleLogout"]:hover {
+  background-color: #f44336 !important;
+  color: white !important;
+}
+
 @media (max-width: 1070px) {
   .nav-right {
     display: none;

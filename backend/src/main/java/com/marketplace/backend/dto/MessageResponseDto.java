@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
  * DTO for message responses.
  */
 public class MessageResponseDto {
+  private Long messageId;
   private boolean fromYou;
   private String text;
   private LocalDateTime sentAt;
@@ -25,13 +26,22 @@ public class MessageResponseDto {
    * @param text    the message text
    * @param sentAt  the time the message was sent
    */
-  public MessageResponseDto(boolean fromYou, String text, LocalDateTime sentAt,
+  public MessageResponseDto(Long messageId, boolean fromYou, String text, LocalDateTime sentAt,
                             boolean isReservationRequest, ReservationStatus reservationStatus) {
+    this.messageId = messageId;
     this.fromYou = fromYou;
     this.text = text;
     this.sentAt = sentAt;
     this.isReservationRequest = isReservationRequest;
     this.reservationStatus = reservationStatus;
+  }
+
+  public Long getMessageId() {
+    return messageId;
+  }
+
+  public void setMessageId(Long messageId) {
+    this.messageId = messageId;
   }
 
 
