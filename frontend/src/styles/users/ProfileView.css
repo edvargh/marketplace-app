@@ -35,6 +35,8 @@ label {
   font-size: 0.95rem;
 }
 
+<<<<<<< HEAD
+=======
 /* TODO: Use SelectBox component */
 .SelectBox {
   border-radius: 9999px;
@@ -59,6 +61,7 @@ label {
   font-family: 'Abel', sans-serif;
 }
 
+>>>>>>> 4455a717ba134a71c98cd244bb0e8773d2ea7aef
 .profile-picture-wrapper {
   display: flex;
   justify-content: center;

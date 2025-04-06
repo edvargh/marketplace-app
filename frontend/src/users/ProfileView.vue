@@ -49,16 +49,12 @@
         {{ t("profile.Passwords-do-not-match") }}
       </p>
 
-      <<!-- TODO: Use SelectBox component -->
-      <div class="SelectBox">
-        <label for="language">{{ t('profile.language') }}</label>
-        <select id="language" v-model="language" class="dropdown-select">
-          <option disabled value="">{{ t('profile.Select-your-language') }}</option>
-          <option value="english">English</option>
-          <option value="norwegian">Norwegian</option>
-        </select>
-      </div>
-
+      <label for="language">{{ t('profile.language') }}</label>
+      <SelectBox
+        v-model="language"
+        :options="languageOptions"
+        :placeholder="t('profile.Select-your-language')"
+      />
 
       <button type="submit" :disabled="!canSubmit" class="action-button button-primary">
         {{ isSubmitting ? t('profile.updating') : t('profile.updateProfile') }}
@@ -86,6 +82,7 @@ import InputBox from '@/components/InputBox.vue'
 import EditIcon from '@/components/EditIcon.vue'
 import NotificationBanner from '@/components/NotificationBanner.vue'
 import LoadingState from '@/components/LoadingState.vue'
+import SelectBox from '@/components/SelectBox.vue'
 
 const userStore = useUserStore()
 const { t, locale } = useI18n()
@@ -106,6 +103,11 @@ const showPopup = ref(false)
 const profileImage = ref('/default-picture.jpg')
 const selectedImageFile = ref(null)
 const fileInput = ref(null)
+
+const languageOptions = [
+  { label: 'English', value: 'english' },
+  { label: 'Norwegian', value: 'norwegian' }
+]
 
 onMounted(() => {
   loading.value = true
