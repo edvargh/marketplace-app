@@ -1,6 +1,6 @@
 .image-gallery {
     position: relative;
-    border: 2px solid var(--sky-blue);
+    border: 2px solid var(--img-gallery-border);
 }
 
 .main-image {
@@ -22,8 +22,8 @@
     transform: translateY(-50%);
     width: 40px;
     height: 40px;
-    background: var(--dark-gray);
-    color: var(--white);
+    background: var(--button-nav);
+    color: var(--button-text-nav);
     border: none;
     border-radius: 50%;
     font-size: 1.2rem;
@@ -35,7 +35,7 @@
 }
 
 .nav-btn:hover {
-    background: var(--black);
+    background: var(--button-nav-hover);
 }
 
 .prev-btn {
@@ -51,8 +51,8 @@
     bottom: 15px;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--black);
-    color: var(--white);
+    background: var(--button-nav-hover);
+    color: var(--button-text-nav);
     padding: 5px 15px;
     font-size: 0.9rem;
 }

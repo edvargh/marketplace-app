@@ -8,7 +8,6 @@
     transition: all 0.2s ease;
     min-width: 120px;
     text-align: center;
-    font-family: inherit;
     color: var(--white);
 }
 
@@ -40,7 +39,6 @@
 
 .button-danger {
     background-color: var(--button-danger);
-    color: white;
 }
 
 .button-danger:hover {

@@ -12,7 +12,6 @@
     font-size: 1rem;
     font-family: 'Abel', sans-serif;
     font-weight: bold;
-    color: var(--dark-gray);
     cursor: pointer;
     transition: background 0.3s ease, opacity 0.3s ease;
     text-decoration: none;

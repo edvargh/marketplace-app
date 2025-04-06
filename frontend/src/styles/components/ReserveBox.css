@@ -32,12 +32,12 @@ h3 {
 }
 
 .accepted-notice {
-    color: var(--reserve-accept);
+    color: var(--button-primary);
     font-weight: 500;
 }
 
 .declined-notice {
-    color: var(--reserve--decline);
+    color: var(--button-danger);
     font-weight: 500;
 }
 
@@ -48,11 +48,11 @@ h3 {
 }
 
 .status-indicator.accepted {
-    color: var(--reserve-accept);
+    color: var(--button-primary);
 }
 
 .status-indicator.declined {
-    color: var(--reserve--decline);
+    color: var(--button-danger);
 }
 
 .in-message p {

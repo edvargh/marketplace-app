@@ -59,7 +59,7 @@
 }
 
 .price-error {
-    color: var(--bright-red);
+    color: var(--error-msg);
     font-size: 0.875rem;
     margin-top: 0.5rem;
   }
@@ -92,8 +92,8 @@ input[type="number"] {
   .geo-input {
     width: 100%;
     padding: 0.5rem 1rem;
-    background: var(--light-gray);
-    border: 1px solid var(--dark-gray);
+    background: var(--geo-input);
+    border: 1px solid var(--geo-input-border);
     border-radius: 0.5rem;
     font-size: 1rem;
     transition: all 0.3s ease;

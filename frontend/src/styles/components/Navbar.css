@@ -5,8 +5,8 @@
   padding: 1rem 2rem;
   border-radius: 9999px;
   backdrop-filter: blur(12px);
-  background: linear-gradient(to right, var(--navbar-1), var(--navbar-2));
-  border-bottom: 1px solid var(--navbar-border-bottom);
+  background: linear-gradient(to right, var(--component-half-1), var(--component-half-2));
+  border-bottom: 1px solid var(--component-border-bottom);
   box-shadow: 0 2px 8px var(--navbar-shadow);
 }
 
@@ -38,7 +38,7 @@
   top: calc(100% + 0.5rem);
   left: 0;
   width: 100%;
-  background: linear-gradient(to right, var(--navbar-1), var(--navbar-2));
+  background: linear-gradient(to right, var(--component-half-1), var(--component-half-2));
   border: 1px solid var(--navbar-border);
   border-radius: 16px;
   padding: 1rem;
@@ -110,7 +110,7 @@
   position: fixed;
   top: 4.5rem;
   right: 1rem;
-  background: linear-gradient(to right, var(--navbar-1), var(--navbar-2));
+  background: linear-gradient(to right, var(--component-half-1), var(--component-half-2));
   border: 1px solid var(--navbar-border);
   border-radius: 16px;
   padding: 1rem;
@@ -149,23 +149,23 @@
 }
 
 .dropdown-logout-button {
-  background-color: var(--navbar-logout) !important;
+  background-color: var(--button-danger) !important;
   color: white !important;
 }
 
 .dropdown-logout-button:hover {
-  background-color: var(--navbar-logout-hover) !important;
-  color: white !important;
+  background-color: var(--button-danger-hover) !important;
+  color: var(--button-text) !important;
 }
 
 .mobile-logout-button {
-  background-color: var(--navbar-logout) !important;
-  color: white !important;
+  background-color: var(--button-danger) !important;
+  color: var(--button-text) !important;
 }
 
 .mobile-logout-button:hover {
-  background-color: var(--navbar-logout-hover) !important;
-  color: white !important;
+  background-color: var(--button-danger-hover) !important;
+  color: var(--button-text) !important;
 }
 
 @media (max-width: 1070px) {

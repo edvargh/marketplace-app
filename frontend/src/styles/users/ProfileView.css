@@ -29,21 +29,6 @@ label {
   margin-left: 0.5rem;
 }
 
-button[type='submit'] {
-  padding: 0.75rem;
-  background-color: var(--button-primary);
-  color: var(--button-text-primary);
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-button[type='submit']:hover {
-  background-color: var(--button-primary-hover);
-}
-
 .error-message {
   color: red;
   text-align: center;

@@ -31,7 +31,7 @@
     z-index: 10;
     top: 50%;
     transform: translateY(-50%);
-    background: var(--dark-gray);
+    background: var(--button-nav);
     border: none;
     border-radius: 50%;
     width: 50px;
@@ -42,7 +42,7 @@
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.3s ease;
-    color: var(--white);
+    color: var(--button-text-nav);
     font-size: 24px;
   }
   
@@ -65,7 +65,7 @@
     height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-right: 15px solid var(--white);
+    border-right: 15px solid var(--button-text-nav);
     margin-right: 3px;
   }
   
@@ -76,6 +76,6 @@
     height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-left: 15px solid var(--white);
+    border-left: 15px solid var(--button-text-nav);
     margin-left: 3px;
   }

@@ -51,12 +51,12 @@
   border: none;
   font-size: 1.25rem;
   cursor: pointer;
-  color: var(--notification-close-btn);
+  color: var(--button-cancel);
   padding: 0.25rem;
 }
 
 .close-btn:hover {
-  color: var(--notification-close-btn-hover);
+  color: var(--button-cancel-hover);
 }
 
 .fade-enter-active,

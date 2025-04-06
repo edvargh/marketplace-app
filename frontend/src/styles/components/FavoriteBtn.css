@@ -14,12 +14,12 @@
 }
 
 .favorite-btn span {
-    color: var(--medium-gray);
+    color: var(--button-text-favorite);
     font-size: 20px;
 }
 
 .favorite-btn .favorite {
-    color: var(--bright-red);
+    color: var(--button-favorite-icon);
 }
 
 

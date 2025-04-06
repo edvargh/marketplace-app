@@ -1,5 +1,4 @@
 /* Colors here */
-
 :root {
   --black: #000;
   --white: #f5f5f5;
@@ -8,29 +7,30 @@
   --dark-gray: #333;
   --bright-red: red;
 
-  /* TEXT */
-  --coordinates: var(--medium-gray);
-
   /* ERROR/SUCCESS MESSAGE */
   --error-msg: #d32f2f;
   --success-msg: #2e7d15;
 
   /* BUTTONS */
+  --buttton-diabled: #cccccc;
+  --button-text: white;
   --button-primary: #2e7d15;
   --button-primary-hover: #45a049;
-  --buttton-diabled: #cccccc;
   --button-cancel: #444444;
   --button-cancel-hover: #555555;
   --button-danger: #d32f2f;
   --button-danger-hover: #f44336;
   --button-blue: #4facfe;
-  --button-text-primary: white;
   --button-text-blue: white;
   --button-reserve: #e8f5e9;
   --button-text-reserve: #2e7d15;
   --button-message: #e3f2fd;
   --button-text-message: #1565c0;
-
+  --button-favorite-icon: #d32f2f;
+  --button-text-favorite: #444444;
+  --button-nav: #333;
+  --button-nav-hover: black;
+  --button-text-nav: white;
 
   /* LOADING */
   --loading-wheel: var(--medium-gray);
@@ -38,35 +38,23 @@
   --loading-border: var(--white);
 
   /* NAVBAR */
-  --navbar-1: #e0f7ff;
-  --navbar-2: #f0f8ff;
-  --navbar-border-bottom: #d0e0f0;
   --navbar-shadow: var(--light-gray);
   --navbar-border: rgba(0, 0, 0, 0.1);
   --navbar-hover: rgba(79, 172, 254, 0.15);
   --navbar-link: var(--dark-gray);
   --navbar-text: var(--dark-gray);
-  --navbar-logout: #d32f2f;
-  --navbar-logout-hover: #f44336;
 
   /* NOTIFICATION BANNER */
   --notification-overlay: rgba(0, 0, 0, 0.5);
   --notification-shadow: rgb(0, 0, 0, 0.1);
   --notification-content-background: white;
-  --notification-close-btn: #6b7280;
-  --notification-close-btn-hover: #374151;
   --notification-success: #f0fdf4;
   --notification-error: #fef2f2;
   --notification-warning: #fffbeb;
   --notification-info: #eff6ff;
 
   /* MESSAGES + RESERVE BOX */
-
-
-  /* MESSAGES + RESERVE BOX */
   --reserve-background: #CEEBF4;
-  --reserve-accept: #4caf50;
-  --reserve--decline: #f44336;
   --message: #e0f7fa;
   --message-name: #666;
   --message-input-top-border: #6b7280;
@@ -77,22 +65,24 @@
   --date-divider: #B9D9EB;
   --message-empty: #666;
 
-
   /* SPECIAL CUSTOM BOX/BUTTON */
-  --light-blue: #e0f0ff; /* linear gradient  */
-  --light-blue-cold: #e8f0ff; /* linear gradient  */
-  --sky-blue: #4facfe; /* Select category, item card border, linear gradient  */
-  --turquoise: #00f2fe; /* linear gradient  */
+  --light-blue: #e0f0ff;
+  --light-blue-cold: #e8f0ff;
+  --sky-blue: #4facfe;
+  --turquoise: #00f2fe;
   --component-half-1: #e0f7ff;
   --component-half-2: #f0f8ff;
+  --component-border-bottom: #d0e0f0;
 
   /* INPUT */
   --input-placeholder: #aaa;
 
-  /* CHECKBOX */
+  /* FILTER */
   --checkbox-border: rgba(0, 255, 255, 0.4);
   --checkbox-background: rgba(255, 255, 255, 0.05);
   --checkbox-label-hover: var(--sky-blue);
+  --geo-input: #cccccc;
+  --geo-input-border: #333;
 
   /* SELECT BOX */
   --select-border-shadow: rgba(0, 0, 0, 0.1);
@@ -111,16 +101,17 @@
 
   /* ITEM VIEW */
   --item-view-desc-border: #aaa;
+  --img-gallery-border: #4facfe;
+  --coordinates: var(--medium-gray);
 
-  /* LOG IN + REGISTER*/
+  /* LOG IN + REGISTER */
   --log-in-register-link: #4facfe;
   --log-in-register-button-text: white;
 
-
-
-
-
-
+  /* CARDS */
+  --item-card-border: #4facfe;
+  --item-card-border-top: #cccccc;
+  --conv-card-latest-msg: #555;
 }
 
 

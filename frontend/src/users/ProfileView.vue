@@ -49,6 +49,7 @@
         {{ t("profile.Passwords-do-not-match") }}
       </p>
 
+      <<!-- TODO: Use SelectBox component -->
       <div class="SelectBox">
         <label for="language">{{ t('profile.language') }}</label>
         <select id="language" v-model="language" class="dropdown-select">
@@ -58,7 +59,8 @@
         </select>
       </div>
 
-      <button type="submit" :disabled="!canSubmit">
+
+      <button type="submit" :disabled="!canSubmit" class="action-button button-primary">
         {{ isSubmitting ? t('profile.updating') : t('profile.updateProfile') }}
       </button>
 
@@ -160,4 +162,5 @@ const handleUpdateProfile = async () => {
 
 <style scoped>
 @import '../styles/users/ProfileView.css';
+@import '../styles/components/ItemFormButton.css';
 </style>

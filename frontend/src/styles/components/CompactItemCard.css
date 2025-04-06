@@ -4,7 +4,7 @@
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    border: 2px solid var(--sky-blue);
+    border: 2px solid var(--item-card-border);
     transition: transform 0.3s ease;
 }
 
@@ -72,7 +72,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid var(--light-gray);
+    border-top: 1px solid var(--item-card-border-top);
 }
 
 .price-frame {

@@ -55,7 +55,7 @@
 }
 
 .latest-message {
-    color: var(--medium-gray);
+    color: var(--conv-card-latest-msg);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
