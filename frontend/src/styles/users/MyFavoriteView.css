@@ -4,16 +4,10 @@
     margin: 0 auto;
 }
   
-.my-favorite-items-grid > * {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-  
 .no-favorite-items-message {
     text-align: center;
     font-size: 1.2rem;
-    color: #999;
+    color: var(--message-empty);
     padding: 2rem;
 }
 
@@ -22,5 +16,4 @@
     font-family: 'Abel', sans-serif;
     font-weight: bold;
     margin-bottom: 1rem;
-    color: #333;
 }

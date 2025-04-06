@@ -1,39 +1,119 @@
+/* Colors here */
 :root {
-  --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
-  --vt-c-white-mute: #f2f2f2;
+  --black: #000;
+  --white: #f5f5f5;
+  --light-gray: #cccccc;
+  --medium-gray: #555;
+  --dark-gray: #333;
+  --bright-red: red;
 
-  --vt-c-black: #181818;
-  --vt-c-black-soft: #222222;
-  --vt-c-black-mute: #282828;
+  /* ERROR/SUCCESS MESSAGE */
+  --error-msg: #d32f2f;
+  --success-msg: #2e7d15;
 
-  --vt-c-indigo: #2c3e50;
+  /* BUTTONS */
+  --buttton-diabled: #cccccc;
+  --button-text: white;
+  --button-primary: #2e7d15;
+  --button-primary-hover: #45a049;
+  --button-cancel: #444444;
+  --button-cancel-hover: #555555;
+  --button-danger: #d32f2f;
+  --button-danger-hover: #f44336;
+  --button-blue: #4facfe;
+  --button-text-blue: white;
+  --button-reserve: #e8f5e9;
+  --button-text-reserve: #2e7d15;
+  --button-message: #e3f2fd;
+  --button-text-message: #1565c0;
+  --button-favorite-icon: #d32f2f;
+  --button-text-favorite: #444444;
+  --button-nav: #333;
+  --button-nav-hover: black;
+  --button-text-nav: white;
 
-  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
-  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
-  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
-  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+  /* LOADING */
+  --loading-wheel: var(--medium-gray);
+  --loading-spin: var(--sky-blue);
+  --loading-border: var(--white);
 
-  --vt-c-text-light-1: var(--vt-c-indigo);
-  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
-  --vt-c-text-dark-1: var(--vt-c-white);
-  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  /* NAVBAR */
+  --navbar-shadow: var(--light-gray);
+  --navbar-border: rgba(0, 0, 0, 0.1);
+  --navbar-hover: rgba(79, 172, 254, 0.15);
+  --navbar-link: var(--dark-gray);
+  --navbar-text: var(--dark-gray);
+
+  /* NOTIFICATION BANNER */
+  --notification-overlay: rgba(0, 0, 0, 0.5);
+  --notification-shadow: rgb(0, 0, 0, 0.1);
+  --notification-content-background: white;
+  --notification-success: #f0fdf4;
+  --notification-error: #fef2f2;
+  --notification-warning: #fffbeb;
+  --notification-info: #eff6ff;
+
+  /* MESSAGES + RESERVE BOX */
+  --reserve-background: #CEEBF4;
+  --message: #e0f7fa;
+  --message-name: #666;
+  --message-input-top-border: #6b7280;
+  --message-input-border: #a0c4ff;
+  --message-input: white;
+  --message-send: white;
+  --date-divider-text: #666;
+  --date-divider: #B9D9EB;
+  --message-empty: #666;
+
+  /* SPECIAL CUSTOM BOX/BUTTON */
+  --light-blue: #e0f0ff;
+  --light-blue-cold: #e8f0ff;
+  --sky-blue: #4facfe;
+  --turquoise: #00f2fe;
+  --component-half-1: #e0f7ff;
+  --component-half-2: #f0f8ff;
+  --component-border-bottom: #d0e0f0;
+
+  /* INPUT */
+  --input-placeholder: #aaa;
+
+  /* FILTER */
+  --checkbox-border: rgba(0, 255, 255, 0.4);
+  --checkbox-background: rgba(255, 255, 255, 0.05);
+  --checkbox-label-hover: var(--sky-blue);
+  --geo-input: #cccccc;
+  --geo-input-border: #333;
+
+  /* SELECT BOX */
+  --select-border-shadow: rgba(0, 0, 0, 0.1);
+  --select-hover: rgba(79, 172, 254, 0.15);
+
+  /* STATUS BANNER */
+  --status-background: #cccccc;
+
+  /* PROFILE */
+  --profile-border: #4facfe;
+  --profile-edit-icon: white;
+  --profile-edit-icon-shadow: rgba(0, 0, 0, 0.15);
+
+  /* CATEGORIES ADMIN */
+  --category-admin-border-top: 888888;
+
+  /* ITEM VIEW */
+  --item-view-desc-border: #aaa;
+  --img-gallery-border: #4facfe;
+  --coordinates: var(--medium-gray);
+
+  /* LOG IN + REGISTER */
+  --log-in-register-link: #4facfe;
+  --log-in-register-button-text: white;
+
+  /* CARDS */
+  --item-card-border: #4facfe;
+  --item-card-border-top: #cccccc;
+  --conv-card-latest-msg: #555;
 }
 
-/* semantic color variables for this project */
-:root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
-
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
-
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
-}
 
 *,
 *::before,
@@ -44,8 +124,9 @@
 }
 
 body {
-  min-height: 100vh;
-  color: var(--color-text);
+  /* Colors here */
+  color: var(--dark-gray);
+
   background: radial-gradient(circle at 30% 30%, rgba(173, 216, 230, 0.4), transparent 40%),
   radial-gradient(circle at 70% 70%, rgba(221, 160, 221, 0.4), transparent 40%),
   radial-gradient(circle at 50% 50%, rgba(144, 238, 144, 0.4), transparent 40%),

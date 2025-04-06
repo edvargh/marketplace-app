@@ -1,0 +1,28 @@
+.card-grid {
+    display: grid;
+    width: 100%;
+    max-width: 100%;
+}
+
+.card-grid--compact {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    width: 100%;
+    grid-auto-flow: row;
+    max-width: 100%;
+}
+
+.card-grid--messages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    width: 100%;
+}
+
+@media (max-width: 500px), (max-height: 800px) {
+    .card-grid--compact {
+        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    }
+}

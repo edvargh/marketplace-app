@@ -5,10 +5,10 @@
     <h2 class="my-items-title">My Items</h2>
 
     <div v-if="myItems.length > 0" class="my-items-grid">
-      <CompactItemCard
-        v-for="item in myItems"
-        :key="item.id"
-        :item="item"
+      <CardGrid
+        :items="myItems"
+        :cardComponent="CompactItemCard"
+        variant="compact"
       />
     </div>
 
@@ -23,6 +23,7 @@ import { ref, onMounted } from 'vue'
 import CompactItemCard from '@/components/CompactItemCard.vue'
 import { useItemStore } from '@/stores/itemStore'
 import LoadingState from "@/components/LoadingState.vue";
+import CardGrid from '@/components/CardGrid.vue'
 
 const myItems = ref([])
 const itemStore = useItemStore()
