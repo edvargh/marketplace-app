@@ -7,7 +7,6 @@
     height: 400px;
     width: 100%;
     border-radius: 8px;
-    border: 1px solid #ddd;
     z-index: 1;
     cursor: grab;
     margin-bottom: 10px;
@@ -23,11 +22,11 @@ h3 {
 
 .coordinates-display {
     margin-bottom: 10px;
-    color: #444444;
+    color: var(--coordinates);
 }
 
 .error-message {
-    color: #e74c3c;
+    color: var(--error-msg);
     margin-top: 0.5rem;
     font-size: 0.9rem;
 }

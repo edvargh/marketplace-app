@@ -22,7 +22,7 @@
             <span class="price">{{ item.price }} kr</span>
           </div>
 
-          <StatusBanner :status="item.status" />
+          <StatusBanner :status="item.status" class="status-banner" />
         </div>
 
       </div>

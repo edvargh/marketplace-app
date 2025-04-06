@@ -26,7 +26,6 @@
   display: block;
   margin: 1rem 0 0.3rem;
   font-weight: 600;
-  color: #444;
 }
 
 .RegisterPage button[type='submit'] {
@@ -35,27 +34,26 @@
   margin-top: 1.5rem;
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: var(--log-in-register-button-text);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background: linear-gradient(to right, #4facfe, #00f2fe);
+  background: linear-gradient(to right, var(--sky-blue), var(--turquoise));
   transition: background 0.3s ease;
 }
 
 .RegisterPage button[type='submit']:hover {
-  background: linear-gradient(to right, #00f2fe, #4facfe);
+  background: linear-gradient(to right, var(--turquoise), var(--sky-blue));
 }
 
 .AlreadyHaveAccountText {
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.95rem;
-  color: #555;
 }
 
 .AlreadyHaveAccountText a {
-  color: #4facfe;
+  color: var(--log-in-register-link);
   font-weight: 500;
   text-decoration: none;
 }
@@ -65,7 +63,7 @@
 }
 
 .error-message {
-  color: #ff4444;
+  color: var(--error-msg);
   font-size: 0.95rem;
   margin-top: 1rem;
   text-align: center;
@@ -76,11 +74,11 @@
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #4BB543;
-  color: white;
+  background-color: var(--success-msg);
+  color: var(--white);
   padding: 15px 25px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px var(--notification-shadow);
   z-index: 1000;
   animation: slideDown 0.5s ease-out forwards;
   display: flex;
@@ -100,25 +98,21 @@
 }
 
 .input-error-text {
-  color: #ff4444;
+  color: var(--error-msg);
   font-size: 0.85rem;
   margin-top: 0.2rem;
   margin-bottom: 0.5rem;
 }
 
 .input-error-border {
-  border-color: #ff4444 !important;
-  background:
-    linear-gradient(to right, #ffe0e0, #ffe8e8) padding-box,
-    linear-gradient(to right, #fe4f4f, #ff4444) border-box;
+  border-color: var(--error-msg) !important;
 }
 
 .error-message {
-  color: #ff4444;
+  color: var(--error-msg);
   font-size: 0.95rem;
   margin-top: 1rem;
   text-align: center;
   padding: 0.5rem;
-  background-color: #ffe8e8;
   border-radius: 4px;
 }

@@ -49,14 +49,14 @@
         {{ t("profile.Passwords-do-not-match") }}
       </p>
 
-        <label for="language">{{ t('profile.language') }}</label>
-        <SelectBox
-          v-model="language"
-          :options="languageOptions"
-          :placeholder="t('profile.Select-your-language')"
-        />
+      <label for="language">{{ t('profile.language') }}</label>
+      <SelectBox
+        v-model="language"
+        :options="languageOptions"
+        :placeholder="t('profile.Select-your-language')"
+      />
 
-      <button type="submit" :disabled="!canSubmit">
+      <button type="submit" :disabled="!canSubmit" class="action-button button-primary">
         {{ isSubmitting ? t('profile.updating') : t('profile.updateProfile') }}
       </button>
 
@@ -164,4 +164,5 @@ const handleUpdateProfile = async () => {
 
 <style scoped>
 @import '../styles/users/ProfileView.css';
+@import '../styles/components/ItemFormButton.css';
 </style>

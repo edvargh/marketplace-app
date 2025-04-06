@@ -31,7 +31,7 @@
     z-index: 10;
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.5);
+    background: var(--button-nav);
     border: none;
     border-radius: 50%;
     width: 50px;
@@ -40,10 +40,9 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     opacity: 0;
     transition: opacity 0.3s ease;
-    color: white;
+    color: var(--button-text-nav);
     font-size: 24px;
   }
   
@@ -66,7 +65,7 @@
     height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-right: 15px solid white;
+    border-right: 15px solid var(--button-text-nav);
     margin-right: 3px;
   }
   
@@ -77,6 +76,6 @@
     height: 0;
     border-top: 10px solid transparent;
     border-bottom: 10px solid transparent;
-    border-left: 15px solid white;
+    border-left: 15px solid var(--button-text-nav);
     margin-left: 3px;
   }
