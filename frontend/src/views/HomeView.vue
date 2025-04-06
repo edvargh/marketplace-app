@@ -87,15 +87,16 @@ import HorizontalPagination from '@/components/HorizontalPagination.vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { useFilterStore } from '@/stores/filterStore'
+import { useUserStore } from '@/stores/userStore'
 
 
 const route = useRoute()
 const router = useRouter()
 
+const { t, locale } = useI18n()
+
 const filterStore = useFilterStore()
-
-const { t } = useI18n()
-
+const userStore = useUserStore()
 const categoryStore = useCategoryStore()
 const itemStore = useItemStore()
 
@@ -110,6 +111,10 @@ const error = ref(null)
 onMounted(async () => {
   loading.value = true
   try {
+    if (userStore.user?.preferredLanguage) {
+      locale.value = userStore.user.preferredLanguage
+    }
+
     const categoriesPromise = categoryStore.fetchCategories().then(cats => {
       categories.value = cats
     })
