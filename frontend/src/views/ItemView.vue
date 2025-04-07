@@ -25,7 +25,7 @@
         <template v-if="!isMyItem">
           <button class="message-btn" @click="handleMessageSeller">Send message</button>
           <button class="reserve-btn" @click="handleReserveItem">Reserve item</button>
-          <button class="blue-btn">Buy Now</button>
+          <button class="blue-btn" @click="handleBuyNow">Buy Now</button>
         </template>
         <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
           Edit Item
@@ -173,6 +173,24 @@ const handleReserveItem = async () => {
 const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;
 };
+
+
+const handleBuyNow = async () => {
+  try {
+    const itemId = item.value.id;
+    const redirectUrl = await itemStore.initiateVippsPayment(itemId);
+    
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      throw new Error('No redirect URL received');
+    }
+  } catch (err) {
+    console.error('[ItemView] ❌ Failed to process payment:', err);
+    alert("Could not process payment. Please try again.");
+  }
+};
+
 
 </script>
 
