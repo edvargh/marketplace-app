@@ -147,16 +147,13 @@ export const useUserStore = defineStore('user', () => {
     return await response.json(); 
   };
 
-  // Fixed profile image methods
   const getProfileImageUrl = (profileImagePath) => {
     if (!profileImagePath) return '/default-picture.jpg';
     
-    // If the path already includes http/https, return it as is
     if (profileImagePath.startsWith('http://') || profileImagePath.startsWith('https://')) {
       return profileImagePath;
     }
     
-    // Otherwise, prepend the API base URL
     return `${API_BASE_URL}/uploads/${profileImagePath}`;
   }
 
@@ -179,7 +176,6 @@ export const useUserStore = defineStore('user', () => {
       }
       return getProfileImageUrl(userData.profileImage);
     } catch (error) {
-      console.error('Error getting user profile image:', error);
       return '/default-picture.jpg';
     }
   }
