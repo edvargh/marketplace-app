@@ -5,6 +5,9 @@ import com.marketplace.backend.model.ItemStatus;
 import java.io.IOException;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.marketplace.backend.dto.ItemCreateDto;
@@ -69,36 +72,42 @@ public class ItemService {
    *
    * @param minPrice    the minimum price
    * @param maxPrice    the maximum price
-   * @param categoryIds  the category ID
+   * @param categoryIds the category ID
    * @param searchQuery the search query
    * @param latitude    the latitude
    * @param longitude   the longitude
    * @param distanceKm  the distance in kilometers
+   * @param page
+   * @param size
    * @return a list of items as DTOs
    */
   public List<ItemResponseDto> getFilteredItems(Double minPrice, Double maxPrice,
-                                                List <Long> categoryIds, String searchQuery,
+                                                List<Long> categoryIds, String searchQuery,
                                                 BigDecimal latitude, BigDecimal longitude,
-                                                Double distanceKm) {
+                                                Double distanceKm,
+                                                int page, int size) {
 
     String email = getAuthenticatedEmail();
     User currentUser = userRepository.findByEmail(email).orElseThrow();
+    Pageable pageable = PageRequest.of(page, size);
 
-    List<Item> items = itemRepository.findFilteredItems(
-        currentUser.getId(),
-        minPrice,
-        maxPrice,
-        categoryIds != null && !categoryIds.isEmpty() ? categoryIds : null,
-        (searchQuery != null && !searchQuery.isBlank()) ? searchQuery : null,
-        latitude,
-        longitude,
-        distanceKm
+    Page<Item> itemsPage = itemRepository.findFilteredItems(
+            currentUser.getId(),
+            minPrice,
+            maxPrice,
+            categoryIds != null && !categoryIds.isEmpty() ? categoryIds : null,
+            (searchQuery != null && !searchQuery.isBlank()) ? searchQuery : null,
+            latitude,
+            longitude,
+            distanceKm,
+            pageable
     );
 
-    return items.stream()
-        .map(item -> ItemResponseDto.fromEntity(item, currentUser))
-        .toList();
+    return itemsPage.getContent().stream()
+            .map(item -> ItemResponseDto.fromEntity(item, currentUser))
+            .toList();
   }
+
 
   /**
    * Get an item by its ID.
@@ -125,13 +134,15 @@ public class ItemService {
    *
    * @return a list of items as DTOs
    */
-  public List<ItemResponseDto> getItemsForCurrentUser() {
+  public List<ItemResponseDto> getItemsForCurrentUser(int page, int size) {
     String email = getAuthenticatedEmail();
     User user = userRepository.findByEmail(email).orElseThrow();
+    Pageable pageable = PageRequest.of(page, size);
 
-    return itemRepository.findBySeller(user).stream()
-        .map(ItemResponseDto::fromEntity)
-        .collect(Collectors.toList());
+    Page<Item> paged = itemRepository.findBySeller(user, pageable);
+    return paged.getContent().stream()
+            .map(ItemResponseDto::fromEntity)
+            .collect(Collectors.toList());
   }
 
   /**
@@ -139,13 +150,15 @@ public class ItemService {
    *
    * @return a list of favorite items as DTOs
    */
-  public List<ItemResponseDto> getFavoriteItemsForCurrentUser() {
+  public List<ItemResponseDto> getFavoriteItemsForCurrentUser(int page, int size) {
     String email = getAuthenticatedEmail();
     User user = userRepository.findByEmail(email).orElseThrow();
+    Pageable pageable = PageRequest.of(page, size);
 
-    return user.getFavoriteItems().stream()
-        .map(item -> ItemResponseDto.fromEntity(item, user))
-        .collect(Collectors.toList());
+    Page<Item> paged = itemRepository.findFavoritesByUser(user, pageable);
+    return paged.getContent().stream()
+            .map(item -> ItemResponseDto.fromEntity(item, user))
+            .toList();
   }
 
   /**
