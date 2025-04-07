@@ -1,5 +1,5 @@
 <template>
-  <LoadingState :loading="loadingInitial" :error="error"/>
+  <LoadingState :loading="loadingInitial" :error="error" :loadingMessage="t('homeView.Loading-homeView')" />
 
   <div v-if="!loadingInitial && !error" class="home-container">
     <div class="search-filter-container">
@@ -71,7 +71,7 @@
       />
       <div v-if="moreAvailable" class="load-more-wrapper">
         <button @click="loadMoreMarketItems" class="action-button button-cancel" :disabled="loadingMore">
-          {{ loadingMore ? 'Loading...' : 'Load More' }}
+          {{ loadingMore ? t('homeView.Loading') : t('homeView.Load-more') }}
         </button>
       </div>
       <div v-else-if="marketItems.length === 0 && !loadingInitial" class="no-items-message">

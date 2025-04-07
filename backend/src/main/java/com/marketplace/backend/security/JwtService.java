@@ -1,6 +1,7 @@
 package com.marketplace.backend.security;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.function.Function;
@@ -10,8 +11,10 @@ import java.util.function.Function;
  */
 @Service
 public class JwtService {
-  private static final String SECRET_KEY = "supersecretkey"; // move to config for production
-  private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 10; // 10 hours
+
+  @Value("${jwt.secret}")
+  private String SECRET_KEY;
+  private static final long EXPIRATION_TIME = 1000 * 60 * 60;
 
   /**
    * Extract username from token.

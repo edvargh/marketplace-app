@@ -41,7 +41,10 @@
     "Market": "Market",
     "No-market-items-found": "No market items found",
     "Hide-filters": "Hide filters",
-    "Show-filters": "Show filters"
+    "Show-filters": "Show filters",
+    "Load-more": "Load more",
+    "Loading": "Loading...",
+    "Loading-homeView": "Loading home page..."
   },
     "categories":{
     "Most-popular-categories": "Most popular categories"
@@ -70,5 +73,74 @@
     "messagePlaceholder": "Type your message...",
     "sending": "Sending...",
     "send": "Send"
+  },
+  "MyFavouriteView": {
+  "My-favorite-items": "My Favorite Items",
+  "Loading": "Loading...",
+  "Load-more": "Load More",
+  "No-favorites": "You have not favorited any items yet.",
+  "Loading-favorites": "Loading your favorite advertisements...",
+  "Error-loading": "Something went wrong while loading your favorite advertisements. Please try again."
+  },
+  "myItemsView": {
+    "title": "My Items",
+    "Loading-my-items": "Loading your listings...",
+    "loadMore": "Load More",
+    "No-items": "You have not listed any items yet.",
+    "Loading-items": "Loading your listed advertisements...",
+    "Error-loading": "Something went wrong while loading your listed advertisements. Please try again."
+  },
+  "createItemView": {
+  "title": "Create New Advertisement",
+  "create": "Create",
+  "creating": "Creating...",
+  "successMessage": "Advertisement created successfully!"
+  },
+  "itemFormComponent": {
+  "importImages": "Import Images",
+  "removeCurrentImage": "Remove Current Image",
+  "status": "Status",
+  "category": "Category",
+  "title": "Title",
+  "description": "Description",
+  "price": "Price",
+  "selectLocation": "Please select a location on the map",
+  "priceValidation": {
+    "invalid": "Please enter a valid number",
+    "negative": "Price cannot be negative",
+    "tooHigh": "Price cannot exceed 10,000,000kr"
+  },
+  "placeholders": {
+    "title": "Enter a title",
+    "description": "Write a description...",
+    "price": "Enter price in kr",
+    "category": "Select a category",
+    "status": "Select a status"
+  },
+  "statusOptions": {
+    "forSale": "For Sale",
+    "reserved": "Reserved",
+    "sold": "Sold"
+  },
+  "validation": {
+    "invalidNumber": "Please enter a valid number",
+    "negativePrice": "Price cannot be negative number",
+    "tooHighPrice": "Price cannot exceed 10,000,000kr"
+  }
+  },
+  "locationDisplay": {
+  "title": "Location",
+  "latitude": "Latitude",
+  "longitude": "Longitude",
+  "useCurrentLocation": "Use My Current Location",
+  "errors": {
+    "unsupported": "Geolocation is not supported by your browser",
+    "general": "Could not get your current location. Please make sure location services are enabled.",
+    "denied": "Location access was denied. Please enable location permissions in your browser settings.",
+    "unavailable": "Location information is unavailable. Please check your network connection.",
+    "timeout": "The request to get your location timed out. Please try again."
   }
 }
+
+}
+

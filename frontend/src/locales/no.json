@@ -41,7 +41,10 @@
     "Market": "Marked",
     "No-market-items-found": "Ingen markedsvarer funnet",
     "Hide-filters": "Skjul filtere",
-    "Show-filters": "Vis filtere"
+    "Show-filters": "Vis filtere",
+    "Load-more": "Last inn flere gjenstander",
+    "Loading": "Laster...",
+    "Loading-homeView": "Laster hjemsiden..."
   },
   "categories":{
     "Most-popular-categories": "Mest populære kategorier"
@@ -70,5 +73,73 @@
     "messagePlaceholder": "Skriv her...",
     "sending": "Sender...",
     "send": "Send"
+  },
+  "MyFavouriteView": {
+  "My-favorite-items": "Mine favoritter",
+  "Loading": "Laster...",
+  "Load-more": "Last inn flere gjenstander",
+  "No-favorites": "Du har ikke lagt til noen favoritter ennå.",
+  "Loading-favorites": "Laster dine favorittannonser...",
+  "Error-loading": "Noe gikk galt ved lasting av dine favorittannonser. Vennligst prøv igjen."
+  },
+  "myItemsView": {
+  "title": "Mine gjenstander",
+  "Loading-my-items": "Laster dine annonser...",
+  "loadingMore": "Laster...",
+  "loadMore": "Last inn mer",
+  "noItems": "Du har ikke lagt ut noen gjenstander ennå.",
+  "loadingError": "Noe gikk galt ved lasting av dine annonser. Vennligst prøv igjen."
+  },
+
+ "createItemView": {
+  "title": "Opprett ny annonse",
+  "create": "Opprett",
+  "creating": "Oppretter...",
+  "successMessage": "Annonse opprettet!"
+ },
+ "itemFormComponent": {
+  "importImages": "Importer bilder",
+  "removeCurrentImage": "Fjern nåværende bilde",
+  "status": "Status",
+  "category": "Kategori",
+  "title": "Tittel",
+  "description": "Beskrivelse",
+  "price": "Pris",
+  "selectLocation": "Vennligst velg en plassering på kartet",
+  "priceValidation": {
+    "invalid": "Vennligst oppgi et gyldig tall",
+    "negative": "Pris kan ikke være negativ",
+    "tooHigh": "Pris kan ikke overstige 10 000 000 kr"
+  },
+  "placeholders": {
+  "title": "Skriv inn en tittel",
+  "description": "Skriv en beskrivelse...",
+  "price": "Skriv inn pris i kr",
+  "category": "Velg en kategori",
+  "status": "Velg en status"
+  },
+  "statusOptions": {
+  "forSale": "Til salgs",
+  "reserved": "Reservert",
+  "sold": "Solgt"
+  },
+  "validation": {
+  "invalidNumber": "Vennligst skriv inn et gyldig tall",
+  "negativePrice": "Pris kan ikke være et negativt tall",
+  "tooHighPrice": "Prisen kan ikke overstige 10 000 000 kr"
   }
+},
+  "locationDisplay": {
+  "title": "Plassering",
+  "latitude": "Breddegrad",
+  "longitude": "Lengdegrad",
+  "useCurrentLocation": "Bruk min nåværende posisjon",
+  "errors": {
+    "unsupported": "Geolokasjon støttes ikke av nettleseren din",
+    "general": "Kunne ikke hente din nåværende posisjon. Sørg for at posisjonstjenester er aktivert.",
+    "denied": "Tilgang til posisjon ble nektet. Aktiver posisjonstillatelser i nettleserens innstillinger.",
+    "unavailable": "Posisjonsinformasjon er utilgjengelig. Sjekk nettverkstilkoblingen din.",
+    "timeout": "Forespørselen om å hente posisjon tok for lang tid. Prøv igjen."
+  }
+}
 }
