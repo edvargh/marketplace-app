@@ -50,6 +50,8 @@ public class SecurityConfig {
                                                   .permitAll()
                                                   .requestMatchers(HttpMethod.POST, "/api/payments/vipps-callback/v2/payments/**").permitAll()
                                                   .requestMatchers(HttpMethod.GET, "/api/payments/vipps-complete").permitAll()
+                                                  .requestMatchers(HttpMethod.POST, "/api/payments/vipps").permitAll()
+
                                                   .anyRequest().authenticated()
                )
                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
