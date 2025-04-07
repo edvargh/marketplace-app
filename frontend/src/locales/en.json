@@ -25,7 +25,9 @@
     "Select-your-language": "Select your language",
     "Passwords-do-not-match": "Passwords do not match",
     "updating": "Updating",
-    "updateProfile": "Update Profile"
+    "updateProfile": "Update Profile",
+    "bothPasswordsRequired": "Both password fields are required",
+    "fullNameRequired": "Full name is required"
 
   },
   "homeView": {
