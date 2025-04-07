@@ -9,7 +9,7 @@
         :src="participantProfileImage"
         @error="$event.target.src = '/default-picture.jpg'"
       />
-      <h2>{{ getSenderName(withUserId) }}</h2>
+      <h2>{{ otherUserName }}</h2>
     </div>
 
     <!-- Item preview -->
@@ -39,7 +39,7 @@
           <div v-else :class="['message-bubble', msg.fromYou ? 'sent' : 'received']">
             <img
               class="bubble-profile-pic"
-              :src="msg.fromYou ? currentUserProfileImage : participantProfileImage"
+              :src="getProfileImageForUser(msg.senderId, msg.fromYou)"
               @error="$event.target.src = '/default-picture.jpg'"
             />
             <div class="bubble-content">
@@ -52,8 +52,8 @@
                 <ReserveBox
                   :itemId="itemId"
                   :buyerId="msg.fromYou ? currentUserId : withUserId"
-                  :buyerName="msg.fromYou ? userStore.user.fullName : item.sellerName"
-                  :isSellerView="!msg.fromYou"
+                  :buyerName="msg.fromYou ? userStore.user.fullName : otherUserName"
+                  :isSellerView="!msg.fromYou && isSeller"
                   :initialStatus="msg.reservationStatus"
                   :reservationMessage="msg.content"
                   @accept="handleAcceptReservation(msg.messageId)"
@@ -104,7 +104,7 @@
 
 
 <script setup>
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMessageStore } from '@/stores/messageStore'
 import { useUserStore } from '@/stores/userStore'
@@ -131,13 +131,37 @@ const isSending = ref(false)
 const isReserveMode = ref(route.query.reserve === 'true')
 const showReserveInput = ref(isReserveMode.value)
 
-const imageBaseURL = import.meta.env.VITE_API_BASE_URL + '/uploads/'
-const currentUserProfileImage = ref('/default-picture.jpg')
+// Use consistent URLs from the store
+const currentUserProfileImage = ref(userStore.getCurrentUserProfileImageUrl())
 const participantProfileImage = ref('/default-picture.jpg')
+const otherUser = ref(null)
 
-// Update current user profile image
-if (userStore.user?.profileImage) {
-  currentUserProfileImage.value = `${imageBaseURL}${userStore.user.profileImage}`
+// Determine if current user is the seller of this item
+const isSeller = computed(() => {
+  return item.value?.sellerId === currentUserId
+})
+
+// The name of the other participant in the conversation
+const otherUserName = computed(() => {
+  if (isSeller.value) {
+    return otherUser.value?.fullName || 'Buyer'
+  } else {
+    return item.value?.sellerName || 'Seller'
+  }
+})
+
+// Get profile image for a specific user ID - improved version
+const getProfileImageForUser = (userId, isFromCurrentUser) => {
+  if (isFromCurrentUser) {
+    return currentUserProfileImage.value;
+  }
+  
+  // For the other user, use their ID to ensure we get the right image
+  if (userId === withUserId && participantProfileImage.value) {
+    return participantProfileImage.value;
+  }
+  
+  return '/default-picture.jpg';
 }
 
 const fetchConversation = async () => {
@@ -146,7 +170,7 @@ const fetchConversation = async () => {
     const normalized = rawMessages.map(msg => ({
       messageId: msg.messageId,
       fromYou: msg.fromYou,
-      senderId: msg.fromYou ? currentUserId : item.value?.sellerId,
+      senderId: msg.fromYou ? currentUserId : withUserId,
       content: msg.text,
       sentAt: msg.sentAt,
       isReservationRequest: msg.reservationStatus,
@@ -176,10 +200,44 @@ const fetchConversation = async () => {
 const fetchItem = async () => {
   try {
     item.value = await itemStore.fetchItemById(itemId)
-    const participant = await userStore.getUserById(withUserId)
-    if (participant && participant.profileImage) {
-      participantProfileImage.value = `${imageBaseURL}${participant.profileImage}`
+    console.log('Fetched item:', item.value)
+    
+    // Fetch the other user's details
+    otherUser.value = await userStore.getUserById(withUserId)
+    console.log('Fetched other user:', otherUser.value)
+    
+    // Set participant profile image with improved handling
+    if (otherUser.value && otherUser.value.profilePicture) {
+      // Use the profilePicture field directly if it exists
+      participantProfileImage.value = otherUser.value.profilePicture;
+    } else if (otherUser.value && otherUser.value.profileImage) {
+      // Fall back to the store method if needed
+      participantProfileImage.value = userStore.getProfileImageUrl(otherUser.value.profileImage);
+    } else {
+      participantProfileImage.value = '/default-picture.jpg';
     }
+    console.log('Set participant profile image:', participantProfileImage.value)
+    
+    // Ensure current user profile image is correct based on seller/buyer context
+    if (isSeller.value) {
+      currentUserProfileImage.value = userStore.getCurrentUserProfileImageUrl();
+    } else if (item.value?.sellerId) {
+      // We're the buyer, seller image is the participant
+      try {
+        const sellerData = await userStore.getUserById(item.value.sellerId)
+        if (sellerData) {
+          if (sellerData.profilePicture) {
+            participantProfileImage.value = sellerData.profilePicture;
+          } else if (sellerData.profileImage) {
+            participantProfileImage.value = userStore.getProfileImageUrl(sellerData.profileImage);
+          }
+          console.log('Set seller profile image:', participantProfileImage.value)
+        }
+      } catch (err) {
+        console.error('Error fetching seller data:', err)
+      }
+    }
+
   } catch (err) {
     console.error('Error fetching item:', err)
     hasError.value = true
@@ -226,7 +284,6 @@ const handleAcceptReservation = async (messageId) => {
   }
 }
 
-// Decline reservation
 const handleDeclineReservation = async (messageId) => {
   try {
     await messageStore.updateReservationStatus(messageId, 'DECLINED')
@@ -238,12 +295,17 @@ const handleDeclineReservation = async (messageId) => {
 
 // Get sender name
 const getSenderName = (senderId) => {
-  return senderId === currentUserId
-    ? userStore.user.fullName
-    : item.value?.sellerName || 'Unknown User'
+  if (senderId === currentUserId) {
+    return userStore.user.fullName
+  }
+  
+  if (otherUser.value?.fullName) {
+    return otherUser.value.fullName
+  }
+  
+  return item.value?.sellerName || 'Unknown User'
 }
 
-// Auto scroll to bottom when messages update
 watch(messages, async () => {
   await nextTick()
   const container = document.querySelector('.messages-section')
@@ -255,7 +317,9 @@ onMounted(async () => {
   hasError.value = false
 
   try {
-    await Promise.all([fetchItem(), fetchConversation()])
+    await fetchItem()
+    await fetchConversation()
+    
   } catch (err) {
     console.error('Error in component mounting:', err)
     hasError.value = true
