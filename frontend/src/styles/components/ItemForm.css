@@ -44,11 +44,3 @@
     width: 100%;
     max-width: 300px;
 }
-
-.error-message {
-    color: var(--error-msg);
-    margin-top: 1rem;
-    min-height: 1.5rem;
-    font-family: 'Abel', sans-serif;
-    margin-bottom: 40px;
-}

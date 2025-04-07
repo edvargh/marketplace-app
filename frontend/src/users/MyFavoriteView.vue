@@ -1,8 +1,8 @@
 <template>
-  <LoadingState :loading="loadingInitial" :error="error" loadingMessage="Loading your favorite advertisements..."/>
+  <LoadingState :loading="loadingInitial" :error="error" :loadingMessage="t('MyFavouriteView.Loading-favorites')" />
 
   <div v-if="!loadingInitial && !error" class="my-favorite-items-container">
-    <h2 class="my-favorite-items-title">My Favorite Items</h2>
+    <h2 class="my-favorite-items-title">{{t('MyFavouriteView.My-favorite-items')}}</h2>
 
     <CardGrid
       v-if="myFavorites.length > 0"
@@ -13,12 +13,12 @@
 
     <div v-if="moreAvailable" class="load-more-wrapper">
       <button @click="loadMore" type="button" class="action-button button-cancel" :disabled="loadingMore">
-        {{ loadingMore ? 'Loading...' : 'Load More' }}
+        {{ loadingMore ? t('MyFavouriteView.Loading') : t('MyFavouriteView.Load-more') }}
       </button>
     </div>
 
     <div v-else-if="myFavorites.length === 0" class="no-favorite-items-message">
-      You have not favorited any items yet.
+      {{ t('MyFavouriteView.No-favorites') }}
     </div>
   </div>
 </template>
@@ -29,7 +29,10 @@ import CompactItemCard from '@/components/CompactItemCard.vue'
 import CardGrid from '@/components/CardGrid.vue'
 import { useItemStore } from '@/stores/itemStore'
 import LoadingState from "@/components/LoadingState.vue";
+import { useI18n } from 'vue-i18n'
 import { usePaginatedLoader } from '@/usePaginatedLoader.js'
+
+const { t } = useI18n()
 
 const itemStore = useItemStore()
 const {
@@ -45,7 +48,7 @@ onMounted(async () => {
   try {
     await loadMore()
   } catch (err) {
-    error.value = "Something went wrong while loading your favorite advertisements. Please try again."
+    error.value = t('MyFavouriteView.Error-loading')
   }
 })
 </script>

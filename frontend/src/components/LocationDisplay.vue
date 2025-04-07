@@ -1,11 +1,11 @@
 <template>
   <div class="location-display">
-    <h3>Location</h3>
+    <h3>{{ t('locationDisplay.title') }}</h3>
     <div ref="mapContainer" class="map-container"></div>
 
     <div v-if="hasLocation" class="coordinates-display">
-      <p>Latitude: {{ currentLat }}</p>
-      <p>Longitude: {{ currentLng }}</p>
+      <p>{{ t('locationDisplay.latitude') }}: {{ currentLat }}</p>
+      <p>{{ t('locationDisplay.longitude') }}: {{ currentLng }}</p>
     </div>
 
     <!-- Show use-my-location button in edit mode only -->
@@ -15,7 +15,7 @@
         @click="useCurrentLocation"
         class="my-location-button"
     >
-      Use My Current Location
+      {{ t('locationDisplay.useCurrentLocation') }}
     </CustomButton>
     <p v-if="locationError" class="error-message">{{ locationError }}</p>
   </div>
@@ -25,12 +25,15 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import CustomButton from "@/components/CustomButton.vue";
 import L from 'leaflet';
+import { useI18n } from 'vue-i18n';
 import 'leaflet/dist/leaflet.css';
 
 const DEFAULT_LAT = 63.4293;
 const DEFAULT_LNG = 10.4168;
 const DEFAULT_ZOOM = 13;
 const USER_LOCATION_ZOOM = 15;
+
+const { t } = useI18n();
 
 const props = defineProps({
   lat: { type: Number, default: null },
@@ -122,7 +125,7 @@ async function useCurrentLocation() {
   locationError.value = null;
 
   if (!navigator.geolocation) {
-    locationError.value = "Geolocation is not supported by your browser";
+    locationError.value = t('locationDisplay.errors.unsupported');
     return;
   }
 
@@ -148,17 +151,17 @@ async function useCurrentLocation() {
 }
 
 function handleGeolocationError(error) {
-  let errorMessage = "Could not get your current location. Please make sure location services are enabled.";
+  let errorMessage = t('locationDisplay.errors.general');
   if (error && error.code) {
     switch (error.code) {
       case 1:
-        errorMessage = "Location access was denied. Please enable location permissions in your browser settings.";
+        errorMessage = t('locationDisplay.errors.denied');
         break;
       case 2:
-        errorMessage = "Location information is unavailable. Please check your network connection.";
+        errorMessage = t('locationDisplay.errors.unavailable');
         break;
       case 3:
-        errorMessage = "The request to get your location timed out. Please try again.";
+        errorMessage = t('locationDisplay.errors.timeout');
         break;
     }
   }

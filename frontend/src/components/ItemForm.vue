@@ -23,14 +23,14 @@
           style="display: none"
       />
       <CustomButton type="button" class="upload-button" @click="triggerFileInput">
-        Import Images
+        {{ t('itemFormComponent.importImages') }}
       </CustomButton>
 
       <CustomButton
           type="button"
           @click="removeCurrentImage"
           :disabled="formData.images.length === 0">
-        Remove Current Image
+          {{ t('itemFormComponent.removeCurrentImage') }}
       </CustomButton>
     </div>
   </div>
@@ -41,42 +41,57 @@
 
       <!-- Status. Can choose to display or not -->
       <div v-if="showStatus">
-        <label for="status">Status</label>
+        <label for="status">{{ t('itemFormComponent.status') }}</label>
         <SelectBox
             label="Status"
             v-model="formData.status"
             :options="statusOptions"
             option-label="label"
             option-value="value"
-            placeholder="Status"
+            :placeholder="t('itemFormComponent.placeholders.status')"
             required
         />
       </div>
 
       <!-- Category -->
-      <label for="Category">Category</label>
+      <label for="Category">{{ t('itemFormComponent.category') }}</label>
       <SelectBox
           label="Category"
           v-model="formData.categoryId"
           :options="categories"
           option-label="name"
           option-value="id"
-          placeholder="Category"
+          :placeholder="t('itemFormComponent.placeholders.category')"
           required
       />
 
       <!-- Title -->
-      <label for="Title">Title</label>
-      <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
+      <label for="Title">{{ t('itemFormComponent.title') }}</label>
+      <InputBox label="Title" v-model="formData.title" 
+      :placeholder="t('itemFormComponent.placeholders.title')"
+      required />
+      <div v-if="titleError" class="error-message">
+        {{ titleError }}
+      </div>
 
       <!-- Description -->
-      <label for="description">Description</label>
-      <CustomTextarea v-model="formData.description" placeholder="Description" :required="true"/>
+      <label for="description">{{ t('itemFormComponent.description') }}</label>
+      <CustomTextarea v-model="formData.description" 
+      :placeholder="t('itemFormComponent.placeholders.description')"
+      :required="true"/>
+      <div v-if="descriptionError" class="error-message">
+        {{ descriptionError }}
+      </div>
+
 
       <!-- Price -->
-      <label for="Price">Price</label>
-      <InputBox label="Price" v-model="formData.price" type="number" placeholder="Price" required />
-      <div v-if="priceError" class="error-message">
+      <label for="Price">{{ t('itemFormComponent.price') }}</label>
+      <InputBox label="Price"
+       v-model="formData.price" type="number" 
+       :placeholder="t('itemFormComponent.placeholders.price')"
+       required />
+      <div v-if="priceError" 
+      class="error-message">
         {{ priceError }}
       </div>
 
@@ -89,7 +104,7 @@
           @update:lng="(val) => formData.longitude = val"
       />
       <div v-if="!formData.latitude || !formData.longitude" class="error-message">
-        Please select a location on the map
+        {{ t('itemFormComponent.selectLocation') }}
       </div>
 
       <!-- Form Actions (implement buttons at bottom for child components) -->
@@ -111,11 +126,21 @@ import CustomButton from "@/components/CustomButton.vue";
 import CustomTextarea from "@/components/CustomTextarea.vue";
 import LocationDisplay from "@/components/LocationDisplay.vue";
 import { useCategoryStore } from "@/stores/categoryStore";
+import { useI18n } from 'vue-i18n';
 
+const categoryStore = useCategoryStore();
 const fileInput = ref(null);
 const categories = ref([]);
 const priceError = ref('');
-const categoryStore = useCategoryStore();
+const titleError = ref('');
+const descriptionError = ref('');
+
+const maxTitleLength = 50;
+const maxDescriptionLength = 600;
+const minPrice = 0;
+const maxPrice = 10000000;
+
+const { t } = useI18n();
 
 const props = defineProps({
   title: String,
@@ -129,10 +154,11 @@ const props = defineProps({
   }
 });
 
+// Status options
 const statusOptions = ref([
-  { value: 'FOR_SALE', label: 'For Sale' },
-  { value: 'RESERVED', label: 'Reserved' },
-  { value: 'SOLD', label: 'Sold' }
+  { value: 'FOR_SALE', label: t('itemFormComponent.statusOptions.forSale') },
+  { value: 'RESERVED', label: t('itemFormComponent.statusOptions.reserved') },
+  { value: 'SOLD', label: t('itemFormComponent.statusOptions.sold') }
 ]);
 
 const formData = reactive({
@@ -144,33 +170,31 @@ watch(() => props.initialData, (newData) => {
   Object.assign(formData, newData);
 }, { deep: true, immediate: true });
 
+// Price validator
 watch(() => formData.price, (newPrice) => {
   validatePrice(newPrice);
 });
 
 const validatePrice = (price) => {
   priceError.value = '';
-
   if (price === '' || price === null) {
     return false;
   }
-
   const numPrice = Number(price);
   const validations = [
     {
       condition: isNaN(numPrice),
-      message: 'Please enter a valid number'
+      message:  t('itemFormComponent.validation.invalidNumber')
     },
     {
       condition: numPrice < 0,
-      message: 'Price cannot be negative number'
+      message: t('itemFormComponent.validation.negativePrice')
     },
     {
       condition: numPrice > 10000000,
-      message: 'Price cannot exceed 10,000,000kr'
+      message: t('itemFormComponent.validation.tooHighPrice')
     }
   ];
-
   const failedValidation = validations.find(validation => validation.condition);
   if (failedValidation) {
     priceError.value = failedValidation.message;
@@ -178,6 +202,21 @@ const validatePrice = (price) => {
   }
   return true;
 };
+
+// Title and description validator
+watch(
+  () => [formData.title, formData.description],
+  ([newTitle, newDescription]) => {
+    titleError.value =
+      newTitle && newTitle.length > maxTitleLength
+        ? `Title cannot exceed ${maxTitleLength} characters`
+        : '';
+    descriptionError.value =
+      newDescription && newDescription.length > maxDescriptionLength
+        ? `Description cannot exceed ${maxDescriptionLength} characters`
+        : '';
+  }
+);
 
 onMounted(async () => {
   try {
@@ -237,7 +276,8 @@ const isFormValid = computed(() => {
 
   const hasAllRequiredFields = requiredFields.every(field => !!field);
   const isPriceValid = formData.price >= 0;
-  return hasAllRequiredFields && isPriceValid;
+  const noTextErrors = !titleError.value && !descriptionError.value;
+  return hasAllRequiredFields && isPriceValid && noTextErrors;
 });
 
 const emit = defineEmits(['submit', 'validation-change'])
