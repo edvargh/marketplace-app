@@ -18,20 +18,25 @@
     "fullName": "Fullt navn",
     "email": "E-post",
     "phoneNumber": "Telefonnummer",
-    "password": "Passord",
-    "confirmPassword": "Bekreft passord",
+    "password": "Nytt passord",
+    "confirmPassword": "Bekreft nytt passord",
     "language": "Språk",
     "successMessage": "Profilen ble oppdatert",
     "Passwords-do-not-match": "Passordene stemmer ikke overens",
     "updating": "Oppdaterer...",
     "updateProfile": "Oppdater profil",
-    "bothPasswordsRequired": "Begge passordfeltene må fylles ut",
     "fullNameRequired": "Fullt navn er påkrevd",
     "emailRequired": "E-post er påkrevd",
     "phoneRequired": "Telefonnummer er påkrevd",
     "fullNameTooLong": "Fullt navn kan ikke være lengre enn 30 tegn",
     "emailInvalid": "Vennligst skriv inn en gyldig e-postadresse",
-    "phoneLength": "Telefonnummer må være på 8 sifre"
+    "phoneLength": "Telefonnummer må være på 8 sifre",
+    "placeholderName": "Skriv inn ditt fulle navn",
+    "placeholderEmail": "Skriv inn e-posten din",
+    "placeholderPhone": "Skriv inn telefonnummeret ditt",
+    "placeholderPass": "Skriv inn nytt passord",
+    "placeholderConfirmPass": "Bekreft nytt passord",
+    "passwordTooShort": "Nytt passord må være minst 8 karakterer"
   },
   "homeView":{
     "Your-recommendations": "Dine anbefalinger",
@@ -90,7 +95,6 @@
   "noItems": "Du har ikke lagt ut noen gjenstander ennå.",
   "loadingError": "Noe gikk galt ved lasting av dine annonser. Vennligst prøv igjen."
   },
-
  "createItemView": {
   "title": "Opprett ny annonse",
   "create": "Opprett",

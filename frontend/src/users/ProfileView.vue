@@ -27,28 +27,31 @@
 
     <form @submit.prevent="handleUpdateProfile">
       <label for="fullName">{{ t('profile.fullName') }}</label>
-      <InputBox id="fullName" v-model="fullName"/> <!-- TODO: Placeholder and disable -->
+      <InputBox id="fullName" v-model="fullName" :placeholder="t('profile.placeholderName')" :disabled="isSubmitting"/>
       <p v-if="fullNameError" class="error-message">{{ fullNameError }}</p>
 
       <label for="email">{{ t('profile.email') }}</label>
-      <InputBox id="email" type="email" v-model="email"/>
+      <InputBox id="email" type="email" v-model="email" :placeholder="t('profile.placeholderEmail')" :disabled="isSubmitting"/>
       <p v-if="emailError" class="error-message">{{ emailError }}</p>
 
       <label for="phoneNumber">{{ t('profile.phoneNumber') }}</label>
-      <InputBox id="phoneNumber" type="number" v-model="phoneNumber" />
+      <InputBox id="phoneNumber" type="number" v-model="phoneNumber" :placeholder="t('profile.placeholderPhone')" :disabled="isSubmitting"/>
       <p v-if="phoneError" class="error-message">{{ phoneError }}</p>
 
       <label for="password">{{ t('profile.password') }}</label>
-      <InputBox id="password" type="password" v-model="password"/>
+      <InputBox id="password" type="password" v-model="password" :placeholder="t('profile.placeholderPass')" :disabled="isSubmitting"/>
+      <p v-if="passwordTooShort" class="error-message">{{ t('profile.passwordTooShort') }}</p>
 
       <label for="confirmPassword">{{ t('profile.confirmPassword') }}</label>
       <InputBox
         id="confirmPassword"
         type="password"
         v-model="confirmPassword"
+        :placeholder="t('profile.placeholderConfirmPass')"
+        :disabled="isSubmitting"
       />
-      <p v-if="passwordFieldsTouched && !passwordsValid" class="error-message">
-      {{ passwordMismatch ? t("profile.Passwords-do-not-match") : t("profile.bothPasswordsRequired") || "Both password fields must be filled" }}
+      <p v-if="passwordFieldsTouched && passwordsMismatch" class="error-message">
+        {{ t("profile.Passwords-do-not-match") }}
       </p>
 
       <label for="language">{{ t('profile.language') }}</label>
@@ -106,7 +109,7 @@ const selectedImageFile = ref(null)
 const fileInput = ref(null)
 const maxFullNameLength = 30
 const phoneNumberLength = 8
-const passwordLength = 8; // TODO!!!!
+const passwordLength = 8;
 
 const languageOptions = [
   { label: 'English', value: 'english' },
@@ -146,14 +149,17 @@ const passwordFieldsTouched = computed(() =>
   password.value.length > 0 || confirmPassword.value.length > 0
 )
 
-const passwordsValid = computed(() => {
-  if (!passwordFieldsTouched.value) return true
-  return password.value.length > 0 && password.value === confirmPassword.value
-})
+const passwordTooShort = computed(() =>
+  password.value.length > 0 && password.value.length < passwordLength
+)
 
-const passwordMismatch = computed(() => (
-  password.value !== confirmPassword.value && confirmPassword.value !== ''
-))
+const passwordsMismatch = computed(() =>
+  password.value !== confirmPassword.value
+)
+
+const passwordsValid = computed(() =>
+  !passwordTooShort.value && !passwordsMismatch.value
+)
 
 onMounted(() => {
   loading.value = true
