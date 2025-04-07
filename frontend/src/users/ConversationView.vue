@@ -6,14 +6,13 @@
     <div class="participant-info">
       <img
         class="profile-pic"
-        :src="getProfileImage(withUserId)"
+        :src="participantProfileImage"
         @error="$event.target.src = '/default-picture.jpg'"
       />
       <h2>{{ getSenderName(withUserId) }}</h2>
     </div>
 
     <!-- Item preview -->
-    <!-- TODO: Own component? Same component as ConversationPreviewCard? -->
     <RouterLink
       :to="`/item/${itemId}`"
       class="item-preview"
@@ -40,7 +39,7 @@
           <div v-else :class="['message-bubble', msg.fromYou ? 'sent' : 'received']">
             <img
               class="bubble-profile-pic"
-              :src="getProfileImage(msg.senderId)"
+              :src="msg.fromYou ? currentUserProfileImage : participantProfileImage"
               @error="$event.target.src = '/default-picture.jpg'"
             />
             <div class="bubble-content">
@@ -133,6 +132,13 @@ const isReserveMode = ref(route.query.reserve === 'true')
 const showReserveInput = ref(isReserveMode.value)
 
 const imageBaseURL = import.meta.env.VITE_API_BASE_URL + '/uploads/'
+const currentUserProfileImage = ref('/default-picture.jpg')
+const participantProfileImage = ref('/default-picture.jpg')
+
+// Update current user profile image
+if (userStore.user?.profileImage) {
+  currentUserProfileImage.value = `${imageBaseURL}${userStore.user.profileImage}`
+}
 
 const fetchConversation = async () => {
   try {
@@ -170,6 +176,10 @@ const fetchConversation = async () => {
 const fetchItem = async () => {
   try {
     item.value = await itemStore.fetchItemById(itemId)
+    const participant = await userStore.getUserById(withUserId)
+    if (participant && participant.profileImage) {
+      participantProfileImage.value = `${imageBaseURL}${participant.profileImage}`
+    }
   } catch (err) {
     console.error('Error fetching item:', err)
     hasError.value = true
@@ -190,8 +200,8 @@ const sendMessage = async () => {
         messageText
       )
       console.log('Reservation request sent:', result)
-      showReserveInput.value = false // Hide reserve input after sending
-      newMessage.value = '' // Clear input
+      showReserveInput.value = false 
+      newMessage.value = '' 
     } else {
       await messageStore.sendMessage(itemId, withUserId, newMessage.value)
       newMessage.value = ''
@@ -231,20 +241,6 @@ const getSenderName = (senderId) => {
   return senderId === currentUserId
     ? userStore.user.fullName
     : item.value?.sellerName || 'Unknown User'
-}
-
-// Get profile image
-// TODO: Get to work
-const getProfileImage = (userId) => {
-  const defaultImage = '/default-picture.jpg'
-  if (userId === currentUserId) {
-    return userStore.user?.profileImage
-      ? `${imageBaseURL}${userStore.user.profileImage}`
-      : defaultImage
-  }
-  return item.value?.sellerId === userId && item.value?.sellerProfileImage
-    ? `${imageBaseURL}${item.value.sellerProfileImage}`
-    : defaultImage
 }
 
 // Auto scroll to bottom when messages update

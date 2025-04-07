@@ -35,7 +35,6 @@ label {
   font-size: 0.95rem;
 }
 
-/* TODO: Use SelectBox component */
 .SelectBox {
   border-radius: 9999px;
   padding: 1rem 2rem;

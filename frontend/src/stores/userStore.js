@@ -127,6 +127,25 @@ export const useUserStore = defineStore('user', () => {
     return updatedUser
   }
 
+  const getUserById = async (userId) => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No authentication token found');
+  
+    const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch user: ${errorText}`);
+    }
+  
+    return await response.json(); 
+  };
+
   return {
     user,
     role,
@@ -135,6 +154,7 @@ export const useUserStore = defineStore('user', () => {
     register,
     logout,
     checkAuth,
-    updateUser
+    updateUser,
+    getUserById
   }
 })

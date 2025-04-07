@@ -25,7 +25,7 @@
         <template v-if="!isMyItem">
           <button class="message-btn" @click="handleMessageSeller">Send message</button>
           <button class="reserve-btn" @click="handleReserveItem">Reserve item</button>
-          <button class="blue-btn">Buy Now</button>
+          <button class="blue-btn" @click="handleBuyNow">Buy Now</button>
         </template>
         <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
           Edit Item
@@ -50,7 +50,11 @@
       <h3>Seller</h3>
       <div class="seller">
         <div class="profile-badge">
-          <img src="/default-picture.jpg" alt="Profile Image" class="profile-image" />
+          <img 
+          :src="seller?.profilePicture || '/default-picture.jpg'" 
+          alt="Profile Image" 
+          class="profile-image" 
+          />     
         </div>
         <span>{{ item.sellerName }}</span>
       </div>
@@ -76,6 +80,7 @@ const itemStore = useItemStore();
 const userStore = useUserStore();
 const item = ref({});
 const loading = ref(true);
+const seller = ref(null);        
 const error = ref(null);
 const isMyItem = ref(false);
 const isFavorite = ref(false);
@@ -86,26 +91,30 @@ onMounted(async () => {
   loading.value = true;
   try {
     const itemId = route.params.id;
-
     if (!itemId) {
       throw new Error('No item ID provided');
     }
 
     const itemData = await itemStore.fetchItemById(itemId);
-
-    if (itemData) {
-      item.value = itemData;
-      isMyItem.value = userStore.user?.id === itemData.sellerId;
-      const favoriteItems = await itemStore.fetchUserFavoriteItems();
-      isFavorite.value = favoriteItems.some(item => item.id === parseInt(itemId));
-
-    if (!isMyItem.value) {
-      await itemStore.logItemView(itemId);
-      }
-    } else {
+    if (!itemData) {
       throw new Error('Item not found');
     }
+
+    item.value = itemData;
+
+    isMyItem.value = userStore.user?.id === itemData.sellerId;
+
+    if (itemData.sellerId) {
+      try {
+        const sellerData = await userStore.getUserById(itemData.sellerId);
+        seller.value = sellerData;
+      } catch (err) {
+        console.warn('Could not fetch seller info:', err);
+      }
+    }
+
   } catch (e) {
+    console.error(e);
     error.value = "Could not load this advertisement. Please try again.";
   } finally {
     loading.value = false;
@@ -164,6 +173,24 @@ const handleReserveItem = async () => {
 const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;
 };
+
+
+const handleBuyNow = async () => {
+  try {
+    const itemId = item.value.id;
+    const redirectUrl = await itemStore.initiateVippsPayment(itemId);
+    
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      throw new Error('No redirect URL received');
+    }
+  } catch (err) {
+    console.error('[ItemView] ❌ Failed to process payment:', err);
+    alert("Could not process payment. Please try again.");
+  }
+};
+
 
 </script>
 

@@ -259,6 +259,21 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
+  const initiateVippsPayment = async (itemId) => {
+    try {
+      const headers = getAuthHeaders();
+      const response = await axios.post(
+        `http://localhost:8080/api/payments/vipps?itemId=${itemId}`,
+        {},
+        { headers }
+      );
+      return response.data; // This should be the redirect URL
+    } catch (err) {
+      console.error('Failed to initiate Vipps payment:', err);
+      throw err;
+    }
+  };
+
   return {
     items,
     fetchMarketItems,
@@ -272,6 +287,7 @@ export const useItemStore = defineStore('items', () => {
     fetchUserFavoriteItems,
     toggleFavorite,
     searchItems,
-    updateItemStatus
+    updateItemStatus,
+    initiateVippsPayment
   };
 });
