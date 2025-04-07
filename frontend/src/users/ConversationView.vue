@@ -9,7 +9,7 @@
         :src="participantProfileImage"
         @error="$event.target.src = '/default-picture.jpg'"
       />
-      <h2>{{ getSenderName(withUserId) }}</h2>
+      <h2>{{ otherUserName }}</h2>
     </div>
 
     <!-- Item preview -->
@@ -39,7 +39,7 @@
           <div v-else :class="['message-bubble', msg.fromYou ? 'sent' : 'received']">
             <img
               class="bubble-profile-pic"
-              :src="msg.fromYou ? currentUserProfileImage : participantProfileImage"
+              :src="getProfileImageForUser(msg.senderId, msg.fromYou)"
               @error="$event.target.src = '/default-picture.jpg'"
             />
             <div class="bubble-content">
@@ -52,8 +52,8 @@
                 <ReserveBox
                   :itemId="itemId"
                   :buyerId="msg.fromYou ? currentUserId : withUserId"
-                  :buyerName="msg.fromYou ? userStore.user.fullName : item.sellerName"
-                  :isSellerView="!msg.fromYou"
+                  :buyerName="msg.fromYou ? userStore.user.fullName : otherUserName"
+                  :isSellerView="!msg.fromYou && isSeller"
                   :initialStatus="msg.reservationStatus"
                   :reservationMessage="msg.content"
                   @accept="handleAcceptReservation(msg.messageId)"
@@ -71,7 +71,6 @@
 
     <div class="message-input-wrapper">
       <div class="message-input-container">
-        <!-- Display ReserveBox if the user clicked from ReserveButton in ItemView -->
         <ReserveBox
           v-if="showReserveInput"
           :itemId="itemId"
@@ -104,7 +103,7 @@
 
 
 <script setup>
-import { ref, onMounted, watch, nextTick } from 'vue'
+import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMessageStore } from '@/stores/messageStore'
 import { useUserStore } from '@/stores/userStore'
@@ -131,13 +130,32 @@ const isSending = ref(false)
 const isReserveMode = ref(route.query.reserve === 'true')
 const showReserveInput = ref(isReserveMode.value)
 
-const imageBaseURL = import.meta.env.VITE_API_BASE_URL + '/uploads/'
-const currentUserProfileImage = ref('/default-picture.jpg')
+const currentUserProfileImage = ref(userStore.getCurrentUserProfileImageUrl())
 const participantProfileImage = ref('/default-picture.jpg')
+const otherUser = ref(null)
 
-// Update current user profile image
-if (userStore.user?.profileImage) {
-  currentUserProfileImage.value = `${imageBaseURL}${userStore.user.profileImage}`
+const isSeller = computed(() => {
+  return item.value?.sellerId === currentUserId
+})
+
+const otherUserName = computed(() => {
+  if (isSeller.value) {
+    return otherUser.value?.fullName || 'Buyer'
+  } else {
+    return item.value?.sellerName || 'Seller'
+  }
+})
+
+const getProfileImageForUser = (userId, isFromCurrentUser) => {
+  if (isFromCurrentUser) {
+    return currentUserProfileImage.value;
+  }
+  
+  if (userId === withUserId && participantProfileImage.value) {
+    return participantProfileImage.value;
+  }
+  
+  return '/default-picture.jpg';
 }
 
 const fetchConversation = async () => {
@@ -146,7 +164,7 @@ const fetchConversation = async () => {
     const normalized = rawMessages.map(msg => ({
       messageId: msg.messageId,
       fromYou: msg.fromYou,
-      senderId: msg.fromYou ? currentUserId : item.value?.sellerId,
+      senderId: msg.fromYou ? currentUserId : withUserId,
       content: msg.text,
       sentAt: msg.sentAt,
       isReservationRequest: msg.reservationStatus,
@@ -167,21 +185,40 @@ const fetchConversation = async () => {
     messages.value = grouped
 
   } catch (err) {
-    console.error('Error fetching conversation:', err)
     hasError.value = true
   }
 }
 
-// Fetch item info
 const fetchItem = async () => {
   try {
     item.value = await itemStore.fetchItemById(itemId)
-    const participant = await userStore.getUserById(withUserId)
-    if (participant && participant.profileImage) {
-      participantProfileImage.value = `${imageBaseURL}${participant.profileImage}`
+    
+    otherUser.value = await userStore.getUserById(withUserId)
+    
+    if (otherUser.value && otherUser.value.profilePicture) {
+      participantProfileImage.value = otherUser.value.profilePicture;
+    } else if (otherUser.value && otherUser.value.profileImage) {
+      participantProfileImage.value = userStore.getProfileImageUrl(otherUser.value.profileImage);
+    } else {
+      participantProfileImage.value = '/default-picture.jpg';
+    }
+    
+    if (isSeller.value) {
+      currentUserProfileImage.value = userStore.getCurrentUserProfileImageUrl();
+    } else if (item.value?.sellerId) {
+      try {
+        const sellerData = await userStore.getUserById(item.value.sellerId)
+        if (sellerData) {
+          if (sellerData.profilePicture) {
+            participantProfileImage.value = sellerData.profilePicture;
+          } else if (sellerData.profileImage) {
+            participantProfileImage.value = userStore.getProfileImageUrl(sellerData.profileImage);
+          }
+        }
+      } catch (err) {
+      }
     }
   } catch (err) {
-    console.error('Error fetching item:', err)
     hasError.value = true
   }
 }
@@ -194,12 +231,11 @@ const sendMessage = async () => {
   try {
     if (showReserveInput.value) {
       const messageText = newMessage.value.trim() || "I would like to reserve this item"
-      const result = await messageStore.sendReservationRequest(
+      await messageStore.sendReservationRequest(
         itemId,
         withUserId,
         messageText
       )
-      console.log('Reservation request sent:', result)
       showReserveInput.value = false 
       newMessage.value = '' 
     } else {
@@ -208,42 +244,40 @@ const sendMessage = async () => {
     }
     await fetchConversation()
   } catch (err) {
-    console.error('Error sending message:', err)
   } finally {
     isSending.value = false
   }
 }
 
-// Accept reservation
 const handleAcceptReservation = async (messageId) => {
   try {
     await messageStore.updateReservationStatus(messageId, 'ACCEPTED');
     await itemStore.updateItemStatus(itemId, 'RESERVED');
     await Promise.all([fetchConversation(), fetchItem()]);
-
   } catch (err) {
-    console.error('Error accepting reservation:', err);
   }
 }
 
-// Decline reservation
 const handleDeclineReservation = async (messageId) => {
   try {
     await messageStore.updateReservationStatus(messageId, 'DECLINED')
     await fetchConversation()
   } catch (err) {
-    console.error('Error declining reservation:', err)
   }
 }
 
-// Get sender name
 const getSenderName = (senderId) => {
-  return senderId === currentUserId
-    ? userStore.user.fullName
-    : item.value?.sellerName || 'Unknown User'
+  if (senderId === currentUserId) {
+    return userStore.user.fullName
+  }
+  
+  if (otherUser.value?.fullName) {
+    return otherUser.value.fullName
+  }
+  
+  return item.value?.sellerName || 'Unknown User'
 }
 
-// Auto scroll to bottom when messages update
 watch(messages, async () => {
   await nextTick()
   const container = document.querySelector('.messages-section')
@@ -255,9 +289,9 @@ onMounted(async () => {
   hasError.value = false
 
   try {
-    await Promise.all([fetchItem(), fetchConversation()])
+    await fetchItem()
+    await fetchConversation()
   } catch (err) {
-    console.error('Error in component mounting:', err)
     hasError.value = true
   } finally {
     isLoading.value = false

@@ -2,12 +2,13 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
+  const API_BASE_URL = 'http://localhost:8080'
   const user = ref(null)
   const isAuthenticated = ref(false)
   const role = computed(() => user.value?.role || null)
 
   const login = async (email, password) => {
-    const response = await fetch('http://localhost:8080/api/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -32,7 +33,7 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const register = async (fullName, email, password, phoneNumber) => {
-    const response = await fetch('http://localhost:8080/api/auth/register', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName, email, password, phoneNumber })
@@ -60,7 +61,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/users/me', {
+      const response = await fetch(`${API_BASE_URL}/api/users/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -103,7 +104,7 @@ export const useUserStore = defineStore('user', () => {
       formDataToSend.append('profilePicture', rawFormData.profilePicture)
     }
 
-    const response = await fetch(`http://localhost:8080/api/users/${currentUser.id}`, {
+    const response = await fetch(`${API_BASE_URL}/api/users/${currentUser.id}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${token}`
@@ -131,7 +132,7 @@ export const useUserStore = defineStore('user', () => {
     const token = localStorage.getItem('token');
     if (!token) throw new Error('No authentication token found');
   
-    const response = await fetch(`http://localhost:8080/api/users/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -146,6 +147,39 @@ export const useUserStore = defineStore('user', () => {
     return await response.json(); 
   };
 
+  const getProfileImageUrl = (profileImagePath) => {
+    if (!profileImagePath) return '/default-picture.jpg';
+    
+    if (profileImagePath.startsWith('http://') || profileImagePath.startsWith('https://')) {
+      return profileImagePath;
+    }
+    
+    return `${API_BASE_URL}/uploads/${profileImagePath}`;
+  }
+
+  const getCurrentUserProfileImageUrl = () => {
+    if (user.value?.profilePicture) {
+      return getProfileImageUrl(user.value.profilePicture);
+    }
+    return getProfileImageUrl(user.value?.profileImage);
+  }
+
+  const getUserProfileImageUrl = async (userId) => {
+    try {
+      if (user.value?.id === userId) {
+        return getCurrentUserProfileImageUrl();
+      }
+      
+      const userData = await getUserById(userId);
+      if (userData.profilePicture) {
+        return getProfileImageUrl(userData.profilePicture);
+      }
+      return getProfileImageUrl(userData.profileImage);
+    } catch (error) {
+      return '/default-picture.jpg';
+    }
+  }
+
   return {
     user,
     role,
@@ -155,6 +189,9 @@ export const useUserStore = defineStore('user', () => {
     logout,
     checkAuth,
     updateUser,
-    getUserById
+    getUserById,
+    getProfileImageUrl,
+    getCurrentUserProfileImageUrl,
+    getUserProfileImageUrl
   }
 })
