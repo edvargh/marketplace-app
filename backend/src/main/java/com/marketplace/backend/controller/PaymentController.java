@@ -44,8 +44,8 @@ public class PaymentController {
     double amount = item.getPrice();
     String orderId = "order-" + itemId + "-" + user.getId() + "-" + System.currentTimeMillis();
 
-    String callbackPrefix = "https://example.com/api/payments";
-    String fallBackUrl = "https://example.com/vipps-complete";
+    String callbackPrefix = "https://mentally-crucial-quagga.ngrok-free.app/api/payments/vipps-callback";
+    String fallBackUrl = "https://mentally-crucial-quagga.ngrok-free.app/api/payments/vipps-complete";
 
     try {
       String redirectUrl = paymentService.initiatePayment(orderId, amount, user.getPhoneNumber(), callbackPrefix, fallBackUrl);
@@ -56,8 +56,9 @@ public class PaymentController {
     }
   }
 
-  @PostMapping("/vipps-callback")
+  @PostMapping("/vipps-callback/v2/payments/{orderId}")
   public ResponseEntity<Void> handleVippsCallback(@RequestBody Map<String, Object> payload) {
+    System.out.println("Received Vipps callback with payload: " + payload);
     String orderId = (String) payload.get("orderId");
 
     if (orderId == null || !orderId.startsWith("order-")) {
@@ -82,5 +83,10 @@ public class PaymentController {
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+  }
+
+  @GetMapping("/vipps-complete")
+  public ResponseEntity<String> vippsComplete() {
+    return ResponseEntity.ok("Payment completed! You can now return to the app.");
   }
 }
