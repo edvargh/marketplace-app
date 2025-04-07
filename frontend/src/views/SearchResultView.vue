@@ -80,10 +80,11 @@ const toggleFilterPanel = () => {
 }
 
 function handleApplyFilters() {
-  const query = filterStore.buildFiltersQuery({
+  const builtQuery = filterStore.buildFiltersQuery({
     searchQuery: route.query.searchQuery || ''
-  })
-  router.push({ path: '/items', query })
+  });
+  router.push({ path: '/items', query: builtQuery });
+  showFilters.value = false;
 }
 
 const formatFilters = () => {
