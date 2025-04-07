@@ -42,9 +42,10 @@
     <div v-if="isFormOpen" class="form-container">
       <h2>{{ formMode === 'create' ? 'Create' : 'Update' }} Category</h2>
       <form @submit.prevent="submitForm">
-        <InputBox v-model="form.name" type="text" placeholder="Category Name" required class="input-category-name"></InputBox>
+        <InputBox v-model="form.name" type="text" placeholder="Category Name" required class="input-category-name"/>
+        <div v-if="nameError" class="error-message">{{ nameError }}</div>
         <div class="form-buttons-container">
-          <button type="submit" class="action-button button-primary" :disabled="!form.name.trim()">
+          <button type="submit" class="action-button button-primary" :disabled="isSubmitDisabled">
             {{ formMode === 'create' ? 'Create' : 'Update' }}
           </button>
           <button @click="closeForm" class="action-button button-cancel">Cancel</button>
@@ -55,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useCategoryStore } from '../stores/categoryStore';
 import LoadingState from "@/components/LoadingState.vue";
 import CustomButton from "@/components/CustomButton.vue";
@@ -72,10 +73,19 @@ const error = ref(null);
 const categories = ref([]);
 const isFormOpen = ref(false);
 const formMode = ref('create');
+const maxNameLength = 30;
+const nameError = ref('');
 const form = ref({
   id: null,
   name: '',
   description: ''
+});
+
+watch(() => form.value.name, (newName) => {
+  nameError.value = '';
+  if (newName && newName.length > maxNameLength) {
+    nameError.value = `Category name cannot exceed ${maxNameLength} characters`;
+  }
 });
 
 onMounted(async () => {
@@ -94,6 +104,11 @@ const showErrorNotification = (message) => {
   showError.value = true;
 };
 
+const isSubmitDisabled = computed(() => {
+  return !form.value.name.trim() || nameError.value !== '';
+});
+
+
 const openCreateForm = () => {
   isFormOpen.value = true;
   formMode.value = 'create';
@@ -101,6 +116,7 @@ const openCreateForm = () => {
 };
 
 const submitForm = async () => {
+  if (nameError.value) return;
   if (formMode.value === 'create') {
     await createCategory();
   } else {
