@@ -3,45 +3,44 @@
     top: 12px;
     right: 12px;
     z-index: 2;
-}
-
-.item-card {
+  }
+  
+  .item-card {
     min-width: 0;
     max-width: 100%;
     width: 250px;
     border-radius: 16px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
     position: relative;
     border: 2px solid var(--item-card-border);
-}
-
-.item-card:hover {
+    transition: transform 0.3s ease;
+  }
+  
+  .item-card:hover {
     transform: scale(1.03);
-}
-
-.card-image-container {
+  }
+  
+  .card-image-container {
     position: relative;
     height: 230px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
     overflow: hidden;
-}
-
-.card-image {
+  }
+  
+  .card-image {
     width: 90%;
     height: 90%;
     object-fit: cover;
     border-radius: 16px;
-}
-
-.profile-badge {
+  }
+  
+  .profile-badge {
     position: absolute;
-    bottom: 10px;
     left: 50%;
+    top: 210px;
     transform: translateX(-50%);
     padding: 2px;
     border-radius: 50%;
@@ -50,33 +49,43 @@
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.profile-image {
+    background-color: white;
+    border: 2px solid var(--item-card-border);
+    z-index: 3;
+  }
+  
+  .profile-image {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
-}
-
-.card-content {
+  }
+  
+  .card-content {
     padding: 0 15px 15px 15px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     gap: 10px;
-}
-
-.card-header {
+    margin-top: 25px; 
+  }
+  
+  .card-header {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-}
-
-.card-header h3 {
+    width: 100%;
+  }
+  
+  .card-header-details {
+    width: 100%;
+    margin-top: 5px;
+  }
+  
+  .card-header h3 {
     margin: 0;
     font-size: 1.2rem;
     font-weight: bold;
@@ -85,9 +94,9 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
-}
-
-.card-description {
+  }
+  
+  .card-description {
     font-size: 0.9rem;
     line-height: 1.5;
     overflow: hidden;
@@ -95,47 +104,82 @@
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
-}
-
-@media (max-width: 770px), (max-height: 800px) {
+  }
+  
+  .card-footer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+  }
+  
+  .price-frame {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .price-label {
+    font-size: 0.8rem;
+    color: var(--text-color-light);
+  }
+  
+  .price {
+    font-weight: bold;
+  }
+  
+  @media (max-width: 770px), (max-height: 800px) {
     .item-card {
-        width: 180px;
+      width: 180px;
     }
-
+    
     .card-content {
-        padding: 0 10px 10px 10px;
-        gap: 5px;
+      padding: 0 10px 10px 10px;
+      gap: 5px;
     }
-
+    
     .title {
-        font-size: 16px !important;
+      font-size: 16px !important;
     }
-}
-
-@media (max-width: 600px), (max-height: 700px) {
+    
+    .profile-badge {
+      top: auto;
+      bottom: calc(100% - 210px);
+    }
+  }
+  
+  @media (max-width: 600px), (max-height: 700px) {
     .item-card {
-        width: 150px;
+      width: 150px;
     }
-
+    
     .card-image-container {
-        height: 130px;
+      height: 130px;
     }
-
+    
     .card-content {
-        padding: 0 5px;
-        gap: 5px;
+      padding: 0 5px 5px 5px;
+      gap: 5px;
+      margin-top: 20px;
     }
-
-    :deep(.status-banner) {
-        font-size: 10px;
-        padding: 3px 10px;
+    
+    .profile-badge {
+      width: 30px;
+      height: 30px;
+      top: auto;
+      bottom: calc(100% - 115px);
     }
-
+    
+    .status-banner {
+      font-size: 10px;
+      padding: 3px 10px;
+    }
+    
     .title {
-        font-size: 14px !important;
+      font-size: 14px !important;
     }
-
+    
     .card-description {
-        font-size: 11px;
+      font-size: 11px;
     }
-}
+  }
