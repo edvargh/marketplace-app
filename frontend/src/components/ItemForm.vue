@@ -67,18 +67,22 @@
 
       <!-- Title -->
       <label for="Title">{{ t('itemFormComponent.title') }}</label>
-      <InputBox 
-        label="Title" 
-        v-model="formData.title" 
-        :placeholder="t('itemFormComponent.placeholders.title')"
-        required />
+      <InputBox label="Title" v-model="formData.title" 
+      :placeholder="t('itemFormComponent.placeholders.title')"
+      required />
+      <div v-if="titleError" class="error-message">
+        {{ titleError }}
+      </div>
 
       <!-- Description -->
       <label for="description">{{ t('itemFormComponent.description') }}</label>
-      <CustomTextarea 
-        v-model="formData.description" 
-        :placeholder="t('itemFormComponent.placeholders.description')"
-        :required="true"/>
+      <CustomTextarea v-model="formData.description" 
+      :placeholder="t('itemFormComponent.placeholders.description')"
+      :required="true"/>
+      <div v-if="descriptionError" class="error-message">
+        {{ descriptionError }}
+      </div>
+
 
       <!-- Price -->
       <label for="Price">{{ t('itemFormComponent.price') }}</label>
@@ -124,10 +128,17 @@ import LocationDisplay from "@/components/LocationDisplay.vue";
 import { useCategoryStore } from "@/stores/categoryStore";
 import { useI18n } from 'vue-i18n';
 
+const categoryStore = useCategoryStore();
 const fileInput = ref(null);
 const categories = ref([]);
 const priceError = ref('');
-const categoryStore = useCategoryStore();
+const titleError = ref('');
+const descriptionError = ref('');
+
+const maxTitleLength = 50;
+const maxDescriptionLength = 600;
+const minPrice = 0;
+const maxPrice = 10000000;
 
 const { t } = useI18n();
 
@@ -143,6 +154,7 @@ const props = defineProps({
   }
 });
 
+// Status options
 const statusOptions = ref([
   { value: 'FOR_SALE', label: t('itemFormComponent.statusOptions.forSale') },
   { value: 'RESERVED', label: t('itemFormComponent.statusOptions.reserved') },
@@ -158,17 +170,16 @@ watch(() => props.initialData, (newData) => {
   Object.assign(formData, newData);
 }, { deep: true, immediate: true });
 
+// Price validator
 watch(() => formData.price, (newPrice) => {
   validatePrice(newPrice);
 });
 
 const validatePrice = (price) => {
   priceError.value = '';
-
   if (price === '' || price === null) {
     return false;
   }
-
   const numPrice = Number(price);
   const validations = [
     {
@@ -184,7 +195,6 @@ const validatePrice = (price) => {
       message: t('itemFormComponent.validation.tooHighPrice')
     }
   ];
-
   const failedValidation = validations.find(validation => validation.condition);
   if (failedValidation) {
     priceError.value = failedValidation.message;
@@ -192,6 +202,21 @@ const validatePrice = (price) => {
   }
   return true;
 };
+
+// Title and description validator
+watch(
+  () => [formData.title, formData.description],
+  ([newTitle, newDescription]) => {
+    titleError.value =
+      newTitle && newTitle.length > maxTitleLength
+        ? `Title cannot exceed ${maxTitleLength} characters`
+        : '';
+    descriptionError.value =
+      newDescription && newDescription.length > maxDescriptionLength
+        ? `Description cannot exceed ${maxDescriptionLength} characters`
+        : '';
+  }
+);
 
 onMounted(async () => {
   try {
@@ -251,7 +276,8 @@ const isFormValid = computed(() => {
 
   const hasAllRequiredFields = requiredFields.every(field => !!field);
   const isPriceValid = formData.price >= 0;
-  return hasAllRequiredFields && isPriceValid;
+  const noTextErrors = !titleError.value && !descriptionError.value;
+  return hasAllRequiredFields && isPriceValid && noTextErrors;
 });
 
 const emit = defineEmits(['submit', 'validation-change'])

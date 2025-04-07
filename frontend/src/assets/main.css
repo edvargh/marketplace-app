@@ -85,6 +85,10 @@ html, body {
   width: 100%;
 }
 
+.error-message {
+  color: var(--error-msg);
+}
+
 @media (max-width: 600px), (max-height: 800px) {
   #app {
     padding: 0.5rem;
