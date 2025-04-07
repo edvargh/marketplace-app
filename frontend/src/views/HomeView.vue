@@ -1,7 +1,7 @@
 <template>
-  <LoadingState :loading="loading" :error="error"/>
+  <LoadingState :loading="loadingInitial" :error="error"/>
 
-  <div v-if="!loading && !error" class="home-container">
+  <div v-if="!loadingInitial && !error" class="home-container">
     <div class="search-filter-container">
       <SearchBar />
       <CustomButton @click="toggleFilterPanel">
@@ -64,7 +64,12 @@
         :cardComponent="CompactItemCard"
         variant="compact"
       />
-      <div v-else class="no-items-message">
+      <div v-if="moreAvailable" class="load-more-wrapper">
+        <button @click="loadMoreMarketItems" class="action-button button-cancel" :disabled="loadingMore">
+          {{ loadingMore ? 'Loading...' : 'Load More' }}
+        </button>
+      </div>
+      <div v-else-if="marketItems.length === 0 && !loadingInitial" class="no-items-message">
         {{ t('homeView.No-market-items-found') }}
       </div>
     </section>
@@ -79,54 +84,47 @@ import CompactItemCard from "@/components/CompactItemCard.vue"
 import SearchBar from "@/components/SearchBar.vue"
 import Categories from '@/components/Categories.vue'
 import LoadingState from '@/components/LoadingState.vue'
-import { useCategoryStore } from "@/stores/categoryStore"
-import { useItemStore } from "@/stores/itemStore"
 import FilterPanel from '@/components/FilterPanel.vue'
 import CustomButton from "@/components/CustomButton.vue"
 import HorizontalPagination from '@/components/HorizontalPagination.vue'
+import { useCategoryStore } from "@/stores/categoryStore"
+import { useItemStore } from "@/stores/itemStore"
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { useFilterStore } from '@/stores/filterStore'
-
+import { usePaginatedLoader } from '@/usePaginatedLoader.js'
 
 const route = useRoute()
 const router = useRouter()
-
-const filterStore = useFilterStore()
-
 const { t } = useI18n()
 
+const filterStore = useFilterStore()
 const categoryStore = useCategoryStore()
 const itemStore = useItemStore()
 
 const categories = ref([])
 const recommendedItems = ref([])
 const mostLikedItems = ref([])
-const marketItems = ref([])
 const showFilters = ref(false)
-const loading = ref(true)
-const error = ref(null)
+
+const {
+  items: marketItems,
+  loadMore: loadMoreMarketItems,
+  moreAvailable,
+  loadingInitial,
+  loadingMore,
+  error
+} = usePaginatedLoader(itemStore.fetchMarketItems)
 
 onMounted(async () => {
-  loading.value = true
   try {
-    const categoriesPromise = categoryStore.fetchCategories().then(cats => {
-      categories.value = cats
-    })
-
-    const itemsPromise = itemStore.fetchMarketItems().then(items => {
-      marketItems.value = items || []
-    })
-
-    const recommendedPromise = itemStore.fetchRecommendedItems().then(items => {
-      recommendedItems.value = items || []
-    })
-
-    await Promise.all([categoriesPromise, itemsPromise, recommendedPromise])
-  } catch (e) {
+    await Promise.all([
+      categoryStore.fetchCategories().then(c => categories.value = c),
+      itemStore.fetchRecommendedItems().then(r => recommendedItems.value = r || []),
+      loadMoreMarketItems()
+    ])
+  } catch (err) {
     error.value = "Something wrong happened while loading Home Page. Please try again."
-  } finally {
-    loading.value = false
   }
 })
 
@@ -149,9 +147,9 @@ function handleCategoryClick(category) {
   };
   router.push({ path: '/items', query });
 }
-
 </script>
 
 <style scoped>
 @import '../styles/views/HomeView.css';
+@import '../styles/components/ItemFormButton.css';
 </style>

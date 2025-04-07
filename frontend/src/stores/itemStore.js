@@ -16,10 +16,13 @@ export const useItemStore = defineStore('items', () => {
 
   const items = ref([])
 
-  const fetchMarketItems = async () => {
+  const fetchMarketItems = async (page = 0, size = 6) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get('http://localhost:8080/api/items', { headers });
+      const response = await axios.get('http://localhost:8080/api/items', {
+        headers,
+        params: { page, size }
+      });
       return response.data;
     } catch (err) {
       return [];
@@ -36,10 +39,13 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
-  const fetchUserItems = async () => {
+  const fetchUserItems = async (page = 0, size = 6) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get(`http://localhost:8080/api/items/my-items`, { headers });
+      const response = await axios.get(`http://localhost:8080/api/items/my-items`, {
+        headers,
+        params: { page, size }
+      });
       return response.data;
     } catch (err) {
       throw err;
@@ -50,7 +56,6 @@ export const useItemStore = defineStore('items', () => {
     try {
       const headers = getAuthHeaders();
       const response = await axios.get(`http://localhost:8080/api/items/recommended`, { headers });
-      console.log(response)
       return response.data;
 
     } catch (err) {
@@ -73,10 +78,13 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
-  const fetchUserFavoriteItems = async () => {
+  const fetchUserFavoriteItems = async (page = 0, size = 6) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get(`http://localhost:8080/api/items/favorites`, { headers });
+      const response = await axios.get(`http://localhost:8080/api/items/favorites`, {
+        headers,
+        params: { page, size }
+      });
       return response.data;
     } catch (err) {
       throw err;
@@ -216,7 +224,7 @@ export const useItemStore = defineStore('items', () => {
       if (filters.latitude != null) queryParams.append('latitude', filters.latitude);
       if (filters.longitude != null) queryParams.append('longitude', filters.longitude);
       if (filters.distanceKm != null && filters.distanceKm !== '') queryParams.append('distanceKm', filters.distanceKm);
-      
+
       const url = `http://localhost:8080/api/items?${queryParams.toString()}`;
       const headers = getAuthHeaders();
       

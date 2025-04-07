@@ -59,6 +59,14 @@ html, body {
   cursor: pointer;
 }
 
+.load-more-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  margin-bottom: 60px;
+}
+
 @media (max-width: 600px), (max-height: 800px) {
   #app {
     padding: 0.5rem;
