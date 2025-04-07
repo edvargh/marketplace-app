@@ -27,37 +27,38 @@
 
     <form @submit.prevent="handleUpdateProfile">
       <label for="fullName">{{ t('profile.fullName') }}</label>
-      <InputBox id="fullName" v-model="fullName" />
+      <InputBox id="fullName" v-model="fullName"/>
+      <p v-if="fullNameError" class="error-message">{{ fullNameError }}</p>
 
       <label for="email">{{ t('profile.email') }}</label>
-      <InputBox id="email" type="email" v-model="email" />
+      <InputBox id="email" type="email" v-model="email"/>
+      <p v-if="emailError" class="error-message">{{ emailError }}</p>
 
       <label for="phoneNumber">{{ t('profile.phoneNumber') }}</label>
-      <InputBox id="phoneNumber" v-model="phoneNumber" />
+      <InputBox id="phoneNumber" type="number" v-model="phoneNumber" />
+      <p v-if="phoneError" class="error-message">{{ phoneError }}</p>
 
       <label for="password">{{ t('profile.password') }}</label>
-      <InputBox id="password" type="password" v-model="password" />
+      <InputBox id="password" type="password" v-model="password"/>
 
       <label for="confirmPassword">{{ t('profile.confirmPassword') }}</label>
       <InputBox
         id="confirmPassword"
         type="password"
         v-model="confirmPassword"
-        :class="{ 'input-error': passwordMismatch }"
       />
-      <p v-if="passwordMismatch" class="input-error-text">
-        {{ t("profile.Passwords-do-not-match") }}
+      <p v-if="passwordFieldsTouched && !passwordsValid" class="error-message">
+      {{ passwordMismatch ? t("profile.Passwords-do-not-match") : t("profile.bothPasswordsRequired") || "Both password fields must be filled" }}
       </p>
 
       <label for="language">{{ t('profile.language') }}</label>
       <SelectBox
         v-model="language"
         :options="languageOptions"
-        :placeholder="t('profile.Select-your-language')"
       />
 
       <button type="submit" :disabled="!canSubmit" class="action-button button-primary">
-        {{ isSubmitting ? t('profile.updating') : t('profile.updateProfile') }}
+        {{ isSubmitting ? t("profile.updating") : t("profile.updateProfile") }}
       </button>
 
       <NotificationBanner
@@ -103,11 +104,57 @@ const showPopup = ref(false)
 const profileImage = ref('/default-picture.jpg')
 const selectedImageFile = ref(null)
 const fileInput = ref(null)
+const maxFullNameLength = 30
+const phoneNumberLength = 8
 
 const languageOptions = [
   { label: 'English', value: 'english' },
   { label: 'Norwegian', value: 'norwegian' }
 ]
+
+const fullNameError = computed(() => {
+  const nameTrim = fullName.value.trim()
+  if (nameTrim === "") return t("profile.fullNameRequired") || "Full name is required"
+  if (nameTrim.length > maxFullNameLength)
+    return t("profile.fullNameTooLong") || `Full name cannot exceed ${maxFullNameLength} characters`
+  return ""
+})
+
+const emailError = computed(() => {
+  if (email.value.trim() === "") {
+    return t("profile.emailRequired") || "Email is required"
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.value)) {
+      return t("profile.emailInvalid") || "Please enter a valid email address"
+    }
+  }
+  return ""
+})
+
+const phoneError = computed(() => {
+  const phone = phoneNumber.value.trim()
+  if (phone === "") {
+    return t("profile.phoneRequired") || "Phone number is required"
+  }
+  if (phone.length !== phoneNumberLength) {
+    return t("profile.phoneLength") || "Phone number must be 8 numbers"
+  }
+  return ""
+})
+
+const passwordFieldsTouched = computed(() =>
+  password.value.length > 0 || confirmPassword.value.length > 0
+)
+
+const passwordsValid = computed(() => {
+  if (!passwordFieldsTouched.value) return true
+  return password.value.length > 0 && password.value === confirmPassword.value
+})
+
+const passwordMismatch = computed(() => (
+  password.value !== confirmPassword.value && confirmPassword.value !== ''
+))
 
 onMounted(() => {
   loading.value = true
@@ -132,12 +179,12 @@ const handleFileChange = (e) => {
   }
 }
 
-const passwordMismatch = computed(() => (
-  password.value !== confirmPassword.value && confirmPassword.value !== ''
-))
-const canSubmit = computed(() => !passwordMismatch.value && !isSubmitting.value)
-
 const handleUpdateProfile = async () => {
+  if (!canSubmit.value) {
+    errorMessage.value = 'Please fill in all required fields correctly.'
+    return
+  }
+
   isSubmitting.value = true
   errorMessage.value = ''
 
@@ -148,7 +195,7 @@ const handleUpdateProfile = async () => {
       password: password.value || undefined,
       phoneNumber: phoneNumber.value,
       preferredLanguage: language.value,
-      profilePicture: selectedImageFile.value 
+      profilePicture: selectedImageFile.value
     }
 
     await userStore.updateUser(updateData)
@@ -160,6 +207,14 @@ const handleUpdateProfile = async () => {
     isSubmitting.value = false
   }
 }
+
+const canSubmit = computed(() =>
+  fullNameError.value === "" &&
+  emailError.value === "" &&
+  phoneError.value === "" &&
+  passwordsValid.value &&
+  !isSubmitting.value
+)
 </script>
 
 <style scoped>
