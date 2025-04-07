@@ -6,6 +6,7 @@
     min-height: 100vh;
     padding: 6rem 2rem 2rem;
     font-family: 'Abel', sans-serif;
+  margin-bottom: 150px;
 }
 
 .profile-view::-webkit-scrollbar {

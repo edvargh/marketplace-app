@@ -27,7 +27,7 @@
 
     <form @submit.prevent="handleUpdateProfile">
       <label for="fullName">{{ t('profile.fullName') }}</label>
-      <InputBox id="fullName" v-model="fullName"/>
+      <InputBox id="fullName" v-model="fullName"/> <!-- TODO: Placeholder and disable -->
       <p v-if="fullNameError" class="error-message">{{ fullNameError }}</p>
 
       <label for="email">{{ t('profile.email') }}</label>
@@ -106,6 +106,7 @@ const selectedImageFile = ref(null)
 const fileInput = ref(null)
 const maxFullNameLength = 30
 const phoneNumberLength = 8
+const passwordLength = 8; // TODO!!!!
 
 const languageOptions = [
   { label: 'English', value: 'english' },
@@ -113,15 +114,14 @@ const languageOptions = [
 ]
 
 const fullNameError = computed(() => {
-  const nameTrim = fullName.value.trim()
-  if (nameTrim === "") return t("profile.fullNameRequired") || "Full name is required"
-  if (nameTrim.length > maxFullNameLength)
+  if (fullName.value === "") return t("profile.fullNameRequired") || "Full name is required"
+  if (fullName.value.length > maxFullNameLength)
     return t("profile.fullNameTooLong") || `Full name cannot exceed ${maxFullNameLength} characters`
   return ""
 })
 
 const emailError = computed(() => {
-  if (email.value.trim() === "") {
+  if (email.value === "") {
     return t("profile.emailRequired") || "Email is required"
   } else {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -133,12 +133,11 @@ const emailError = computed(() => {
 })
 
 const phoneError = computed(() => {
-  const phone = phoneNumber.value.trim()
-  if (phone === "") {
+  if (phoneNumber.value === "") {
     return t("profile.phoneRequired") || "Phone number is required"
   }
-  if (phone.length !== phoneNumberLength) {
-    return t("profile.phoneLength") || "Phone number must be 8 numbers"
+  if (phoneNumber.value.length !== phoneNumberLength) {
+    return t("profile.phoneLength") || "Phone number must be 8 digits"
   }
   return ""
 })

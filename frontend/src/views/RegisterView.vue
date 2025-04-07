@@ -7,15 +7,15 @@
     <h1>Register new account</h1>
     <form @submit.prevent="RegistrationLogic">
 
-      <label for = "fullName">Full Name</label>
+      <label for="fullName">Full Name</label>
       <InputBox
-        type="text"
         id="fullName"
         v-model="fullName"
         placeholder="Enter your full name"
         :disabled="isSubmitting"
         required
       />
+      <p v-if="fullNameError" class="error-message">{{ fullNameError }}</p>
 
       <label for="email">Email</label>
       <InputBox
@@ -24,22 +24,20 @@
         v-model="email"
         placeholder="Enter your email"
         :disabled="isSubmitting"
-        :hasError="!!emailError"
         required
       />
-      <p v-if="emailError" class="input-error-text">{{ emailError }}</p>
+      <p v-if="emailError" class="error-message">{{ emailError }}</p>
 
       <label for="phoneNumber">Telephone Number</label>
       <InputBox
-        type="tel"
+        type="number"
         id="phoneNumber"
         v-model="phoneNumber"
         placeholder="Enter your telephone number"
         :disabled="isSubmitting"
-        :hasError="!!emailError"
         required
       />
-      <p v-if="phoneError" class="input-error-text">{{ phoneError }}</p>
+      <p v-if="phoneError" class="error-message">{{ phoneError }}</p>
 
       <label for="password">Password</label>
       <InputBox
@@ -48,11 +46,9 @@
         v-model="password"
         placeholder="Enter your password"
         :disabled="isSubmitting"
-        :hasError="!!phoneError"
         required
       />
-      <p v-if="passwordError" class="input-error-text">{{ passwordError }}</p>
-
+      <p v-if="passwordError" class="error-message">{{ passwordError }}</p>
 
       <label for="confirmPassword">Confirm Password</label>
       <InputBox
@@ -61,10 +57,9 @@
         v-model="confirmPassword"
         placeholder="Confirm your password"
         :disabled="isSubmitting"
-        :hasError="!!confirmPasswordError"
         required
       />
-      <p v-if="confirmPasswordError" class="input-error-text">{{ confirmPasswordError }}</p>
+      <p v-if="confirmPasswordError" class="error-message">{{ confirmPasswordError }}</p>
 
       <button type="submit" :disabled="isSubmitting || hasErrors">
         {{ isSubmitting ? 'Registering...' : 'Register' }}
@@ -83,7 +78,7 @@
 </template>
   
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import InputBox from '@/components/InputBox.vue'
@@ -98,77 +93,55 @@ const password = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
 const isSubmitting = ref(false)
+const maxFullNameLength = 30
+const phoneNumberLength = 8
+const passwordLength = 8
 
-//Error messages
-const emailError = ref('')
-const phoneError = ref('')
-const passwordError = ref('')
-const confirmPasswordError = ref('')
-
-watch(email, (newValue) => {
-  if (!newValue) {
-    emailError.value = ''
-    return
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newValue)) {
-    emailError.value = 'Please enter a valid email address'
-  } else {
-    emailError.value = ''
-  }
+const fullNameError = computed(() => {
+  if (fullName.value.length > maxFullNameLength)
+    return `Full name cannot exceed ${maxFullNameLength} characters`
+  return ""
 })
 
-watch(phoneNumber, (newValue) => {
-  if (!newValue) {
-    phoneError.value = ''
-    return
-  }
-  if (!/^\d+$/.test(newValue)) {
-    phoneError.value = 'Phone number must contain only digits'
-  } else if (newValue.length < 8) {
-    phoneError.value = 'Phone number must be at least 8 digits'
-  } else {
-    phoneError.value = ''
-  }
+const emailError = computed(() => {
+  if (email.value === "") return
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return emailRegex.test(email.value)
+    ? ""
+    : "Please enter a valid email address"
 })
 
-watch(password, (newValue) => {
-  if (!newValue) {
-    passwordError.value = ''
-    return
-  }
-  if (newValue.length < 8) {
-    passwordError.value = 'Password must be at least 8 characters'
-  } else {
-    passwordError.value = ''
-  }
+const phoneError = computed(() => {
+  if (phoneNumber.value === "") return
+  return phoneNumber.value.length === phoneNumberLength
+    ? ""
+    : "Phone number must be 8 digits"
 })
 
-
-watch(confirmPassword, (newValue) => {
-  if (!newValue) {
-    confirmPasswordError.value = ''
-    return
-  }
-  if (newValue !== password.value) {
-    confirmPasswordError.value = 'Passwords do not match'
-  } else {
-    confirmPasswordError.value = ''
-  }
+const passwordError = computed(() => {
+  const pass = password.value
+  if (pass === "") return
+  return pass.length >= passwordLength ? "" : "Password must be at least 8 characters"
 })
 
-const hasErrors = computed(() => {
-  return !!(
-    emailError.value ||
-    phoneError.value ||
-    passwordError.value ||
-    confirmPasswordError.value ||
-    !fullName.value ||
-    !email.value ||
-    !phoneNumber.value ||
-    !password.value ||
-    !confirmPassword.value
-  )
+const confirmPasswordError = computed(() => {
+  const confirm = confirmPassword.value
+  if (confirm === "") return
+  return confirm === password.value ? "" : "Passwords do not match"
 })
+
+const hasErrors = computed(() =>
+  fullNameError.value !== "" ||
+  emailError.value !== "" ||
+  phoneError.value !== "" ||
+  passwordError.value !== "" ||
+  confirmPasswordError.value !== "" ||
+  !fullName.value ||
+  !email.value ||
+  !phoneNumber.value ||
+  !password.value ||
+  !confirmPassword.value
+)
 
 const showSuccess = ref(false)
 
@@ -190,7 +163,7 @@ const RegistrationLogic = async () => {
 }
 </script>
   
-  <style scoped>
-  @import '../styles/views/RegisterView.css';
-  </style> 
+<style scoped>
+@import '../styles/views/RegisterView.css';
+</style>
   
