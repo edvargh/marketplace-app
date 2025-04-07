@@ -102,6 +102,7 @@
   /* ITEM VIEW */
   --item-view-desc-border: #aaa;
   --img-gallery-border: #4facfe;
+  --img-gallery-background: #333;
   --coordinates: var(--medium-gray);
 
   /* LOG IN + REGISTER */
