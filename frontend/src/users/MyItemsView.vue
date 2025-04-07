@@ -1,8 +1,8 @@
 <template>
-  <LoadingState :loading="loadingInitial" :error="error" loadingMessage="Loading your advertisements..."/>
+  <LoadingState :loading="loadingInitial" :error="error" :loadingMessage="t('myItemsView.Loading-my-items')" />
 
   <div v-if="!loadingInitial && !error" class="my-items-container">
-    <h2 class="my-items-title">My Items</h2>
+    <h2 class="my-items-title">{{ t('myItemsView.title') }}</h2>
 
     <div v-if="myItems.length > 0" class="my-items-grid">
       <CardGrid
@@ -14,12 +14,12 @@
 
     <div v-if="moreAvailable" class="load-more-wrapper">
       <button @click="loadMore" type="button" class="action-button button-cancel" :disabled="loadingMore">
-        {{ loadingMore ? 'Loading...' : 'Load More' }}
+        {{ loadingMore ? t('myItemsView.loadingMore') : t('myItemsView.loadMore') }}
       </button>
     </div>
 
     <div v-else-if="myItems.length === 0" class="no-items-message">
-      You haven't listed any items yet.
+      {{ t('myItemsView.noItems') }}
     </div>
   </div>
 </template>
@@ -31,6 +31,9 @@ import { usePaginatedLoader } from '@/usePaginatedLoader.js'
 import CompactItemCard from '@/components/CompactItemCard.vue'
 import LoadingState from "@/components/LoadingState.vue";
 import CardGrid from '@/components/CardGrid.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const itemStore = useItemStore()
 
@@ -47,7 +50,7 @@ onMounted(async () => {
   try {
     await loadMore()
   } catch (err) {
-    error.value = "Something went wrong while loading your advertisements. Please try again."
+    error.value = "myItemsView.loadingError"
   }
 })
 </script>

@@ -3,13 +3,13 @@
     <Notification
         v-if="showCreateSuccess"
         type="success"
-        message="Advertisement created successfully!"
+        :message="t('createItemView.successMessage')"
         :autoClose="true"
         @close="showCreateSuccess = false"
     />
 
     <ItemForm
-        title="Create New Advertisement"
+        :title="t('createItemView.title')"
         @submit="handleSubmit"
         :showStatus="false"
         :initialData="{
@@ -28,7 +28,7 @@
             class="action-button button-primary"
             :disabled="isSubmitting || !isValid"
         >
-          {{ isSubmitting ? 'Creating...' : 'Create' }}
+          {{ isSubmitting ? t('createItemView.creating') : t('createItemView.create') }}
         </button>
       </template>
     </ItemForm>
@@ -41,12 +41,14 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ItemForm from '@/components/ItemForm.vue';
 import { useItemStore } from '@/stores/itemStore';
+import { useI18n } from 'vue-i18n';
 import Notification from "@/components/NotificationBanner.vue";
 
 const router = useRouter();
 const isSubmitting = ref(false);
 const showCreateSuccess = ref(false);
 const itemStore = useItemStore();
+const { t } = useI18n();
 
 const handleSubmit = async (formData) => {
   try {
