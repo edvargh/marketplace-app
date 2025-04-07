@@ -23,11 +23,12 @@
       @retry="loadMore"
     />
 
-    <div v-if="!isLoading && !error && items.length > 0" class="item-container">
-      <CompactItemCard
-        v-for="item in items"
-        :key="item.id"
-        :item="item"
+    <div v-if="!isLoading && !error && items.length > 0">
+      <CardGrid
+        v-if="items.length > 0"
+        :items="items"
+        :cardComponent="CompactItemCard"
+        variant="compact"
       />
     </div>
     <div v-if="moreAvailable && items.length > 0" class="load-more-wrapper">
@@ -62,6 +63,7 @@ import SearchBar from '@/components/SearchBar.vue'
 import FilterPanel from '@/components/FilterPanel.vue'
 import CustomButton from '@/components/CustomButton.vue'
 import LoadingState from '@/components/LoadingState.vue'
+import CardGrid from '@/components/CardGrid.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -185,5 +187,4 @@ const selectedCategoryName = computed(() => {
 </script>
 
 <style>
-@import '../styles/views/SearchResultView.css';
 </style>
