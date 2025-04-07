@@ -207,7 +207,7 @@ export const useItemStore = defineStore('items', () => {
     }
   };
 
-  const searchItems = async (filters) => {
+  const searchItems = async (filters, page = 0, size = 6) => {
     try {
       const queryParams = new URLSearchParams();
       
@@ -225,12 +225,14 @@ export const useItemStore = defineStore('items', () => {
       if (filters.longitude != null) queryParams.append('longitude', filters.longitude);
       if (filters.distanceKm != null && filters.distanceKm !== '') queryParams.append('distanceKm', filters.distanceKm);
 
+      queryParams.append('page', page);
+      queryParams.append('size', size);
+
       const url = `http://localhost:8080/api/items?${queryParams.toString()}`;
       const headers = getAuthHeaders();
       
       const response = await axios.get(url, { headers });
       
-      items.value = response.data;
       return response.data;
       
     } catch (err) {

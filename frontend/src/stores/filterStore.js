@@ -10,8 +10,10 @@ export const useFilterStore = defineStore('filter', () => {
   const longitude = ref(null)
 
   function setFilters(filters = {}) {
-    selectedCategoryIds.value = Array.isArray(filters.categoryIds)
-      ? filters.categoryIds.map(id => Number(id))
+    selectedCategoryIds.value = filters.categoryIds
+      ? (Array.isArray(filters.categoryIds)
+        ? filters.categoryIds.map(Number)
+        : [Number(filters.categoryIds)])
       : []
     priceMin.value = filters.priceMin ?? ''
     priceMax.value = filters.priceMax ?? ''
