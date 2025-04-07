@@ -6,6 +6,7 @@ import com.marketplace.backend.model.User;
 import com.marketplace.backend.repository.ItemRepository;
 import com.marketplace.backend.repository.UserRepository;
 import com.marketplace.backend.service.PaymentService;
+import java.net.URI;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -87,7 +88,10 @@ public class PaymentController {
   }
 
   @GetMapping("/vipps-complete")
-  public ResponseEntity<String> vippsComplete() {
-    return ResponseEntity.ok("Payment completed! You can now return to the app.");
+  public ResponseEntity<Void> vippsComplete() {
+    URI redirectUri = URI.create("http://localhost:5173/payment-complete");
+    return ResponseEntity.status(HttpStatus.FOUND)
+        .location(redirectUri)
+        .build();
   }
 }
