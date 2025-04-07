@@ -26,10 +26,7 @@
         Import Images
       </CustomButton>
 
-      <CustomButton
-          type="button"
-          @click="removeCurrentImage"
-          :disabled="formData.images.length === 0">
+      <CustomButton type="button" @click="removeCurrentImage" :disabled="formData.images.length === 0">
         Remove Current Image
       </CustomButton>
     </div>
@@ -68,10 +65,17 @@
       <!-- Title -->
       <label for="Title">Title</label>
       <InputBox label="Title" v-model="formData.title" placeholder="Title" required />
+      <div v-if="titleError" class="error-message">
+        {{ titleError }}
+      </div>
 
       <!-- Description -->
       <label for="description">Description</label>
       <CustomTextarea v-model="formData.description" placeholder="Description" :required="true"/>
+      <div v-if="descriptionError" class="error-message">
+        {{ descriptionError }}
+      </div>
+
 
       <!-- Price -->
       <label for="Price">Price</label>
@@ -112,10 +116,17 @@ import CustomTextarea from "@/components/CustomTextarea.vue";
 import LocationDisplay from "@/components/LocationDisplay.vue";
 import { useCategoryStore } from "@/stores/categoryStore";
 
+const categoryStore = useCategoryStore();
 const fileInput = ref(null);
 const categories = ref([]);
 const priceError = ref('');
-const categoryStore = useCategoryStore();
+const titleError = ref('');
+const descriptionError = ref('');
+
+const maxTitleLength = 50;
+const maxDescriptionLength = 600;
+const minPrice = 0;
+const maxPrice = 10000000;
 
 const props = defineProps({
   title: String,
@@ -129,6 +140,7 @@ const props = defineProps({
   }
 });
 
+// Status options
 const statusOptions = ref([
   { value: 'FOR_SALE', label: 'For Sale' },
   { value: 'RESERVED', label: 'Reserved' },
@@ -144,33 +156,22 @@ watch(() => props.initialData, (newData) => {
   Object.assign(formData, newData);
 }, { deep: true, immediate: true });
 
+// Price validator
 watch(() => formData.price, (newPrice) => {
   validatePrice(newPrice);
 });
 
 const validatePrice = (price) => {
   priceError.value = '';
-
   if (price === '' || price === null) {
     return false;
   }
-
   const numPrice = Number(price);
   const validations = [
-    {
-      condition: isNaN(numPrice),
-      message: 'Please enter a valid number'
-    },
-    {
-      condition: numPrice < 0,
-      message: 'Price cannot be negative number'
-    },
-    {
-      condition: numPrice > 10000000,
-      message: 'Price cannot exceed 10,000,000kr'
-    }
+    { condition: isNaN(numPrice), message: 'Please enter a valid number' },
+    { condition: numPrice < minPrice, message: 'Price cannot be negative number' },
+    { condition: numPrice > maxPrice, message: 'Price cannot exceed 10,000,000kr' }
   ];
-
   const failedValidation = validations.find(validation => validation.condition);
   if (failedValidation) {
     priceError.value = failedValidation.message;
@@ -178,6 +179,21 @@ const validatePrice = (price) => {
   }
   return true;
 };
+
+// Title and description validator
+watch(
+  () => [formData.title, formData.description],
+  ([newTitle, newDescription]) => {
+    titleError.value =
+      newTitle && newTitle.length > maxTitleLength
+        ? `Title cannot exceed ${maxTitleLength} characters`
+        : '';
+    descriptionError.value =
+      newDescription && newDescription.length > maxDescriptionLength
+        ? `Description cannot exceed ${maxDescriptionLength} characters`
+        : '';
+  }
+);
 
 onMounted(async () => {
   try {
@@ -237,7 +253,8 @@ const isFormValid = computed(() => {
 
   const hasAllRequiredFields = requiredFields.every(field => !!field);
   const isPriceValid = formData.price >= 0;
-  return hasAllRequiredFields && isPriceValid;
+  const noTextErrors = !titleError.value && !descriptionError.value;
+  return hasAllRequiredFields && isPriceValid && noTextErrors;
 });
 
 const emit = defineEmits(['submit', 'validation-change'])
