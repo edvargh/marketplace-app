@@ -50,7 +50,9 @@ export const useItemStore = defineStore('items', () => {
     try {
       const headers = getAuthHeaders();
       const response = await axios.get(`http://localhost:8080/api/items/recommended`, { headers });
+      console.log(response)
       return response.data;
+
     } catch (err) {
       console.error('Failed to fetch recommended items:', err);
       return [];

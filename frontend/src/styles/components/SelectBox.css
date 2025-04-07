@@ -13,8 +13,8 @@
     padding: 1rem 2rem;
     border: 1px solid transparent;
     background:
-            linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
-            linear-gradient(to right, #4facfe, #00f2fe) border-box;
+        linear-gradient(to right, var(--light-blue), var(--light-blue-cold)) padding-box,
+        linear-gradient(to right, var(--sky-blue), var(--turquoise)) border-box;
     background-clip: padding-box, border-box;
     width: 100%;
     box-sizing: border-box;
@@ -29,13 +29,12 @@
     width: 100%;
     font-size: 1rem;
     font-family: 'Abel', sans-serif;
-    color: #333;
     padding: 0;
     cursor: pointer;
 }
 
 .InputBox-input::placeholder {
-    color: #aaa;
+    color: var(--input-placeholder);
     opacity: 1;
 }
 
@@ -53,11 +52,11 @@
     position: absolute;
     width: 100%;
     margin-top: 0.5rem;
-    background: linear-gradient(to bottom right, #e0f0ff, #e8f0ff);
-    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: linear-gradient(to bottom right, var(--component-half-1), var(--component-half-2));
+    border: 1px solid var(--select-border-shadow);
     border-radius: 16px;
     padding: 1rem;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px var(--select-border-shadow);
     backdrop-filter: blur(12px);
     z-index: 100;
     list-style: none;
@@ -72,5 +71,5 @@
 }
 
 .custom-dropdown-menu li:hover {
-    background: rgba(79, 172, 254, 0.15);
+    background: var(--select-hover);
 }

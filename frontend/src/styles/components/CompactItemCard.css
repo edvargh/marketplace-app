@@ -1,10 +1,10 @@
 .item-card {
-    min-width: 0;
+    width: 100%;
     max-width: 100%;
     border-radius: 16px;
     overflow: hidden;
     position: relative;
-    border: 2px solid #4facfe;
+    border: 2px solid var(--item-card-border);
     transition: transform 0.3s ease;
 }
 
@@ -16,7 +16,6 @@
     position: relative;
     height: 160px;
     overflow: hidden;
-    background: #f5f5f5;
 }
 
 .card-image {
@@ -73,6 +72,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    border-top: 1px solid var(--item-card-border-top);
 }
 
 .price-frame {
@@ -81,7 +81,6 @@
     justify-content: space-between;
     padding-left: 10px;
     padding-top: 8px;
-    border-top: 1px solid #eee;
 }
 
 .price-label {
@@ -90,5 +89,52 @@
 
 .price {
     font-weight: 700;
+}
+
+@media (max-width: 520px) or (max-height: 800px) {
+    .card-image-container {
+        height: 100px;
+    }
+
+    :deep(.status-banner) {
+        font-size: 10px;
+        padding: 3px 10px;
+    }
+
+    .card-header {
+        gap: 5px;
+        margin-bottom: 5px;
+    }
+
+    .title {
+        font-size: 13px;
+    }
+
+    .card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .price-frame {
+        padding-left: 0;
+        padding-top: 0;
+    }
+
+    .price-label {
+        font-size: 11px;
+    }
+
+    .price {
+        font-size: 13px;
+    }
+
+    .profile-badge {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
 }
 

@@ -29,7 +29,7 @@
           :key="item.id"
           :item="item"
         />
-    </HorizontalPagination>
+      </HorizontalPagination>
     
     <div v-if="recommendedItems.length === 0" class="no-items-message">
         {{ t('homeView.No-recommendet-items-found') }}
@@ -58,12 +58,14 @@
       <div class="section-header">
         <h2>{{ t('homeView.Market') }}</h2>
       </div>
-      <div v-if="marketItems.length > 0" class="compact-cards-container">
-        <CompactItemCard
-          v-for="item in marketItems"
-          :key="item.id"
-          :item="item"
-        />
+      <CardGrid
+        v-if="marketItems.length > 0"
+        :items="marketItems"
+        :cardComponent="CompactItemCard"
+        variant="compact"
+      />
+      <div v-else class="no-items-message">
+        {{ t('homeView.No-market-items-found') }}
       </div>
     </section>
   </div>
@@ -72,6 +74,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import DetailedItemCard from "@/components/DetailedItemCard.vue"
+import CardGrid from '@/components/CardGrid.vue'
 import CompactItemCard from "@/components/CompactItemCard.vue"
 import SearchBar from "@/components/SearchBar.vue"
 import Categories from '@/components/Categories.vue'
@@ -84,15 +87,16 @@ import HorizontalPagination from '@/components/HorizontalPagination.vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { useFilterStore } from '@/stores/filterStore'
+import { useUserStore } from '@/stores/userStore'
 
 
 const route = useRoute()
 const router = useRouter()
 
+const { t, locale } = useI18n()
+
 const filterStore = useFilterStore()
-
-const { t } = useI18n()
-
+const userStore = useUserStore()
 const categoryStore = useCategoryStore()
 const itemStore = useItemStore()
 
@@ -107,6 +111,10 @@ const error = ref(null)
 onMounted(async () => {
   loading.value = true
   try {
+    if (userStore.user?.preferredLanguage) {
+      locale.value = userStore.user.preferredLanguage
+    }
+
     const categoriesPromise = categoryStore.fetchCategories().then(cats => {
       categories.value = cats
     })

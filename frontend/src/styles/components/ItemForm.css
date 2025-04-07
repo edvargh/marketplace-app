@@ -28,7 +28,6 @@
     margin-top: 10px;
 }
 
-/* Form actions container - controls ALL form footers */
 .form-actions {
     display: flex;
     flex-direction: column !important;
@@ -38,17 +37,16 @@
     width: 100%;
 }
 
-/* Nested button container - for EditView only */
 .form-actions .action-buttons {
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 300px; /* Optional: constrain button width */
+    max-width: 300px;
 }
 
 .error-message {
-    color: red;
+    color: var(--error-msg);
     margin-top: 1rem;
     min-height: 1.5rem;
     font-family: 'Abel', sans-serif;

@@ -55,15 +55,9 @@
 }
 
 .latest-message {
-    color: #555;
+    color: var(--conv-card-latest-msg);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-
-.with-user-name {
-    color: #888;
-    font-size: 0.9rem;
 }
 

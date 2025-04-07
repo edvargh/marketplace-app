@@ -59,3 +59,10 @@
     font-size: 1rem;
 }
 
+@media (max-width: 600px) or (max-height: 800px) {
+    .categories h3 {
+        font-size: 1.4rem;
+    }
+}
+
+
