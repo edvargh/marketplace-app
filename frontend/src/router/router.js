@@ -15,6 +15,7 @@ import MessagesView from '@/users/MessagesView.vue'
 import ConversationView from '@/users/ConversationView.vue'
 import CategoriesAdminView from "@/views/CategoriesAdminView.vue";
 import SearchResultView from '@/views/SearchResultView.vue'
+import UserPaymentComplete from '@/users/UserPaymentComplete.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -104,6 +105,11 @@ const router = createRouter({
       name: 'items',
       component: SearchResultView,
       meta: { requiresAuth: true },
+    },
+    { 
+      path: '/payment-complete',
+      name: 'paymentComplete',
+      component: UserPaymentComplete
     },
   ],
 })
