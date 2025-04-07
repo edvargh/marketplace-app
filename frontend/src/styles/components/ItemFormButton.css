@@ -37,6 +37,12 @@
     background-color: var(--button-cancel-hover);
 }
 
+.button-cancel:disabled {
+    background-color: var(--buttton-diabled);
+    cursor: not-allowed;
+    transform: none;
+}
+
 .button-danger {
     background-color: var(--button-danger);
 }

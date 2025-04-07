@@ -11,17 +11,6 @@
   padding: 0 20px;
 }
 
-.search-filter-container {
-  display: flex;
-  justify-content: center;
-  max-width: 800px;
-  align-items: center;
-  gap: 1rem; 
-  width: 100%;
-  flex-wrap: wrap;
-  margin-bottom: 10px;
-}
-
 .recommendations, .most-liked, .market {
   width: 100%;
 }
@@ -41,10 +30,6 @@
 @media (max-width: 600px) or (max-height: 800px) {
   .home-container {
     margin-top: 20px;
-  }
-
-  .search-filter-container {
-    gap: 0.1rem
   }
 }
 

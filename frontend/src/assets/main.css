@@ -59,9 +59,39 @@ html, body {
   cursor: pointer;
 }
 
+.load-more-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  margin-bottom: 60px;
+}
+
+.search-filter-container {
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.no-items-message {
+  text-align: center;
+  padding: 40px;
+  color: var(--message-empty);
+  font-size: 1.2rem;
+  width: 100%;
+}
+
 @media (max-width: 600px), (max-height: 800px) {
   #app {
     padding: 0.5rem;
+  }
+  .search-filter-container {
+    gap: 0.1rem;
+    flex-direction: column;
   }
 }
 

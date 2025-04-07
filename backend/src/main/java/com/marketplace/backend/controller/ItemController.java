@@ -54,12 +54,13 @@ public class ItemController {
       @RequestParam(required = false) String searchQuery,
       @RequestParam(required = false) BigDecimal latitude,
       @RequestParam(required = false) BigDecimal longitude,
-      @RequestParam(required = false) Double distanceKm
+      @RequestParam(required = false) Double distanceKm,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "6") int size
   ) {
     List<ItemResponseDto> items = itemService.getFilteredItems(
-        minPrice, maxPrice, categoryIds, searchQuery, latitude, longitude, distanceKm
+            minPrice, maxPrice, categoryIds, searchQuery, latitude, longitude, distanceKm, page, size
     );
-
     return ResponseEntity.ok(items);
   }
 
@@ -83,8 +84,11 @@ public class ItemController {
    * @return a list of items as DTOs
    */
   @GetMapping("/my-items")
-  public ResponseEntity<List<ItemResponseDto>> getItemsForCurrentUser() {
-    List<ItemResponseDto> myItems = itemService.getItemsForCurrentUser();
+  public ResponseEntity<List<ItemResponseDto>> getItemsForCurrentUser(
+          @RequestParam(defaultValue = "0") int page,
+          @RequestParam(defaultValue = "6") int size
+  ) {
+    List<ItemResponseDto> myItems = itemService.getItemsForCurrentUser(page, size);
     return ResponseEntity.ok(myItems);
   }
 
@@ -94,9 +98,12 @@ public class ItemController {
    * @return a list of favorite items as DTOs
    */
   @GetMapping("/favorites")
-  public ResponseEntity<List<ItemResponseDto>> getFavoriteItemsForCurrentUser() {
-    List<ItemResponseDto> favoriteItems = itemService.getFavoriteItemsForCurrentUser();
-    return ResponseEntity.ok(favoriteItems);
+  public ResponseEntity<List<ItemResponseDto>> getFavoriteItemsForCurrentUser(
+          @RequestParam(defaultValue = "0") int page,
+          @RequestParam(defaultValue = "6") int size
+  ) {
+    List<ItemResponseDto> favorites = itemService.getFavoriteItemsForCurrentUser(page, size);
+    return ResponseEntity.ok(favorites);
   }
 
   /**

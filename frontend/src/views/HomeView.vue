@@ -1,7 +1,7 @@
 <template>
-  <LoadingState :loading="loading" :error="error"/>
+  <LoadingState :loading="loadingInitial" :error="error"/>
 
-  <div v-if="!loading && !error" class="home-container">
+  <div v-if="!loadingInitial && !error" class="home-container">
     <div class="search-filter-container">
       <SearchBar />
       <CustomButton @click="toggleFilterPanel">
@@ -33,7 +33,7 @@
           :item="item"
           :seller="sellerMap[item.sellerId]"
         />
-        
+
         <template #clone-start v-if="cloneStartItems.length">
           <DetailedItemCard
             v-for="item in cloneStartItems"
@@ -42,7 +42,7 @@
             :seller="sellerMap[item.sellerId]"
           />
         </template>
-        
+
         <template #clone-end v-if="cloneEndItems.length">
           <DetailedItemCard
             v-for="item in cloneEndItems"
@@ -69,7 +69,12 @@
         :cardComponent="CompactItemCard"
         variant="compact"
       />
-      <div v-else class="no-items-message">
+      <div v-if="moreAvailable" class="load-more-wrapper">
+        <button @click="loadMoreMarketItems" class="action-button button-cancel" :disabled="loadingMore">
+          {{ loadingMore ? 'Loading...' : 'Load More' }}
+        </button>
+      </div>
+      <div v-else-if="marketItems.length === 0 && !loadingInitial" class="no-items-message">
         {{ t('homeView.No-market-items-found') }}
       </div>
     </section>
@@ -77,26 +82,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import DetailedItemCard from "@/components/DetailedItemCard.vue"
 import CardGrid from '@/components/CardGrid.vue'
 import CompactItemCard from "@/components/CompactItemCard.vue"
 import SearchBar from "@/components/SearchBar.vue"
 import Categories from '@/components/Categories.vue'
 import LoadingState from '@/components/LoadingState.vue'
-import { useCategoryStore } from "@/stores/categoryStore"
-import { useItemStore } from "@/stores/itemStore"
 import FilterPanel from '@/components/FilterPanel.vue'
 import CustomButton from "@/components/CustomButton.vue"
 import HorizontalPagination from '@/components/HorizontalPagination.vue'
+import { useCategoryStore } from "@/stores/categoryStore"
+import { useItemStore } from "@/stores/itemStore"
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { useFilterStore } from '@/stores/filterStore'
+import { usePaginatedLoader } from '@/usePaginatedLoader.js'
 import { useUserStore } from '@/stores/userStore'
+
 
 const route = useRoute()
 const router = useRouter()
-
 const { t, locale } = useI18n()
 
 const filterStore = useFilterStore()
@@ -110,11 +116,16 @@ const cloneStartItems = ref([])
 const cloneEndItems = ref([])
 const categories = ref([])
 const recommendedItems = ref([])
-const mostLikedItems = ref([])
-const marketItems = ref([])
 const showFilters = ref(false)
-const loading = ref(true)
-const error = ref(null)
+
+const {
+  items: marketItems,
+  loadMore: loadMoreMarketItems,
+  moreAvailable,
+  loadingInitial,
+  loadingMore,
+  error
+} = usePaginatedLoader(itemStore.fetchMarketItems)
 
 const handleCloneStart = ({ start, end }) => {
   cloneStartItems.value = recommendedItems.value ? recommendedItems.value.slice(start, end) : [];
@@ -126,12 +137,12 @@ const handleCloneEnd = ({ start, end }) => {
 
 const fetchAllSellers = async (items) => {
   if (!items || items.length === 0) return;
-  
+
   const sellerIds = [...new Set(items.map(item => item.sellerId))]
-    .filter(id => id && !sellerMap.value[id]); 
-  
+    .filter(id => id && !sellerMap.value[id]);
+
   if (sellerIds.length === 0) return;
-  
+
   try {
     const fetchPromises = sellerIds.map(async (sellerId) => {
       try {
@@ -141,16 +152,16 @@ const fetchAllSellers = async (items) => {
         return { id: sellerId, data: null };
       }
     });
-    
+
     const sellers = await Promise.all(fetchPromises);
-    
+
     const newSellerMap = { ...sellerMap.value };
     sellers.forEach(({ id, data }) => {
       if (data) {
         newSellerMap[id] = data;
       }
     });
-    
+
     sellerMap.value = newSellerMap;
   } catch (err) {
     console.error('Error fetching sellers:', err);
@@ -158,45 +169,27 @@ const fetchAllSellers = async (items) => {
 };
 
 onMounted(async () => {
-  loading.value = true;
   try {
     if (userStore.user?.preferredLanguage) {
       locale.value = userStore.user.preferredLanguage;
     }
-
     const categoriesPromise = categoryStore.fetchCategories().then(cats => {
-      categories.value = cats;
-    });
-
-    const itemsPromise = itemStore.fetchMarketItems().then(items => {
-      marketItems.value = items || [];
-      return items;
-    });
-
+      categories.value = cats
+    })
     const recommendedPromise = itemStore.fetchRecommendedItems().then(items => {
-      recommendedItems.value = items || [];
-      return items;
-    });
+      recommendedItems.value = items || []
+    })
+    const marketPromise = loadMoreMarketItems();
+    await Promise.all([categoriesPromise, recommendedPromise, marketPromise]);
 
-    const [, marketItemsResult, recommendedItemsResult] = await Promise.all([
-      categoriesPromise, 
-      itemsPromise, 
-      recommendedPromise
-    ]);
-    
-    if (recommendedItemsResult?.length) {
-      await fetchAllSellers(recommendedItemsResult);
+    if (recommendedItems.value.length) {
+      await fetchAllSellers(recommendedItems.value);
     }
-    
-    if (marketItemsResult?.length) {
-      await fetchAllSellers(marketItemsResult);
+    if (marketItems.value.length) {
+      await fetchAllSellers(marketItems.value);
     }
-    
   } catch (e) {
-    console.error(e);
-    error.value = "Something wrong happened while loading Home Page. Please try again.";
-  } finally {
-    loading.value = false;
+    error.value = "Something wrong happened while loading Home Page. Please try again."
   }
 });
 
@@ -223,4 +216,5 @@ function handleCategoryClick(category) {
 
 <style scoped>
 @import '../styles/views/HomeView.css';
+@import '../styles/components/ItemFormButton.css';
 </style>

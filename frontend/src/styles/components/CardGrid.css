@@ -20,6 +20,12 @@
     width: 100%;
 }
 
+.load-more-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
 @media (max-width: 500px), (max-height: 800px) {
     .card-grid--compact {
         gap: 10px;

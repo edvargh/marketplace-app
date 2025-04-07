@@ -27,7 +27,7 @@ const props = defineProps({
   },
   propName: {
     type: String,
-    default: 'item' // Pass prop name if not an item
+    default: 'item'
   }
 })
 
@@ -44,4 +44,5 @@ const variantClass = computed(() => {
 
 <style scoped>
 @import '../styles/components/CardGrid.css';
+@import '../styles/components/ItemFormButton.css';
 </style>
