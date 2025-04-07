@@ -50,7 +50,10 @@ public class SecurityConfig {
                                                   .permitAll()
                                                   .requestMatchers(HttpMethod.POST, "/api/payments/vipps-callback/v2/payments/**").permitAll()
                                                   .requestMatchers(HttpMethod.GET, "/api/payments/vipps-complete").permitAll()
-                                                  .anyRequest().authenticated()
+                                                  .requestMatchers(HttpMethod.POST, "/api/payments/vipps").permitAll()
+                                                  .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                   .anyRequest().authenticated()
                )
                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                .authenticationProvider(authenticationProvider())
