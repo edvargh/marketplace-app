@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 export const useUserStore = defineStore('user', () => {
+  const API_BASE_URL = 'http://localhost:8080'
   const user = ref(null)
   const isAuthenticated = ref(false)
+  const role = computed(() => user.value?.role || null)
 
   const login = async (email, password) => {
-    const response = await fetch('http://localhost:8080/api/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -17,21 +19,21 @@ export const useUserStore = defineStore('user', () => {
       try {
         const errorData = await response.json()
         errorMessage = errorData.message || errorMessage
-      } catch (e) {
+      } catch {
         errorMessage = 'Oops! Email or password is incorrect'
       }
       throw new Error(errorMessage)
     }
 
     const data = await response.json()
-    localStorage.setItem('token', data.token) 
+    localStorage.setItem('token', data.token)
     localStorage.setItem('user', JSON.stringify(data.user))
     user.value = data.user
     isAuthenticated.value = true
   }
 
   const register = async (fullName, email, password, phoneNumber) => {
-    const response = await fetch('http://localhost:8080/api/auth/register', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ fullName, email, password, phoneNumber })
@@ -41,7 +43,6 @@ export const useUserStore = defineStore('user', () => {
       const errorData = await response.json()
       throw new Error(errorData.message || 'Registration failed')
     }
-
     return await response.json()
   }
 
@@ -60,7 +61,7 @@ export const useUserStore = defineStore('user', () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/users/me', {
+      const response = await fetch(`${API_BASE_URL}/api/users/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -73,70 +74,124 @@ export const useUserStore = defineStore('user', () => {
       user.value = data
       localStorage.setItem('user', JSON.stringify(data))
       isAuthenticated.value = true
-    } catch (error) {
+    } catch {
       logout()
     }
   }
 
-  const updateUser = async (updateData) => {
+  const updateUser = async (rawFormData) => {
+    const token = localStorage.getItem('token')
+    if (!token) throw new Error('No authentication token found')
+
+    const currentUser = user.value
+    if (!currentUser?.id) throw new Error('Not authenticated')
+
+    const formDataToSend = new FormData()
+
+    const userData = {
+      fullName: rawFormData.fullName,
+      email: rawFormData.email,
+      password: rawFormData.password,
+      phoneNumber: rawFormData.phoneNumber,
+      preferredLanguage: rawFormData.preferredLanguage,
+    }
+    formDataToSend.append(
+      'dto',
+      new Blob([JSON.stringify(userData)], { type: 'application/json' })
+    )
+
+    if (rawFormData.profilePicture instanceof File) {
+      formDataToSend.append('profilePicture', rawFormData.profilePicture)
+    }
+
+    const response = await fetch(`${API_BASE_URL}/api/users/${currentUser.id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: formDataToSend
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => null)
+      let errorMsg = errorText || 'Update failed'
+      try {
+        const errorData = JSON.parse(errorText)
+        errorMsg = errorData.message || errorMsg
+      } catch {}
+      throw new Error(errorMsg)
+    }
+
+    const updatedUser = await response.json()
+    user.value = updatedUser
+    localStorage.setItem('user', JSON.stringify(updatedUser))
+    return updatedUser
+  }
+
+  const getUserById = async (userId) => {
     const token = localStorage.getItem('token');
-    const currentUser = user.value;
-    
+    if (!token) throw new Error('No authentication token found');
   
-    if (!token || !currentUser?.id) {
-      console.error('[UpdateUser] Missing token or user ID - not authenticated');
-      throw new Error('Not authenticated');
-    }
-  
-    try {
-      const requestBody = {
-        id: currentUser.id,
-        fullName: updateData.fullName || currentUser.fullName,
-        email: updateData.email || currentUser.email,
-        phoneNumber: updateData.phoneNumber || currentUser.phoneNumber,
-        language: updateData.language || currentUser.language,
-        password: updateData.password ? updateData.password : undefined
-      };
-  
-      const response = await fetch(`http://localhost:8080/api/users/${currentUser.id}`, {
-        method: 'PUT',  
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(requestBody)
-      });
-  
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[UpdateUser] Update failed:', errorText);
-        try {
-          const errorData = JSON.parse(errorText);
-          throw new Error(errorData.message || 'Update failed');
-        } catch {
-          throw new Error(errorText || 'Update failed');
-        }
+    const response = await fetch(`${API_BASE_URL}/api/users/${userId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
+    });
   
-      const updatedUser = await response.json();
-  
-      user.value = updatedUser;  
-      localStorage.setItem('user', JSON.stringify(user.value));
-      return updatedUser;
-    } catch (error) {
-      console.error('[UpdateUser] Error:', error);
-      throw error;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch user: ${errorText}`);
     }
+  
+    return await response.json(); 
   };
+
+  const getProfileImageUrl = (profileImagePath) => {
+    if (!profileImagePath) return '/default-picture.jpg';
+    
+    if (profileImagePath.startsWith('http://') || profileImagePath.startsWith('https://')) {
+      return profileImagePath;
+    }
+    
+    return `${API_BASE_URL}/uploads/${profileImagePath}`;
+  }
+
+  const getCurrentUserProfileImageUrl = () => {
+    if (user.value?.profilePicture) {
+      return getProfileImageUrl(user.value.profilePicture);
+    }
+    return getProfileImageUrl(user.value?.profileImage);
+  }
+
+  const getUserProfileImageUrl = async (userId) => {
+    try {
+      if (user.value?.id === userId) {
+        return getCurrentUserProfileImageUrl();
+      }
+      
+      const userData = await getUserById(userId);
+      if (userData.profilePicture) {
+        return getProfileImageUrl(userData.profilePicture);
+      }
+      return getProfileImageUrl(userData.profileImage);
+    } catch (error) {
+      return '/default-picture.jpg';
+    }
+  }
 
   return {
     user,
+    role,
     isAuthenticated,
     login,
     register,
     logout,
     checkAuth,
-    updateUser 
+    updateUser,
+    getUserById,
+    getProfileImageUrl,
+    getCurrentUserProfileImageUrl,
+    getUserProfileImageUrl
   }
 })

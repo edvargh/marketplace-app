@@ -6,25 +6,24 @@
     padding: 1rem 2rem;
     border: 1px solid transparent;
     background:
-      linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
-      linear-gradient(to right, #4facfe, #00f2fe) border-box;
+      linear-gradient(to right, var(--light-blue), var(--light-blue-cold)) padding-box,
+      linear-gradient(to right, var(--sky-blue), var(--turquoise)) border-box;
     background-clip: padding-box, border-box;
     font-size: 1rem;
     font-family: 'Abel', sans-serif;
     font-weight: bold;
-    color: #333;
     cursor: pointer;
     transition: background 0.3s ease, opacity 0.3s ease;
     text-decoration: none;
   }
-  
+
   .custom-button:hover {
     opacity: 0.85;
     background:
-      linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
-      linear-gradient(to right, #00f2fe, #4facfe) border-box;
+        linear-gradient(to right, var(--light-blue), var(--light-blue-cold)) padding-box,
+        linear-gradient(to right, var(--turquoise), var(--sky-blue)) border-box;
   }
-  
+
   .custom-button:disabled {
     cursor: not-allowed;
     opacity: 0.6;

@@ -30,24 +30,6 @@
     font-weight: bold;
 }
 
-.status {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 4px 8px;
-    border-radius: 20px;
-    background-color: #cccccc;
-}
-
-.location {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 1rem 0;
-    color: #666;
-}
-
 .action-buttons {
     display: flex;
     flex-direction: column;
@@ -79,26 +61,26 @@
 }
 
 .message-btn {
-    background: #e3f2fd;
-    color: #1565c0;
+    background: var(--button-message);
+    color: var(--button-text-message);
 }
 
 .reserve-btn {
-    background: #e8f5e9;
-    color: #2e7d15;
+    background: var(--button-reserve) ;
+    color: var(--button-text-reserve) ;
 }
 
 .blue-btn {
-    background: #4facfe;
-    color: white;
+    background: var(--button-blue);
+    color: var(--button-text-blue);
 }
 
 .description {
     width: 100%;
     margin: 2rem 0;
     padding: 1rem 0;
-    border-top: 1px solid #eee;
-    border-bottom: 1px solid #eee;
+    border-top: 1px solid var(--item-view-desc-border);
+    border-bottom: 1px solid var(--item-view-desc-border);
 }
 
 .description h3 {
@@ -115,6 +97,9 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    padding: 1rem 0;
+    border-top: 1px solid var(--item-view-desc-border);
+    border-bottom: 1px solid var(--item-view-desc-border);
 }
 
 .seller-info h3 {
@@ -132,7 +117,7 @@
     height: 36px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid #4facfe;
+    border: 2px solid var(--profile-border);
 }
 
 .profile-image {
@@ -174,6 +159,14 @@
     .price-status {
         flex-direction: column;
     }
+}
+
+@media (min-width: 900px) and (max-width: 1210px) {
+    .overview-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
 }
 
 

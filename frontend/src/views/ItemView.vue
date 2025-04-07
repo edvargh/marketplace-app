@@ -1,12 +1,7 @@
 <template>
-  <div v-if="loading" class="loading">
-    Loading item details...
-  </div>
-  <div v-else-if="error" class="error">
-    {{ error }}
-  </div>
+  <LoadingState :loading="loading" :error="error" loadingMessage="Loading advertisement..."/>
 
-  <div v-else class="item-detail-container">
+  <div v-if="!loading && !error" class="item-detail-container">
     <!-- Image Gallery -->
     <ImageGallery
         :images="item.imageUrls || []"
@@ -21,17 +16,16 @@
       <div class="overview-content">
         <div class="price-status">
           <span class="price">{{ item.price }} kr</span>
-          <span class="status">{{ item.status }}</span>
+          <StatusBanner :status="item.status" />
         </div>
-        <FavoriteBtn v-if="!isMyItem" />
+        <FavoriteBtn v-if="!isMyItem" :isFavorite="isFavorite" @update:isFavorite="updateFavoriteStatus" />
       </div>
-
 
       <div class="action-buttons">
         <template v-if="!isMyItem">
-          <button class="message-btn">Send message</button>
-          <button class="reserve-btn">Reserve item</button>
-          <button class="blue-btn">Buy Now</button>
+          <button class="message-btn" @click="handleMessageSeller">Send message</button>
+          <button class="reserve-btn" @click="handleReserveItem">Reserve item</button>
+          <button class="blue-btn" @click="handleBuyNow">Buy Now</button>
         </template>
         <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
           Edit Item
@@ -45,12 +39,22 @@
       <p>{{ item.description }}</p>
     </div>
 
+    <!-- Location -->
+    <LocationDisplay
+        :lat="item.latitude"
+        :lng="item.longitude"
+    />
+
     <!-- Seller Info -->
     <div class="seller-info">
       <h3>Seller</h3>
       <div class="seller">
         <div class="profile-badge">
-          <img src="/default-picture.jpg" alt="Profile Image" class="profile-image" />
+          <img 
+          :src="seller?.profilePicture || '/default-picture.jpg'" 
+          alt="Profile Image" 
+          class="profile-image" 
+          />     
         </div>
         <span>{{ item.sellerName }}</span>
       </div>
@@ -61,46 +65,133 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
 import { useItemStore } from "@/stores/itemStore";
 import { useUserStore } from "@/stores/userStore";
+import { useMessageStore } from '@/stores/messageStore';
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
+import LoadingState from "@/components/LoadingState.vue";
+import LocationDisplay from "@/components/LocationDisplay.vue";
+import StatusBanner from "@/components/StatusBanner.vue";
 
 const route = useRoute();
 const itemStore = useItemStore();
 const userStore = useUserStore();
 const item = ref({});
 const loading = ref(true);
+const seller = ref(null);        
 const error = ref(null);
 const isMyItem = ref(false);
+const isFavorite = ref(false);
+const router = useRouter();
+const messageStore = useMessageStore();
 
 onMounted(async () => {
+  loading.value = true;
   try {
-    loading.value = true;
     const itemId = route.params.id;
-
     if (!itemId) {
       throw new Error('No item ID provided');
     }
 
     const itemData = await itemStore.fetchItemById(itemId);
-
-    if (itemData) {
-      item.value = itemData;
-      isMyItem.value = userStore.user?.id === itemData.sellerId;
-
-    } else {
+    if (!itemData) {
       throw new Error('Item not found');
     }
-  } catch (err) {
-    console.error('Error fetching item details:', err);
-    error.value = err.message || 'Failed to load item details';
 
+    item.value = itemData;
+
+    isMyItem.value = userStore.user?.id === itemData.sellerId;
+
+    if (itemData.sellerId) {
+      try {
+        const sellerData = await userStore.getUserById(itemData.sellerId);
+        seller.value = sellerData;
+      } catch (err) {
+        console.warn('Could not fetch seller info:', err);
+      }
+    }
+
+  } catch (e) {
+    console.error(e);
+    error.value = "Could not load this advertisement. Please try again.";
   } finally {
     loading.value = false;
   }
 });
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: false
+  }
+})
+
+const handleMessageSeller = async () => {
+  const itemId = item.value.id;
+  const sellerId = item.value.sellerId;
+
+  try {
+    await messageStore.ensureConversationExists(itemId, sellerId);
+
+    await router.push({
+      name: 'ConversationView',
+      query: {
+        itemId: itemId.toString(),
+        withUserId: sellerId.toString()
+      }
+    });
+  } catch (err) {
+    console.error('[ItemView] ❌ Failed to start or find conversation:', err);
+    alert("Could not start a conversation with the seller.");
+  }
+};
+
+const handleReserveItem = async () => {
+  try {
+    const itemId = item.value.id
+    const sellerId = item.value.sellerId
+
+    await messageStore.ensureConversationExists(itemId, sellerId)
+
+    await router.push({
+      name: 'ConversationView',
+      query: {
+        itemId: itemId.toString(),
+        withUserId: sellerId.toString(),
+        reserve: 'true'
+      }
+    })
+  } catch (err) {
+    console.error('Error handling reservation:', err)
+    alert("Could not reserve the item. Please try again.")
+  }
+}
+
+
+const updateFavoriteStatus = (newStatus) => {
+  isFavorite.value = newStatus;
+};
+
+
+const handleBuyNow = async () => {
+  try {
+    const itemId = item.value.id;
+    const redirectUrl = await itemStore.initiateVippsPayment(itemId);
+    
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      throw new Error('No redirect URL received');
+    }
+  } catch (err) {
+    console.error('[ItemView] ❌ Failed to process payment:', err);
+    alert("Could not process payment. Please try again.");
+  }
+};
+
+
 </script>
 
 <style scoped>

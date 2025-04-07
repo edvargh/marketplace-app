@@ -1,5 +1,7 @@
 package com.marketplace.backend.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 /**
  * DTO for updating user data.
  */
@@ -8,7 +10,7 @@ public class UserUpdateDto {
   private String email;
   private String password;
   private String phoneNumber;
-  private String profilePicture;
+  private MultipartFile profilePicture;
   private String preferredLanguage;
 
   /**
@@ -72,14 +74,18 @@ public class UserUpdateDto {
    *
    * @return the profile picture
    */
-  public String getProfilePicture() { return profilePicture; }
+  public MultipartFile getProfilePicture() {
+    return profilePicture;
+  }
 
   /**
    * Set the profile picture of the user.
    *
    * @param profilePicture the profile picture
    */
-  public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+  public void setProfilePicture(MultipartFile profilePicture) {
+    this.profilePicture = profilePicture;
+  }
 
   /**
    * Get the preferred language of the user.

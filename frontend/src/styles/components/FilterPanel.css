@@ -1,7 +1,6 @@
 .FilterPanel {
     padding: 2rem;
     border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(8px);
     display: flex;
     flex-direction: column;
@@ -36,23 +35,20 @@
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 500;
-    color: #000;
   }
+
   .price-input input {
     width: 100%;
     padding: 0.5rem 1rem;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #1F1D2B(255, 255, 255, 255);
+    background: var(--light-gray);
+    border: 1px solid var(--dark-gray);
     border-radius: 0.5rem;
-    color: #fff;
     font-size: 1rem;
     transition: all 0.3s ease;
   }
-  
+
   .price-input input:focus {
     outline: none;
-    border-color: #1F1D2B;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
   }
   
 .filter-headers{
@@ -63,7 +59,7 @@
 }
 
 .price-error {
-    color: #f87171;
+    color: var(--error-msg);
     font-size: 0.875rem;
     margin-top: 0.5rem;
   }
@@ -77,3 +73,34 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
   }
+  
+  .geo-inputs {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .geo-input-wrapper {
+    flex: 1;
+  }
+  
+  .geo-input-wrapper label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .geo-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: var(--geo-input);
+    border: 1px solid var(--geo-input-border);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .geo-input:focus {
+    outline: none;
+  }
+  
+  

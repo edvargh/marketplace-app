@@ -1,0 +1,40 @@
+.messages-view-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: 'Abel', sans-serif;
+}
+
+.messages-view-container h3 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.no-messages {
+    text-align: center;
+    color: var(--message-empty);
+    font-size: 1.2rem;
+    padding: 2rem;
+}
+
+.Message-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.no-messages {
+    text-align: center;
+    padding: 1rem;
+    font-style: italic;
+}
+
+.status-banner-container :deep(.status-banner) {
+    align-self: flex-end;
+}
+

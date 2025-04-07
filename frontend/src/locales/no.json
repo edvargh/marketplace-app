@@ -7,7 +7,8 @@
     "account": "Konto",
     "create-listing": "Opprett Annonse",
     "my-items": "Mine Gjenstander",
-    "favorites": "Favoritter"
+    "favorites": "Favoritter",
+    "messages": "Meldinger"
   },
   "register": {
     "title": "Registrer ny konto"
@@ -25,7 +26,9 @@
     "Select-your-language": "Velg ditt språk",
     "Passwords-do-not-match": "Passordene stemmer ikke overens",
     "Updating": "Oppdaterer",
-    "Update-profile": "Oppdater profil"
+    "Update-profile": "Oppdater profil",
+    "bothPasswordsRequired": "Begge passordfeltene må fylles ut",
+    "fullNameRequired": "Fullt navn er påkrevd"
   },
   "homeView":{
     "Your-recommendations": "Dine anbefalinger",
@@ -40,13 +43,29 @@
   "categories":{
     "Most-popular-categories": "Mest populære kategorier"
   },
-    "FilterPanel":{
+  "FilterPanel":{
     "Categories": "Kategorier",
     "Locations": "Steder",
     "Price-range":"Prisområde", 
     "Min-price":"Min pris (kr)",
     "Max-price":"Maks pris (kr)",
     "Apply-filters":"Bruk filtre",
+    "Distance":"Avstand",
     "Select-all":"Velg alle"
+  },
+  "ConversationPreviewCard": {
+    "itemImageAlt": "Varebilde"
+  },
+  "MessagesView": {
+    "title": "Meldinger",
+    "loadingMessage": "Laster meldinger...",
+    "noMessages": "Ingen meldinger ennå."
+  },
+  "ConversationView": {
+    "loadingMessage": "Laster samtale...",
+    "noMessages": "Ingen meldinger her ennå",
+    "messagePlaceholder": "Skriv her...",
+    "sending": "Sender...",
+    "send": "Send"
   }
 }

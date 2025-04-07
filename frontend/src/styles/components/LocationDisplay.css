@@ -1,0 +1,41 @@
+.location-display {
+    margin: 2rem 0;
+    width: 100%;
+}
+
+.map-container {
+    height: 400px;
+    width: 100%;
+    border-radius: 8px;
+    z-index: 1;
+    cursor: grab;
+    margin-bottom: 10px;
+}
+
+.map-container:active {
+    cursor: grabbing;
+}
+
+h3 {
+    margin-bottom: 0.75rem;
+}
+
+.coordinates-display {
+    margin-bottom: 10px;
+    color: var(--coordinates);
+}
+
+.error-message {
+    color: var(--error-msg);
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+:deep(.leaflet-marker-icon) {
+    background: none !important;
+    border: none !important;
+}
+
+:deep(.leaflet-popup-content-wrapper) {
+    border-radius: 40px;
+}

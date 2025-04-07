@@ -1,47 +1,99 @@
 <template>
   <router-link :to="{ name: 'ItemView', params: { id: item.id } }" class="item-card-link">
     <div class="item-card">
-      <div class="status-banner">
-        {{ item.status }}
-      </div>
-
       <div class="card-image-container">
-        <img :src="item.imageUrls && item.imageUrls.length > 0 ? item.imageUrls[0] : '/no-image.png'" alt="Image" class="card-image" />
-
-        <div class="profile-badge">
-          <img src="/default-picture.jpg" alt="Profile Image" class="profile-image" />
-        </div>
-
+        <img
+          :src="item.imageUrls && item.imageUrls.length > 0 ? item.imageUrls[0] : '/no-image.png'"
+          alt="Item Image"
+          class="card-image"
+          @error="handleImageError"
+        />
       </div>
-
+      
+      <div class="profile-badge">
+        <img
+          :src="sellerProfilePicture"
+          alt="Profile Image"
+          class="profile-image"
+          @error="handleProfileImageError"
+        />
+      </div>
+      
       <div class="card-content">
         <div class="card-header">
-          <h3 class="title">{{ item.title }}</h3>
-          <span class="price">{{ item.price }} kr</span>
+          <div class="card-header-details">
+            <h3 class="title">{{ item.title }}</h3>
+          </div>
         </div>
-        <p class="card-description">
-          {{ item.description }}
-        </p>
-
+        
+        <div class="card-footer">
+          <div class="price-frame">
+            <label class="price-label">Price</label>
+            <span class="price">{{ item.price }} kr</span>
+          </div>
+          
+          <StatusBanner :status="item.status" class="status-banner" />
+        </div>
       </div>
     </div>
   </router-link>
 </template>
 
-
 <script setup>
-defineProps({
+import StatusBanner from "@/components/StatusBanner.vue";
+import { ref, onMounted, watch } from 'vue';
+import { useUserStore } from "@/stores/userStore";
+
+const userStore = useUserStore();
+const sellerProfilePicture = ref('/default-picture.jpg');
+
+const props = defineProps({
   item: {
     type: Object,
     required: true
+  },
+  seller: {
+    type: Object,
+    default: null
   }
-})
+});
 
+const handleImageError = (e) => {
+  e.target.src = '/no-image.png';
+};
+
+const handleProfileImageError = (e) => {
+  e.target.src = '/default-picture.jpg';
+};
+
+watch(() => props.seller, (newSeller) => {
+  if (newSeller?.profilePicture) {
+    sellerProfilePicture.value = newSeller.profilePicture;
+  }
+}, { immediate: true });
+
+const fetchSellerData = async () => {
+  if (!props.seller && props.item.sellerId) {
+    try {
+      const seller = await userStore.getUserById(props.item.sellerId);
+      if (seller?.profilePicture) {
+        sellerProfilePicture.value = seller.profilePicture;
+      }
+    } catch (err) {
+      console.warn('Could not fetch seller profile picture:', err);
+    }
+  }
+};
+
+onMounted(() => {
+  if (props.seller?.profilePicture) {
+    sellerProfilePicture.value = props.seller.profilePicture;
+  } else {
+    fetchSellerData();
+  }
+});
 </script>
-
 
 <style scoped>
 @import '../styles/components/DetailedItemCard.css';
 </style>
-
-

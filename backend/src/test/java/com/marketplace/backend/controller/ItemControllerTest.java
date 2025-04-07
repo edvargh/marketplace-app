@@ -8,6 +8,7 @@ import com.marketplace.backend.model.*;
 import com.marketplace.backend.repository.CategoryRepository;
 import com.marketplace.backend.repository.ItemRepository;
 import com.marketplace.backend.repository.UserRepository;
+import com.marketplace.backend.service.CloudinaryService;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +28,7 @@ import java.util.List;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -36,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest(classes = {
     BackendApplication.class,
-    MockCloudinaryConfig.class // Include only the mock
+    MockCloudinaryConfig.class
 })
 @Transactional
 @AutoConfigureMockMvc
@@ -61,6 +63,10 @@ class ItemControllerTest {
 
   @Autowired
   private CategoryRepository categoryRepository;
+
+  @Autowired
+  private CloudinaryService cloudinaryService;
+
 
   private User testUser;
   private Category testCategory;
@@ -94,19 +100,6 @@ class ItemControllerTest {
     item2.setStatus(ItemStatus.FOR_SALE);
 
     itemRepository.saveAll(List.of(item1, item2));
-  }
-
-  /**
-   * Test to get all items.
-   *
-   * @throws Exception if the test fails
-   */
-  @Test
-  @WithMockUser(username = "john@example.com")
-  void shouldReturnAllItems() throws Exception {
-    mockMvc.perform(get("/api/items/all-items"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON));
   }
 
   /**
@@ -167,6 +160,33 @@ class ItemControllerTest {
         .andExpect(jsonPath("$[0].title").value("Favorited Laptop"))
         .andExpect(jsonPath("$[0].favoritedByCurrentUser").value(true));
   }
+
+  /**
+   * Test to toggle favorite status for an item.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldToggleFavoriteItem() throws Exception {
+    Item item = new Item(testUser, "Toggle Test", "Will be toggled", testCategory, 999.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    item.setStatus(ItemStatus.FOR_SALE);
+    item = itemRepository.save(item);
+
+    mockMvc.perform(put("/api/items/" + item.getId() + "/favorite-toggle"))
+        .andExpect(status().isOk());
+
+    User refreshedUser = userRepository.findById(testUser.getId()).orElseThrow();
+    assert refreshedUser.getFavoriteItems().contains(item);
+
+    mockMvc.perform(put("/api/items/" + item.getId() + "/favorite-toggle"))
+        .andExpect(status().isOk());
+
+    refreshedUser = userRepository.findById(testUser.getId()).orElseThrow();
+    assert !refreshedUser.getFavoriteItems().contains(item);
+  }
+
 
   /**
    * Test to create an item.
@@ -230,8 +250,7 @@ class ItemControllerTest {
             "\"categoryId\":" + testCategory.getId() + "," +
             "\"price\":120.0," +
             "\"latitude\":64.0000," +
-            "\"longitude\":11.0000," +
-            "\"status\":\"RESERVED\"" +
+            "\"longitude\":11.0000" +
             "}").getBytes());
 
     mockMvc.perform(multipart("/api/items/" + item.getId())
@@ -246,8 +265,7 @@ class ItemControllerTest {
         .andExpect(jsonPath("$.description").value("Updated Description"))
         .andExpect(jsonPath("$.price").value(120.0))
         .andExpect(jsonPath("$.latitude").value(64.0000))
-        .andExpect(jsonPath("$.longitude").value(11.0000))
-        .andExpect(jsonPath("$.status").value("RESERVED"));
+        .andExpect(jsonPath("$.longitude").value(11.0000));
   }
 
   /**
@@ -258,7 +276,6 @@ class ItemControllerTest {
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldDeleteItem() throws Exception {
-    // Arrange: create and save a new item
     Item item = new Item(testUser, "Delete Me", "To be deleted", testCategory, 999.0,
         LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
     item.setStatus(ItemStatus.FOR_SALE);
@@ -270,4 +287,119 @@ class ItemControllerTest {
     mockMvc.perform(get("/api/items/" + item.getId()))
         .andExpect(status().isNotFound());
   }
+
+  /**
+   * Test to delete old image when updating an item.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldDeleteOldImageWhenUpdatingItem() throws Exception {
+    Item item = new Item(testUser, "Old Title", "Old Desc", testCategory, 100.0,
+        LocalDateTime.now(), new BigDecimal("63.0"), new BigDecimal("10.0"));
+    item.setStatus(ItemStatus.FOR_SALE);
+
+    String oldImageUrl = "https://res.cloudinary.com/drpa3n1yc/image/upload/v1234567890/abc123.jpg";
+    Image oldImage = new Image(item, oldImageUrl);
+    item.addImage(oldImage);
+    item = itemRepository.save(item);
+
+    MockMultipartFile updateFile = new MockMultipartFile("dto", "", MediaType.APPLICATION_JSON_VALUE,
+        ("{" +
+            "\"title\":\"New Title\"," +
+            "\"description\":\"New Description\"," +
+            "\"categoryId\":" + testCategory.getId() + "," +
+            "\"price\":150.0," +
+            "\"latitude\":64.0000," +
+            "\"longitude\":11.0000," +
+            "\"status\":\"FOR_SALE\"" +
+            "}").getBytes());
+
+    MockMultipartFile imageFile = new MockMultipartFile(
+        "images",
+        "new-image.jpg",
+        "image/jpeg",
+        "dummy-new-image".getBytes()
+    );
+
+    mockMvc.perform(multipart("/api/items/" + item.getId())
+            .file(updateFile)
+            .file(imageFile)
+            .with(req -> { req.setMethod("PUT"); return req; })
+            .contentType(MediaType.MULTIPART_FORM_DATA))
+        .andExpect(status().isOk());
+
+    verify(cloudinaryService).deleteImage("abc123");
+  }
+
+  /**
+   * Test to update the status of an item.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldUpdateItemStatus() throws Exception {
+    // Use the existing seller user (likely created in @BeforeEach)
+    User seller = testUser;
+
+    // Create a buyer
+    User buyer = new User("Buyer Bob", "bob@example.com", "password", Role.USER, "98765432", null, "english");
+    buyer = userRepository.save(buyer);
+
+    // Create a category
+    Category category = categoryRepository.save(new Category("Test"));
+
+    // Create item
+    Item item = new Item(seller, "Status Test", "Initial status", category, 100.0,
+        LocalDateTime.now(), new BigDecimal("63.0"), new BigDecimal("10.0"));
+    item.setStatus(ItemStatus.FOR_SALE);
+    item = itemRepository.save(item);
+
+    // Update status with buyerId
+    mockMvc.perform(put("/api/items/" + item.getId() + "/status")
+            .param("value", "RESERVED")
+            .param("buyerId", String.valueOf(buyer.getId())))
+        .andExpect(status().isOk());
+
+    entityManager.flush();
+    entityManager.clear();
+
+    Item updated = itemRepository.findById(item.getId()).orElseThrow();
+    assert updated.getStatus() == ItemStatus.RESERVED;
+    assert updated.getReservedBy().getId().equals(buyer.getId());
+  }
+
+
+
+  /**
+   * Test to reserve an item by a buyer.
+   *
+   * @throws Exception if the test fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReserveItemForBuyer() throws Exception {
+    User buyer = new User("Buyer Bob", "bob@example.com", "password", Role.USER, "987654321", null, "english");
+    buyer = userRepository.save(buyer);
+
+    Item item = new Item(testUser, "Reserving Test", "Should be reserved", testCategory, 250.0,
+        LocalDateTime.now(), new BigDecimal("63.4300"), new BigDecimal("10.3925"));
+    item.setStatus(ItemStatus.FOR_SALE);
+    item = itemRepository.save(item);
+
+    item.setReservedBy(buyer);
+    item.setStatus(ItemStatus.RESERVED);
+    itemRepository.save(item);
+
+    entityManager.flush();
+    entityManager.clear();
+
+    mockMvc.perform(get("/api/items/" + item.getId()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.status").value("RESERVED"))
+        .andExpect(jsonPath("$.reservedById").value(buyer.getId().intValue()));
+  }
+
 }

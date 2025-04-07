@@ -2,7 +2,9 @@ package com.marketplace.backend.model;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Model for a user.
@@ -43,7 +45,8 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "item_id")
   )
-  private List<Item> favoriteItems = new ArrayList<>();
+  private Set<Item> favoriteItems = new HashSet<>();
+
 
 
 
@@ -125,11 +128,12 @@ public class User {
     this.preferredLanguage = preferredLanguage;
   }
 
-  public List<Item> getFavoriteItems() {
+  public Set<Item> getFavoriteItems() {
     return favoriteItems;
   }
 
-  public void setFavoriteItems(List<Item> favoriteItems) {
+  public void setFavoriteItems(Set<Item> favoriteItems) {
     this.favoriteItems = favoriteItems;
   }
+
 }

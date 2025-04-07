@@ -3,7 +3,11 @@ package com.marketplace.backend.service;
 import com.marketplace.backend.model.Image;
 import com.marketplace.backend.model.ItemStatus;
 import java.io.IOException;
+import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.marketplace.backend.dto.ItemCreateDto;
@@ -54,15 +58,56 @@ public class ItemService {
   }
 
   /**
-   * Get all items.
+   * Find an item by its ID.
    *
-   * @return a list of all items as DTOs
+   * @param id the ID of the item
+   * @return an optional item if found
    */
-  public List<ItemResponseDto> getAllItems() {
-    return itemRepository.findAll().stream()
-        .map(ItemResponseDto::fromEntity)
-        .collect(Collectors.toList());
+  public Optional<Item> findById(Long id) {
+    return itemRepository.findById(id);
   }
+
+  /**
+   * Get all items, optionally filtered by price, category, search query, location, and distance.
+   *
+   * @param minPrice    the minimum price
+   * @param maxPrice    the maximum price
+   * @param categoryIds the category ID
+   * @param searchQuery the search query
+   * @param latitude    the latitude
+   * @param longitude   the longitude
+   * @param distanceKm  the distance in kilometers
+   * @param page
+   * @param size
+   * @return a list of items as DTOs
+   */
+  public List<ItemResponseDto> getFilteredItems(Double minPrice, Double maxPrice,
+                                                List<Long> categoryIds, String searchQuery,
+                                                BigDecimal latitude, BigDecimal longitude,
+                                                Double distanceKm,
+                                                int page, int size) {
+
+    String email = getAuthenticatedEmail();
+    User currentUser = userRepository.findByEmail(email).orElseThrow();
+    Pageable pageable = PageRequest.of(page, size);
+
+    Page<Item> itemsPage = itemRepository.findFilteredItems(
+            currentUser.getId(),
+            minPrice,
+            maxPrice,
+            categoryIds != null && !categoryIds.isEmpty() ? categoryIds : null,
+            (searchQuery != null && !searchQuery.isBlank()) ? searchQuery : null,
+            latitude,
+            longitude,
+            distanceKm,
+            pageable
+    );
+
+    return itemsPage.getContent().stream()
+            .map(item -> ItemResponseDto.fromEntity(item, currentUser))
+            .toList();
+  }
+
 
   /**
    * Get an item by its ID.
@@ -89,13 +134,15 @@ public class ItemService {
    *
    * @return a list of items as DTOs
    */
-  public List<ItemResponseDto> getItemsForCurrentUser() {
+  public List<ItemResponseDto> getItemsForCurrentUser(int page, int size) {
     String email = getAuthenticatedEmail();
     User user = userRepository.findByEmail(email).orElseThrow();
+    Pageable pageable = PageRequest.of(page, size);
 
-    return itemRepository.findBySeller(user).stream()
-        .map(ItemResponseDto::fromEntity)
-        .collect(Collectors.toList());
+    Page<Item> paged = itemRepository.findBySeller(user, pageable);
+    return paged.getContent().stream()
+            .map(ItemResponseDto::fromEntity)
+            .collect(Collectors.toList());
   }
 
   /**
@@ -103,15 +150,42 @@ public class ItemService {
    *
    * @return a list of favorite items as DTOs
    */
-  public List<ItemResponseDto> getFavoriteItemsForCurrentUser() {
+  public List<ItemResponseDto> getFavoriteItemsForCurrentUser(int page, int size) {
     String email = getAuthenticatedEmail();
     User user = userRepository.findByEmail(email).orElseThrow();
+    Pageable pageable = PageRequest.of(page, size);
 
-    return user.getFavoriteItems().stream()
-        .map(item -> ItemResponseDto.fromEntity(item, user))
-        .collect(Collectors.toList());
+    Page<Item> paged = itemRepository.findFavoritesByUser(user, pageable);
+    return paged.getContent().stream()
+            .map(item -> ItemResponseDto.fromEntity(item, user))
+            .toList();
   }
 
+  /**
+   * Toggle favorite status for an item.
+   *
+   * @param itemId the ID of the item to toggle
+   * @return true if the item was toggled, false otherwise
+   */
+  public boolean toggleFavoriteItem(Long itemId) {
+    String email = getAuthenticatedEmail();
+    Optional<User> userOpt = userRepository.findByEmail(email);
+    Optional<Item> itemOpt = itemRepository.findById(itemId);
+
+    if (userOpt.isEmpty() || itemOpt.isEmpty()) return false;
+
+    User user = userOpt.get();
+    Item item = itemOpt.get();
+
+    if (user.getFavoriteItems().contains(item)) {
+      user.getFavoriteItems().remove(item);
+    } else {
+      user.getFavoriteItems().add(item);
+    }
+
+    userRepository.save(user);
+    return true;
+  }
 
 
   /**
@@ -138,8 +212,9 @@ public class ItemService {
     item.setStatus(ItemStatus.FOR_SALE);
 
     if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+      Long userId = seller.getId();
       for (MultipartFile imageFile : dto.getImages()) {
-        String url = cloudinaryService.uploadImage(imageFile);
+        String url = cloudinaryService.uploadImage(userId, imageFile);
         Image image = new Image(item, url);
         item.addImage(image);
       }
@@ -148,6 +223,7 @@ public class ItemService {
     itemRepository.save(item);
     return ItemResponseDto.fromEntity(item);
   }
+
 
   /**
    * Update an item, completely replacing all existing images.
@@ -163,21 +239,27 @@ public class ItemService {
       if (dto.getPrice() != null) item.setPrice(dto.getPrice());
       if (dto.getLatitude() != null) item.setLatitude(dto.getLatitude());
       if (dto.getLongitude() != null) item.setLongitude(dto.getLongitude());
-      if (dto.getStatus() != null) item.setStatus(dto.getStatus());
 
-      item.getImages().forEach(image -> image.setItem(null));
+      item.getImages().forEach(image -> {
+        image.setItem(null);
+        try {
+          String publicId = extractPublicIdFromUrl(image.getImageUrl());
+          cloudinaryService.deleteImage(publicId);
+        } catch (IOException e) {
+          throw new RuntimeException("Failed to delete old image from Cloudinary", e);
+        }
+      });
       item.getImages().clear();
 
-      if (dto.getImages() != null) {
-        if (!dto.getImages().isEmpty()) {
-          for (MultipartFile imageFile : dto.getImages()) {
-            try {
-              String url = cloudinaryService.uploadImage(imageFile);
-              Image image = new Image(item, url);
-              item.addImage(image);
-            } catch (IOException e) {
-              throw new RuntimeException("Failed to upload image", e);
-            }
+      if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+        Long userId = item.getSeller().getId();
+        for (MultipartFile imageFile : dto.getImages()) {
+          try {
+            String url = cloudinaryService.uploadImage(userId, imageFile);
+            Image image = new Image(item, url);
+            item.addImage(image);
+          } catch (IOException e) {
+            throw new RuntimeException("Failed to upload image", e);
           }
         }
       }
@@ -186,6 +268,7 @@ public class ItemService {
       return ItemResponseDto.fromEntity(updated);
     });
   }
+
 
   /**
    * Delete an item.
@@ -204,12 +287,50 @@ public class ItemService {
     Item item = itemOpt.get();
 
     if (!item.getSeller().getId().equals(user.getId())) {
-      return false; // Only the seller can delete
+      return false;
     }
 
     itemRepository.delete(item);
     return true;
   }
+
+  /**
+   * Update the status of an item.
+   *
+   * @param itemId the ID of the item to update
+   * @param newStatus the new status of the item
+   * @return true if the status was updated, false otherwise
+   */
+  public boolean updateItemStatus(Long itemId, ItemStatus newStatus, Long buyerId) {
+    String email = getAuthenticatedEmail();
+    Optional<User> sellerOpt = userRepository.findByEmail(email);
+    Optional<Item> itemOpt = itemRepository.findById(itemId);
+
+    if (sellerOpt.isEmpty() || itemOpt.isEmpty()) return false;
+
+    User seller = sellerOpt.get();
+    Item item = itemOpt.get();
+
+    if (!item.getSeller().getId().equals(seller.getId())) {
+      return false;
+    }
+
+    item.setStatus(newStatus);
+
+    if (newStatus == ItemStatus.RESERVED) {
+      if (buyerId == null) return false;
+      Optional<User> buyerOpt = userRepository.findById(buyerId);
+      if (buyerOpt.isEmpty()) return false;
+
+      item.setReservedBy(buyerOpt.get());
+    } else {
+      item.setReservedBy(null);
+    }
+
+    itemRepository.save(item);
+    return true;
+  }
+
 
   /**
    * Get the email of the authenticated user.
@@ -219,5 +340,20 @@ public class ItemService {
   private String getAuthenticatedEmail() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return authentication.getName();
+  }
+
+  /**
+   * Extract the public ID from a Cloudinary URL.
+   *
+   * @param imageUrl the Cloudinary URL
+   * @return the public ID
+   */
+  private String extractPublicIdFromUrl(String imageUrl) {
+    try {
+      String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+      return filename.substring(0, filename.lastIndexOf(".")); // remove file extension
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Invalid Cloudinary URL: " + imageUrl, e);
+    }
   }
 }

@@ -9,13 +9,19 @@
     <ul class="nav-right" v-if="!isMobile">
       <template v-if="isAuthenticated">
         <CustomButton>
-          <router-link to="/favorites" class="navbar-favorites">{{ t('navbar.favorites') }}</router-link>
+          <router-link to="/favorites" class="navbar-button">{{ t('navbar.favorites') }}</router-link>
         </CustomButton>
         <CustomButton>
-          <router-link to ="/my-items" class="navbar-my-items">{{ t('navbar.my-items') }}</router-link>
+          <router-link to ="/my-items" class="navbar-button">{{ t('navbar.my-items') }}</router-link>
         </CustomButton>
         <CustomButton>
-          <router-link to="/create" class="navbar-create-item">{{ t('navbar.create-listing') }}</router-link>
+          <router-link to="/create" class="navbar-button">{{ t('navbar.create-listing') }}</router-link>
+        </CustomButton>
+        <CustomButton>
+          <router-link to="/messages/conversations" class="navbar-button">{{ t('navbar.messages') }}</router-link>
+        </CustomButton>
+        <CustomButton v-if="userStore.role === 'ADMIN'">
+          <router-link to="/categories" class="navbar-button">Categories</router-link>
         </CustomButton>
         <li class="account-dropdown" ref="dropdownRef">
           <div class = "dropdown-wrapper">
@@ -42,7 +48,7 @@
       </template>
     </ul>
     <!-- Mobile Nav -->
-    <div class="hamburger-menu" v-if="isMobile">
+    <div class="hamburger-menu" v-if="isMobile" ref="mobileMenuRef">
       <CustomButton @click="toggleMobileMenu">☰</CustomButton>
       <Teleport to="body">
       <ul v-if="showMobileMenu" class="mobile-dropdown">
@@ -56,10 +62,16 @@
           <router-link to="/create" @click="showMobileMenu = false">{{ t('navbar.create-listing') }}</router-link>
         </li>
         <li v-if="isAuthenticated">
+          <router-link to="/messages/conversations" @click="showMobileMenu = false">{{ t('navbar.messages') }}</router-link>
+        </li>
+        <li v-if="userStore.role === 'ADMIN'">
+          <router-link to="/categories" @click="showMobileMenu = false">Categories</router-link>
+        </li>
+        <li v-if="isAuthenticated">
           <router-link to="/profile" @click="showMobileMenu = false">{{ t('navbar.profile') }}</router-link>
         </li>
         <li v-if="isAuthenticated">
-          <button @click="handleLogout">{{ t('navbar.logout') }}</button>
+          <button @click="handleLogout" class="mobile-logout-button">{{ t('navbar.logout') }}</button>
         </li>
         <li v-else>
           <router-link to="/login" @click="showMobileMenu = false">{{ t('navbar.login') }}</router-link>
@@ -81,13 +93,12 @@ import { Teleport } from 'vue'
 
 const userStore = useUserStore()
 const router = useRouter()
-
 const { t } = useI18n()
-
-const isAuthenticated = computed(() => userStore.isAuthenticated)
-
+const mobileMenuRef = ref(null)
 const showMobileMenu = ref(false)
 const isMobile = ref(false)
+
+const isAuthenticated = computed(() => userStore.isAuthenticated)
 
 const handleLogout = async () => {
   userStore.logout()
@@ -105,6 +116,9 @@ const handleClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     dropdownOpen.value = false
   }
+  if (mobileMenuRef.value && !mobileMenuRef.value.contains(event.target)) {
+    showMobileMenu.value = false
+  }
 }
 
 onMounted(() => {
@@ -116,7 +130,7 @@ onUnmounted(() => {
 })
 
 const checkScreenSize = () => {
-  isMobile.value = window.innerWidth <= 768
+  isMobile.value = window.innerWidth <= 1070
   if (!isMobile.value) showMobileMenu.value = false
 }
 

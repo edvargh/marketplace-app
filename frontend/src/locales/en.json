@@ -7,7 +7,8 @@
     "account": "Account",
     "create-listing": "Create Listing",
     "my-items": "My Items",
-    "favorites": "Favorites"
+    "favorites": "Favorites",
+    "messages": "Messages"
   },
   "register": {
     "title": "Register new account"
@@ -24,7 +25,9 @@
     "Select-your-language": "Select your language",
     "Passwords-do-not-match": "Passwords do not match",
     "updating": "Updating",
-    "updateProfile": "Update Profile"
+    "updateProfile": "Update Profile",
+    "bothPasswordsRequired": "Both password fields are required",
+    "fullNameRequired": "Full name is required"
 
   },
   "homeView": {
@@ -47,6 +50,22 @@
     "Min-price": "Min price (kr)",
     "Max-price": "Max price (kr)",
     "Apply-filters": "Apply filters",
+    "Distance": "Distance",
     "Select-all": "Select all"
+  },
+  "ConversationPreviewCard": {
+    "itemImageAlt": "Item image"
+  },
+  "MessagesView": {
+    "title": "Messages",
+    "loadingMessage": "Loading messages...",
+    "noMessages": "No messages yet."
+  },
+  "ConversationView": {
+    "loadingMessage": "Loading conversation...",
+    "noMessages": "No messages here yet",
+    "messagePlaceholder": "Type your message...",
+    "sending": "Sending...",
+    "send": "Send"
   }
 }

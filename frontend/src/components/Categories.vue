@@ -1,5 +1,20 @@
+<template>
+  <div class="categories">
+    <h3 class="font">{{ t("categories.Most-popular-categories") }}</h3>
+    <ul>
+      <li v-for="category in categories" :key="category.id">
+        <CustomButton class="circle-button" @click="handleCategoryClick(category)">
+          <span class="font">{{ category.name }}</span>
+        </CustomButton>
+      </li>
+    </ul>
+  </div>
+</template>
+
 <script setup>
+import CustomButton from '@/components/CustomButton.vue'
 import { useI18n } from 'vue-i18n';
+
 defineProps({
   categories: {
     type: Array,
@@ -15,21 +30,6 @@ const handleCategoryClick = (category) => {
 };
 </script>
 
-<template>
-  <div class="categories">
-    <h3>{{t("categories.Most-popular-categories")}}</h3>
-    <ul>
-      <li v-for="category in categories" :key="category.id" @click="handleCategoryClick(category)">
-        <img
-            :src="category.image"
-            :alt="category.name"
-            class="category-image"
-        >
-        {{ category.name }}
-      </li>
-    </ul>
-  </div>
-</template>
 
 <style scoped>
 @import '../styles/components/Categories.css';

@@ -1,39 +1,56 @@
 <template>
-    <div class="my-favorite-items-container">
-      <h2 class="my-favorite-items-title">My Favorite Items</h2>
-  
-      <div v-if="myItems.length > 0" class="my-favorite-items-grid">
-        <CompactItemCard
-          v-for="item in myItems"
-          :key="item.id"
-          :item="item"
-        />
-      </div>
-  
-      <div v-else class="no-favorite-items-message">
-        You don't have any items favorited yet.
-      </div>
-    </div>
-  </template>
-  
-  <script setup>
-  import { ref, onMounted } from 'vue'
-  import CompactItemCard from '@/components/CompactItemCard.vue'
-  import { useItemStore } from '@/stores/itemStore' 
-  
-  const myItems = ref([])
-  const itemStore = useItemStore()
+  <LoadingState :loading="loadingInitial" :error="error" loadingMessage="Loading your favorite advertisements..."/>
 
-  onMounted(async () => {
-    try {
-      const items = await itemStore.fetchUserFavoriteItems()
-      myItems.value = items
-    } catch (err) {
-      console.error('Failed to load your items:', err)
-    }
-  })
-  </script>
-  
+  <div v-if="!loadingInitial && !error" class="my-favorite-items-container">
+    <h2 class="my-favorite-items-title">My Favorite Items</h2>
+
+    <CardGrid
+      v-if="myFavorites.length > 0"
+      :items="myFavorites"
+      :cardComponent="CompactItemCard"
+      variant="compact"
+    />
+
+    <div v-if="moreAvailable" class="load-more-wrapper">
+      <button @click="loadMore" type="button" class="action-button button-cancel" :disabled="loadingMore">
+        {{ loadingMore ? 'Loading...' : 'Load More' }}
+      </button>
+    </div>
+
+    <div v-else-if="myFavorites.length === 0" class="no-favorite-items-message">
+      You have not favorited any items yet.
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { onMounted } from 'vue'
+import CompactItemCard from '@/components/CompactItemCard.vue'
+import CardGrid from '@/components/CardGrid.vue'
+import { useItemStore } from '@/stores/itemStore'
+import LoadingState from "@/components/LoadingState.vue";
+import { usePaginatedLoader } from '@/usePaginatedLoader.js'
+
+const itemStore = useItemStore()
+const {
+  items: myFavorites,
+  loadingInitial,
+  loadingMore,
+  loadMore,
+  moreAvailable,
+  error
+} = usePaginatedLoader(itemStore.fetchUserFavoriteItems)
+
+onMounted(async () => {
+  try {
+    await loadMore()
+  } catch (err) {
+    error.value = "Something went wrong while loading your favorite advertisements. Please try again."
+  }
+})
+</script>
+
 <style>
 @import '../styles/users/MyFavoriteView.css';
+@import '../styles/components/ItemFormButton.css';
 </style>
