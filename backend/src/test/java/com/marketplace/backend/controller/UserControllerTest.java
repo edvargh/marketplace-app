@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -130,35 +129,29 @@ class UserControllerTest {
   @Test
   @WithMockUser
   void shouldUpdateUserWithDataAndProfilePicture() throws Exception {
-    // Create and populate update DTO
     UserUpdateDto updateDto = new UserUpdateDto();
     updateDto.setFullName("John Updated");
     updateDto.setPreferredLanguage("norwegian");
     updateDto.setPhoneNumber("0000000000");
 
-    // Convert the DTO into a JSON part for the "dto" field
     MockMultipartFile dtoPart = new MockMultipartFile(
         "dto", "", "application/json", objectMapper.writeValueAsBytes(updateDto)
     );
 
-    // Dummy image file for the "profilePicture" field
     MockMultipartFile image = new MockMultipartFile(
         "profilePicture", "avatar.jpg", "image/jpeg", "dummy image content".getBytes()
     );
 
-    // Perform the multipart PUT request (note: override method to PUT explicitly)
     mockMvc.perform(MockMvcRequestBuilders.multipart("/api/users/" + testUser.getId())
             .file(dtoPart)
             .file(image)
-            .with(request -> { request.setMethod("PUT"); return request; }) // Force PUT method
+            .with(request -> { request.setMethod("PUT"); return request; })
             .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.fullName", is("John Updated")))
         .andExpect(jsonPath("$.preferredLanguage", is("norwegian")))
         .andExpect(jsonPath("$.phoneNumber", is("0000000000")));
   }
-
-
 
   /**
    * Test to update a non-existing user.
@@ -177,9 +170,25 @@ class UserControllerTest {
 
     mockMvc.perform(MockMvcRequestBuilders.multipart("/api/users/999999")
             .file(dtoPart)
-            .with(req -> { req.setMethod("PUT"); return req; }) // Force PUT
+            .with(req -> { req.setMethod("PUT"); return req; })
             .contentType(MediaType.MULTIPART_FORM_DATA))
         .andExpect(status().isNotFound());
   }
 
+  /**
+   * Test to return current user.
+   *
+   * @throws Exception if the request fails
+   */
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReturnCurrentUser() throws Exception {
+    mockMvc.perform(get("/api/users/me"))
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.email", is("john@example.com")))
+        .andExpect(jsonPath("$.fullName", is("John Doe")))
+        .andExpect(jsonPath("$.phoneNumber", is("1234567890")))
+        .andExpect(jsonPath("$.preferredLanguage", is("english")));
+  }
 }
