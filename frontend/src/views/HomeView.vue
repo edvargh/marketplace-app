@@ -103,14 +103,13 @@ import { useUserStore } from '@/stores/userStore'
 
 const route = useRoute()
 const router = useRouter()
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const filterStore = useFilterStore()
 const userStore = useUserStore()
 const categoryStore = useCategoryStore()
 const itemStore = useItemStore()
 
-// Initialize all reactive variables at the top level
 const sellerMap = ref({})
 const cloneStartItems = ref([])
 const cloneEndItems = ref([])
@@ -170,9 +169,6 @@ const fetchAllSellers = async (items) => {
 
 onMounted(async () => {
   try {
-    if (userStore.user?.preferredLanguage) {
-      locale.value = userStore.user.preferredLanguage;
-    }
     const categoriesPromise = categoryStore.fetchCategories().then(cats => {
       categories.value = cats
     })

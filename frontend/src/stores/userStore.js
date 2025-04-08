@@ -34,6 +34,8 @@ export const useUserStore = defineStore('user', () => {
     localStorage.setItem('user', JSON.stringify(data.user))
     user.value = data.user
     isAuthenticated.value = true
+
+    return data.user
   }
 
   const register = async (fullName, email, password, phoneNumber) => {
@@ -78,6 +80,7 @@ export const useUserStore = defineStore('user', () => {
       user.value = data
       localStorage.setItem('user', JSON.stringify(data))
       isAuthenticated.value = true
+      return data
     } catch {
       logout()
     }
