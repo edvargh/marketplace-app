@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 if (!API_BASE_URL) {
-throw new Error('VITE_API_BASE_URL is not defined. Please set it in your .env file.');
+throw new Error('VITE_API_BASE_URL is not defined. Please set it in your ..env file.');
 }
 
 export const useItemStore = defineStore('items', () => {
@@ -246,14 +246,19 @@ export const useItemStore = defineStore('items', () => {
     }
   }
 
-  const updateItemStatus = async (id, newStatus) => {
+  const updateItemStatus = async (id, newStatus, buyerId = null) => {
     try {
       const headers = getAuthHeaders();
+      const params = { value: newStatus };
+      if (buyerId) {
+        params.buyerId = buyerId;
+      }
+
       const response = await axios.put(`${API_BASE_URL}/api/items/${id}/status`,
         null,
         {
           headers,
-          params: { value: newStatus }
+          params
         }
       );
       return response.status === 200;

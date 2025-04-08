@@ -87,6 +87,29 @@
   "Loading-favorites": "Laster dine favorittannonser...",
   "Error-loading": "Noe gikk galt ved lasting av dine favorittannonser. Vennligst prøv igjen."
   },
+  "itemView": {
+    "loadingItem": "Laster annonse...",
+    "sendMessage": "Send melding",
+    "reserveItem": "Reserver vare",
+    "buyNow": "Kjøp nå",
+    "pendingReservationTooltip": "Du har allerede en ventende reservasjonsforespørsel.",
+    "reservedByOtherTooltip": "Reservert av en annen bruker.",
+    "editItem": "Rediger annonse",
+    "descriptionOfItem": "Beskrivelse av varen",
+    "seller": "Selger",
+    "errors": {
+      "invalidId": "Ugyldig annonse-ID.",
+      "itemNotFound": "Annonse ikke funnet.",
+      "sellerInfoFailed": "Selgerinformasjon kunne ikke lastes inn.",
+      "viewCountFailed": "Visningsteller kunne ikke oppdateres.",
+      "loadFailed": "Kunne ikke laste inn denne annonsen. Vennligst prøv igjen.",
+      "conversationFailed": "Kunne ikke starte en samtale med selgeren.",
+      "reservationFailed": "Kunne ikke reservere varen. Vennligst prøv igjen.",
+      "paymentInitFailed": "Kunne ikke starte betaling.",
+      "paymentProcessFailed": "Kunne ikke behandle betalingen. Vennligst prøv igjen.",
+      "reservationCheckFailed": "Kunne ikke sjekke ventende reservasjon."
+    }
+  },
   "myItemsView": {
   "title": "Mine gjenstander",
   "Loading-my-items": "Laster dine annonser...",

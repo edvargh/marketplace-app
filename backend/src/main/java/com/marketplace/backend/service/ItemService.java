@@ -239,6 +239,7 @@ public class ItemService {
       if (dto.getPrice() != null) item.setPrice(dto.getPrice());
       if (dto.getLatitude() != null) item.setLatitude(dto.getLatitude());
       if (dto.getLongitude() != null) item.setLongitude(dto.getLongitude());
+      if (dto.getStatus() != null) item.setStatus(dto.getStatus());
 
       item.getImages().forEach(image -> {
         image.setItem(null);

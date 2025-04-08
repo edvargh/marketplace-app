@@ -1,5 +1,6 @@
 <template>
-  <LoadingState :loading="loading" :error="error" loadingMessage="Loading advertisement..."/>
+  <LoadingState :loading="loading" :error="error" :loadingMessage="t('itemView.loadingItem')"/>
+
   <p v-if="userWarning" class="user-warning">{{ userWarning }}</p>
 
   <div v-if="!loading && !error" class="item-detail-container">
@@ -24,19 +25,46 @@
 
       <div class="action-buttons">
         <template v-if="!isMyItem">
-          <button class="message-btn" @click="handleMessageSeller">Send message</button>
-          <button class="reserve-btn" @click="handleReserveItem">Reserve item</button>
-          <button class="blue-btn" @click="handleBuyNow">Buy Now</button>
+          <button class="message-btn" @click="handleMessageSeller">{{ t('itemView.sendMessage') }}</button>
+
+          <button
+            class="reserve-btn"
+            @click="handleReserveItem"
+            :disabled="hasPendingRes"
+            @mouseover="showReserveTooltip = hasPendingRes"
+            @mouseleave="showReserveTooltip = false"
+          >
+            {{ t('itemView.reserveItem') }}
+          </button>
+          <span v-if="showReserveTooltip && hasPendingRes" class="error-message">
+            {{ t('itemView.pendingReservationTooltip') }}
+          </span>
+
+          <button
+              class="blue-btn"
+              @click="handleBuyNow"
+              :disabled="!canBuyNow"
+              @mouseover="showBuyNowTooltip = !canBuyNow"
+              @mouseleave="showBuyNowTooltip = false"
+          >
+            {{ t('itemView.buyNow') }}
+          </button>
+          <span v-if="showBuyNowTooltip && !canBuyNow" class="error-message">
+            {{ t('itemView.reservedByOtherTooltip') }}
+          </span>
+
         </template>
         <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
-          Edit Item
+          {{ t('itemView.editItem') }}
         </router-link>
+
+
       </div>
     </div>
 
     <!-- Description Section -->
     <div class="description">
-      <h3>Description of the item</h3>
+      <h3>{{ t('itemView.descriptionOfItem') }}</h3>
       <p>{{ item.description }}</p>
     </div>
 
@@ -48,7 +76,7 @@
 
     <!-- Seller Info -->
     <div class="seller-info">
-      <h3>Seller</h3>
+      <h3>{{ t('itemView.seller') }}</h3>
       <div class="seller">
         <div class="profile-badge">
           <img 
@@ -64,7 +92,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
 import { useItemStore } from "@/stores/itemStore";
@@ -74,6 +102,7 @@ import FavoriteBtn from "@/components/FavoriteBtn.vue";
 import LoadingState from "@/components/LoadingState.vue";
 import LocationDisplay from "@/components/LocationDisplay.vue";
 import StatusBanner from "@/components/StatusBanner.vue";
+import { useI18n } from 'vue-i18n'
 
 const route = useRoute();
 const itemStore = useItemStore();
@@ -87,6 +116,11 @@ const isFavorite = ref(false);
 const router = useRouter();
 const messageStore = useMessageStore();
 const userWarning = ref('');
+const hasPendingRes = ref(false);
+const showReserveTooltip = ref(false);
+const showBuyNowTooltip = ref(false);
+const { t } = useI18n()
+
 
 const showWarning = (msg) => {
   userWarning.value = msg;
@@ -98,13 +132,13 @@ onMounted(async () => {
   try {
     const itemId = route.params.id;
     if (!itemId) {
-      error.value = "Invalid item ID.";
+      error.value = t('itemView.errors.invalidId');
       return;
     }
 
     const itemData = await itemStore.fetchItemById(itemId);
     if (!itemData) {
-      error.value = "Item not found.";
+      error.value = t('itemView.errors.itemNotFound');
       return;
     }
 
@@ -116,20 +150,21 @@ onMounted(async () => {
         const sellerData = await userStore.getUserById(itemData.sellerId);
         seller.value = sellerData;
       } catch {
-        showWarning("Seller information could not be loaded.");
+        showWarning(t('itemView.errors.sellerInfoFailed'));
       }
     }
 
     if (!isMyItem.value) {
       try {
+        await checkPendingReservation();
         await itemStore.logItemView(itemId);
       } catch {
-        showWarning("View count could not be updated.");
+        showWarning(t('itemView.errors.viewCountFailed'));
       }
     }
 
   } catch {
-    error.value = "Could not load this advertisement. Please try again.";
+    error.value = t('itemView.errors.loadFailed');
   } finally {
     loading.value = false;
   }
@@ -156,7 +191,7 @@ const handleMessageSeller = async () => {
       }
     });
   } catch {
-    showWarning("Could not start a conversation with the seller.");
+    showWarning(t('itemView.errors.conversationFailed'));
   }
 };
 
@@ -176,13 +211,17 @@ const handleReserveItem = async () => {
       }
     });
   } catch {
-    showWarning("Could not reserve the item. Please try again.");
+    showWarning(t('itemView.errors.reservationFailed'));
   }
 };
 
 const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;
 };
+
+const canBuyNow = computed(() => {
+  return item.value.reservedById === null || item.value.reservedById === userStore.user?.id;
+});
 
 const handleBuyNow = async () => {
   try {
@@ -192,12 +231,30 @@ const handleBuyNow = async () => {
     if (redirectUrl) {
       window.location.href = redirectUrl;
     } else {
-      showWarning("Could not initiate payment.");
+      showWarning(t('itemView.errors.paymentInitFailed'));
     }
   } catch {
-    showWarning("Could not process payment. Please try again.");
+    showWarning(t('itemView.errors.paymentProcessFailed'));
   }
 };
+
+const checkPendingReservation = async () => {
+  try {
+    const itemId = item.value.id;
+    const sellerId = item.value.sellerId;
+
+    const messages = await messageStore.fetchConversationWithUser(itemId, sellerId);
+
+    hasPendingRes.value = messages.some(
+      msg =>
+        msg.reservationStatus === 'PENDING' &&
+        msg.fromYou === true
+    );
+  } catch (err) {
+    showWarning(t('itemView.errors.reservationCheckFailed'));
+  }
+};
+
 </script>
 
 <style scoped>
