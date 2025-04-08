@@ -36,35 +36,25 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
-               .csrf(csrf -> csrf.disable())
-               .authorizeHttpRequests(auth -> auth
-                                                  .requestMatchers(
-                                                      "/api/auth/**",
-                                                      "/api/items/**",
-                                                      "/api/users/**",
-                                                      "/api/categories/**",
-                                                      "/api/messages/**",
-                                                      "/api/payments/vipps-callback/v2/payments/**",
-                                                      "/api/payments/vipps-complete",
-                                                      "/vipps-complete")
-                                                  .permitAll()
-                                                  .requestMatchers(HttpMethod.POST, "/api/payments/vipps-callback/v2/payments/**").permitAll()
-                                                  .requestMatchers(HttpMethod.GET, "/api/payments/vipps-complete").permitAll()
-                                                  .requestMatchers(HttpMethod.POST, "/api/payments/vipps").permitAll()
-                                                  .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                                   .requestMatchers(
-                                                       "/v3/api-docs/**",
-                                                       "/swagger-ui/**",
-                                                       "/swagger-ui.html"
-                                                   ).permitAll()
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/api/auth/**").permitAll()
 
-                   .anyRequest().authenticated()
-               )
-               .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-               .authenticationProvider(authenticationProvider())
-               .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-               .build();
+            .requestMatchers(HttpMethod.POST, "/api/payments/vipps-callback/v2/payments/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/payments/vipps-complete").permitAll()
+
+            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+            .anyRequest().authenticated()
+        )
+        .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authenticationProvider(authenticationProvider())
+        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+        .build();
   }
+
 
   /**
    * Authentication provider.
