@@ -111,13 +111,13 @@ const router = createRouter({
       path: '/payment-complete',
       name: 'paymentComplete',
       component: UserPaymentComplete,
-      meta : { requiresAuth: true }
+      meta : { requiresAuth: true, hideNavbar: true }
     },
     {
       path: '/payment-failed',
       name: 'paymentFailed',
       component: UserPaymentFailView,
-      meta : { requiresAuth: true }
+      meta : { requiresAuth: true, hideNavbar: true }
     },
   ],
 })
