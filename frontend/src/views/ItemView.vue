@@ -1,5 +1,6 @@
 <template>
   <LoadingState :loading="loading" :error="error" loadingMessage="Loading advertisement..."/>
+  <p v-if="userWarning" class="user-warning">{{ userWarning }}</p>
 
   <div v-if="!loading && !error" class="item-detail-container">
     <!-- Image Gallery -->
@@ -62,7 +63,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -86,35 +86,49 @@ const isMyItem = ref(false);
 const isFavorite = ref(false);
 const router = useRouter();
 const messageStore = useMessageStore();
+const userWarning = ref('');
+
+const showWarning = (msg) => {
+  userWarning.value = msg;
+  setTimeout(() => userWarning.value = '', 5000); 
+};
 
 onMounted(async () => {
   loading.value = true;
   try {
     const itemId = route.params.id;
     if (!itemId) {
-      throw new Error('No item ID provided');
+      error.value = "Invalid item ID.";
+      return;
     }
 
     const itemData = await itemStore.fetchItemById(itemId);
     if (!itemData) {
-      throw new Error('Item not found');
+      error.value = "Item not found.";
+      return;
     }
 
     item.value = itemData;
-
     isMyItem.value = userStore.user?.id === itemData.sellerId;
 
     if (itemData.sellerId) {
       try {
         const sellerData = await userStore.getUserById(itemData.sellerId);
         seller.value = sellerData;
-      } catch (err) {
-        console.warn('Could not fetch seller info:', err);
+      } catch {
+        showWarning("Seller information could not be loaded.");
       }
     }
 
-  } catch (e) {
-    console.error(e);
+    if (!isMyItem.value) {
+      try {
+        await itemStore.logItemView(itemId);
+      } catch {
+        showWarning("View count could not be updated.");
+      }
+    }
+
+  } catch {
     error.value = "Could not load this advertisement. Please try again.";
   } finally {
     loading.value = false;
@@ -126,7 +140,7 @@ const props = defineProps({
     type: String,
     required: false
   }
-})
+});
 
 const handleMessageSeller = async () => {
   const itemId = item.value.id;
@@ -134,7 +148,6 @@ const handleMessageSeller = async () => {
 
   try {
     await messageStore.ensureConversationExists(itemId, sellerId);
-
     await router.push({
       name: 'ConversationView',
       query: {
@@ -142,18 +155,17 @@ const handleMessageSeller = async () => {
         withUserId: sellerId.toString()
       }
     });
-  } catch (err) {
-    console.error('[ItemView] ❌ Failed to start or find conversation:', err);
-    alert("Could not start a conversation with the seller.");
+  } catch {
+    showWarning("Could not start a conversation with the seller.");
   }
 };
 
 const handleReserveItem = async () => {
   try {
-    const itemId = item.value.id
-    const sellerId = item.value.sellerId
+    const itemId = item.value.id;
+    const sellerId = item.value.sellerId;
 
-    await messageStore.ensureConversationExists(itemId, sellerId)
+    await messageStore.ensureConversationExists(itemId, sellerId);
 
     await router.push({
       name: 'ConversationView',
@@ -162,18 +174,15 @@ const handleReserveItem = async () => {
         withUserId: sellerId.toString(),
         reserve: 'true'
       }
-    })
-  } catch (err) {
-    console.error('Error handling reservation:', err)
-    alert("Could not reserve the item. Please try again.")
+    });
+  } catch {
+    showWarning("Could not reserve the item. Please try again.");
   }
-}
-
+};
 
 const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;
 };
-
 
 const handleBuyNow = async () => {
   try {
@@ -183,15 +192,12 @@ const handleBuyNow = async () => {
     if (redirectUrl) {
       window.location.href = redirectUrl;
     } else {
-      throw new Error('No redirect URL received');
+      showWarning("Could not initiate payment.");
     }
-  } catch (err) {
-    console.error('[ItemView] ❌ Failed to process payment:', err);
-    alert("Could not process payment. Please try again.");
+  } catch {
+    showWarning("Could not process payment. Please try again.");
   }
 };
-
-
 </script>
 
 <style scoped>

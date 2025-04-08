@@ -169,4 +169,12 @@
 
 }
 
-
+.user-warning {
+    color: #b91c1c;
+    background-color: #fee2e2; 
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-top: 1rem;
+  }
+  
