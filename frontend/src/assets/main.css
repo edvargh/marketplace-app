@@ -89,6 +89,58 @@ html, body {
   color: var(--error-msg);
 }
 
+.action-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  text-align: center;
+  color: var(--white);
+}
+
+.action-button:hover {
+  transform: scale(1.03);
+}
+
+.button-primary {
+  background-color: var(--button-primary);
+}
+
+.button-primary:hover {
+  background-color: var(--button-primary-hover);
+}
+
+.button-primary:disabled {
+  background-color: var(--buttton-diabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-cancel {
+  background-color: var(--button-cancel);
+}
+
+.button-cancel:hover {
+  background-color: var(--button-cancel-hover);
+}
+
+.button-cancel:disabled {
+  background-color: var(--buttton-diabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-danger {
+  background-color: var(--button-danger);
+}
+
+.button-danger:hover {
+  background-color: var(--button-danger-hover);
+}
+
 @media (max-width: 600px), (max-height: 800px) {
   #app {
     padding: 0.5rem;

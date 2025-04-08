@@ -166,6 +166,5 @@ const updateCategory = async () => {
 
 
 <style scoped>
-@import '../styles/components/ItemFormButton.css';
 @import '../styles/views/CategoriesAdminView.css';
 </style>

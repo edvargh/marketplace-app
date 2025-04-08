@@ -57,6 +57,5 @@ onMounted(async () => {
 
 <style>
 @import '../styles/users/MyItemsView.css';
-@import '../styles/components/ItemFormButton.css';
 </style>
   

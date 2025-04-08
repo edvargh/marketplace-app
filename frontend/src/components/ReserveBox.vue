@@ -66,6 +66,5 @@ defineEmits(['accept', 'decline', 'cancel'])
 </script>
 
 <style scoped>
-@import '../styles/components/ItemFormButton.css';
 @import '../styles/components/ReserveBox.css';
 </style>
