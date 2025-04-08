@@ -5,6 +5,7 @@
     max-width: 1200px;
     padding: 2rem;
     margin-bottom: 150px;
+    align-items: stretch;
 }
 
 .item-info {
