@@ -54,5 +54,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
   @Query("SELECT i FROM Item i JOIN i.favoritedByUsers u WHERE u = :user")
   Page<Item> findFavoritesByUser(@Param("user") User user, Pageable pageable);
-
 }

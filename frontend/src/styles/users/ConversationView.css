@@ -183,9 +183,8 @@
   flex: 1;
 }
 
-:deep(.reserve-box) {
-  display: flex;
-  align-items: center;
+.inline-reserve-box {
+  background-color: var(--reserve-background);
 }
 
 .message-input {
@@ -194,7 +193,9 @@
   font-size: 1rem;
   overflow: hidden;
   resize: none;
-  min-height: 40px;
+}
+
+.inline-reserve-box {
 }
 
 .send-button {

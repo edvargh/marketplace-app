@@ -30,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -67,8 +66,8 @@ class ItemControllerTest {
   @Autowired
   private CloudinaryService cloudinaryService;
 
-
   private User testUser;
+
   private Category testCategory;
 
   /**
@@ -187,7 +186,6 @@ class ItemControllerTest {
     assert !refreshedUser.getFavoriteItems().contains(item);
   }
 
-
   /**
    * Test to create an item.
    *
@@ -227,7 +225,7 @@ class ItemControllerTest {
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$.title").value("Headphones"))
         .andExpect(jsonPath("$.categoryId").value(testCategory.getId()))
-        .andExpect(jsonPath("$.imageUrls").isArray()); // if imageUrls added to ItemResponseDto
+        .andExpect(jsonPath("$.imageUrls").isArray());
   }
 
   /**
@@ -288,6 +286,16 @@ class ItemControllerTest {
         .andExpect(status().isNotFound());
   }
 
+  @Test
+  @WithMockUser(username = "john@example.com")
+  void shouldReturnNotFoundWhenDeletingNonExistentItem() throws Exception {
+    Long nonExistentId = 999999L;
+
+    mockMvc.perform(delete("/api/items/" + nonExistentId))
+        .andExpect(status().isNotFound());
+  }
+
+
   /**
    * Test to delete old image when updating an item.
    *
@@ -341,23 +349,18 @@ class ItemControllerTest {
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldUpdateItemStatus() throws Exception {
-    // Use the existing seller user (likely created in @BeforeEach)
     User seller = testUser;
 
-    // Create a buyer
     User buyer = new User("Buyer Bob", "bob@example.com", "password", Role.USER, "98765432", null, "english");
     buyer = userRepository.save(buyer);
 
-    // Create a category
     Category category = categoryRepository.save(new Category("Test"));
 
-    // Create item
     Item item = new Item(seller, "Status Test", "Initial status", category, 100.0,
         LocalDateTime.now(), new BigDecimal("63.0"), new BigDecimal("10.0"));
     item.setStatus(ItemStatus.FOR_SALE);
     item = itemRepository.save(item);
 
-    // Update status with buyerId
     mockMvc.perform(put("/api/items/" + item.getId() + "/status")
             .param("value", "RESERVED")
             .param("buyerId", String.valueOf(buyer.getId())))
@@ -370,8 +373,6 @@ class ItemControllerTest {
     assert updated.getStatus() == ItemStatus.RESERVED;
     assert updated.getReservedBy().getId().equals(buyer.getId());
   }
-
-
 
   /**
    * Test to reserve an item by a buyer.
@@ -401,5 +402,4 @@ class ItemControllerTest {
         .andExpect(jsonPath("$.status").value("RESERVED"))
         .andExpect(jsonPath("$.reservedById").value(buyer.getId().intValue()));
   }
-
 }

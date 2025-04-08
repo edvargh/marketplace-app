@@ -95,6 +95,29 @@
     "Loading-items": "Loading your listed advertisements...",
     "Error-loading": "Something went wrong while loading your listed advertisements. Please try again."
   },
+  "itemView": {
+    "loadingItem": "Loading advertisement...",
+    "sendMessage": "Send message",
+    "reserveItem": "Reserve item",
+    "buyNow": "Buy Now",
+    "pendingReservationTooltip": "You already have a pending reservation request.",
+    "reservedByOtherTooltip": "Reserved by another user.",
+    "editItem": "Edit Advertisement",
+    "descriptionOfItem": "Description of the item",
+    "seller": "Seller",
+    "errors": {
+      "invalidId": "Invalid advertisement ID.",
+      "itemNotFound": "Advertisement not found.",
+      "sellerInfoFailed": "Could not load seller information.",
+      "viewCountFailed": "View count could not be updated.",
+      "loadFailed": "Could not load this advertisement. Please try again.",
+      "conversationFailed": "Could not start a conversation with the seller.",
+      "reservationFailed": "Could not reserve the item. Please try again.",
+      "paymentInitFailed": "Could not initiate payment.",
+      "paymentProcessFailed": "Could not process payment. Please try again.",
+      "reservationCheckFailed": "Could not check for pending reservation."
+    }
+  },
   "createItemView": {
   "title": "Create New Advertisement",
   "create": "Create",

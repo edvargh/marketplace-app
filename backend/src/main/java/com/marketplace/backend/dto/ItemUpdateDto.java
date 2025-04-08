@@ -16,7 +16,7 @@ public class ItemUpdateDto {
   private Double price;
   private BigDecimal latitude;
   private BigDecimal longitude;
-  private ItemStatus status; // Optional field to allow status changes (FOR_SALE, RESERVED, SOLD)
+  private ItemStatus status;
   private List<MultipartFile> images;
 
   /**

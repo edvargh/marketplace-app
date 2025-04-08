@@ -4,19 +4,11 @@
     <div v-if="isSellerView" class="seller-options">
       <h3>Reservation Request</h3>
       <p>{{ buyerName }} wants to reserve this item</p>
-      <div class="button-group">
-        <button
-          @click="$emit('accept')"
-          class="action-button button-primary"
-          :disabled="initialStatus !== 'PENDING'"
-        >
+      <div v-if="!hideButtons" class="button-group">
+        <button @click="$emit('accept')" :disabled="disabled" class="action-button button-primary">
           Accept
         </button>
-        <button
-          @click="$emit('decline')"
-          class="action-button button-danger"
-          :disabled="initialStatus !== 'PENDING'"
-        >
+        <button @click="$emit('decline')" :disabled="disabled" class="action-button button-danger">
           Decline
         </button>
       </div>
@@ -57,6 +49,14 @@ defineProps({
   },
   reservationMessage: String,
   showCancel: {
+    type: Boolean,
+    default: false
+  },
+  hideButtons: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
     type: Boolean,
     default: false
   }
