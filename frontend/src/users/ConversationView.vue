@@ -56,6 +56,8 @@
                   :isSellerView="!msg.fromYou && isSeller"
                   :initialStatus="msg.reservationStatus"
                   :reservationMessage="msg.content"
+                  :hideButtons="isSeller && ['ACCEPTED', 'DECLINED'].includes(msg.reservationStatus)"
+                  :disabled="processingReservation"
                   @accept="handleAcceptReservation(msg.messageId)"
                   @decline="handleDeclineReservation(msg.messageId)"
                 />
@@ -73,6 +75,7 @@
       <div class="message-input-container">
         <ReserveBox
           v-if="showReserveInput"
+          class="inline-reserve-box"
           :itemId="itemId"
           :buyerId="currentUserId"
           :buyerName="userStore.user.fullName"
@@ -129,10 +132,10 @@ const hasError = ref(false)
 const isSending = ref(false)
 const isReserveMode = ref(route.query.reserve === 'true')
 const showReserveInput = ref(isReserveMode.value)
-
 const currentUserProfileImage = ref(userStore.getCurrentUserProfileImageUrl())
 const participantProfileImage = ref('/default-picture.jpg')
 const otherUser = ref(null)
+const processingReservation = ref(null);
 
 const isSeller = computed(() => {
   return item.value?.sellerId === currentUserId
@@ -250,19 +253,25 @@ const sendMessage = async () => {
 }
 
 const handleAcceptReservation = async (messageId) => {
+  processingReservation.value = true
   try {
     await messageStore.updateReservationStatus(messageId, 'ACCEPTED');
-    await itemStore.updateItemStatus(itemId, 'RESERVED');
+    await itemStore.updateItemStatus(itemId, 'RESERVED', withUserId);
     await Promise.all([fetchConversation(), fetchItem()]);
   } catch (err) {
+  } finally {
+    processingReservation.value = false
   }
 }
 
 const handleDeclineReservation = async (messageId) => {
+  processingReservation.value = true
   try {
     await messageStore.updateReservationStatus(messageId, 'DECLINED')
     await fetchConversation()
   } catch (err) {
+  } finally {
+    processingReservation.value = false
   }
 }
 

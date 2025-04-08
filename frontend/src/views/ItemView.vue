@@ -25,12 +25,25 @@
       <div class="action-buttons">
         <template v-if="!isMyItem">
           <button class="message-btn" @click="handleMessageSeller">Send message</button>
-          <button class="reserve-btn" @click="handleReserveItem">Reserve item</button>
-          <button class="blue-btn" @click="handleBuyNow">Buy Now</button>
+          <button
+            class="reserve-btn"
+            @click="handleReserveItem"
+            :disabled="hasPendingRes"
+            @mouseover="showTooltip = hasPendingRes"
+            @mouseleave="showTooltip = false"
+          >
+            Reserve item
+          </button>
+          <span v-if="showTooltip && hasPendingRes" class="error-message">
+            You already have a pending reservation request.
+          </span>
+          <button class="blue-btn" @click="handleBuyNow" :disabled="!canBuyNow" @mouseover="showTooltip = !canBuyNow" @mouseleave="showTooltip = false">Buy Now</button>
         </template>
         <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
           Edit Item
         </router-link>
+
+
       </div>
     </div>
 
@@ -64,7 +77,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
 import { useItemStore } from "@/stores/itemStore";
@@ -87,6 +100,7 @@ const isFavorite = ref(false);
 const router = useRouter();
 const messageStore = useMessageStore();
 const userWarning = ref('');
+const hasPendingRes = ref(false);
 
 const showWarning = (msg) => {
   userWarning.value = msg;
@@ -122,6 +136,7 @@ onMounted(async () => {
 
     if (!isMyItem.value) {
       try {
+        await checkPendingReservation();
         await itemStore.logItemView(itemId);
       } catch {
         showWarning("View count could not be updated.");
@@ -184,6 +199,13 @@ const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;
 };
 
+const canBuyNow = computed(() => {
+  return item.value.reservedById === null || item.value.reservedById === userStore.user?.id;
+});
+
+
+const showTooltip = ref(false);
+
 const handleBuyNow = async () => {
   try {
     const itemId = item.value.id;
@@ -198,6 +220,24 @@ const handleBuyNow = async () => {
     showWarning("Could not process payment. Please try again.");
   }
 };
+
+const checkPendingReservation = async () => {
+  try {
+    const itemId = item.value.id;
+    const sellerId = item.value.sellerId;
+
+    const messages = await messageStore.fetchConversationWithUser(itemId, sellerId);
+
+    hasPendingRes.value = messages.some(
+      msg =>
+        msg.reservationStatus === 'PENDING' &&
+        msg.fromYou === true
+    );
+  } catch (err) {
+    showWarning("Failed to check pending reservation.")
+  }
+};
+
 </script>
 
 <style scoped>

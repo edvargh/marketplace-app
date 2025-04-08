@@ -141,6 +141,10 @@ html, body {
   background-color: var(--button-danger-hover);
 }
 
+.button-danger:disabled {
+  background-color: var(--buttton-diabled);
+}
+
 @media (max-width: 600px), (max-height: 800px) {
   #app {
     padding: 0.5rem;
