@@ -7,8 +7,6 @@
     }
 
     export const useMessageStore = defineStore('messageStore', () => {
-      const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
       const getAuthHeaders = () => {
         const userData = localStorage.getItem('user')
         if (!userData) throw new Error('User not authenticated')
@@ -23,7 +21,7 @@
       const fetchUserConversations = async () => {
         try {
           const headers = getAuthHeaders()
-          const response = await axios.get(`${API_BASE_URL}/conversations`, { headers })
+          const response = await axios.get(`${API_BASE_URL}/api/messages/conversations`, { headers })
           return response.data
         } catch (err) {
           console.error('Error fetching user conversations:', err)
@@ -34,7 +32,7 @@
       const fetchConversationWithUser = async (itemId, withUserId) => {
         try {
           const headers = getAuthHeaders()
-          const response = await axios.get(`${API_BASE_URL}/conversation`, {
+          const response = await axios.get(`${API_BASE_URL}/api/messages/conversation`, {
             headers,
             params: { itemId, withUserId }
           })
@@ -49,7 +47,7 @@
         try {
           const headers = getAuthHeaders()
           const payload = { itemId, receiverId, messageText }
-          const response = await axios.post(`${API_BASE_URL}/send`, payload, { headers })
+          const response = await axios.post(`${API_BASE_URL}/api/messages/send`, payload, { headers })
           return response.status === 200
         } catch (err) {
           console.error('Error sending message:', err)
@@ -75,7 +73,7 @@
             isReservationRequest: true,
             reservationStatus: "PENDING"
           }
-          const response = await axios.post(`${API_BASE_URL}/send-reservation-request`, payload, { headers })
+          const response = await axios.post(`${API_BASE_URL}/api/messages/send-reservation-request`, payload, { headers })
           return response.status === 200
         } catch (err) {
           console.error('Error sending reservation request:', err)
@@ -88,7 +86,7 @@
           const headers = getAuthHeaders()
 
           const response = await axios.put(
-            `${API_BASE_URL}/${messageId}/update-reservation-status?status=${status}`,
+            `${API_BASE_URL}/api/messages/${messageId}/update-reservation-status?status=${status}`,
             {},
             { headers }
           )
