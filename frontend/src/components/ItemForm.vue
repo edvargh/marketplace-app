@@ -182,18 +182,9 @@ const validatePrice = (price) => {
   }
   const numPrice = Number(price);
   const validations = [
-    {
-      condition: isNaN(numPrice),
-      message:  t('itemFormComponent.validation.invalidNumber')
-    },
-    {
-      condition: numPrice < 0,
-      message: t('itemFormComponent.validation.negativePrice')
-    },
-    {
-      condition: numPrice > 10000000,
-      message: t('itemFormComponent.validation.tooHighPrice')
-    }
+    { condition: isNaN(numPrice), message: t('itemFormComponent.validation.invalidNumber') },
+    { condition: numPrice < minPrice, message: t('itemFormComponent.validation.negativePrice') },
+    { condition: numPrice > maxPrice, message: t('itemFormComponent.validation.tooHighPrice') }
   ];
   const failedValidation = validations.find(validation => validation.condition);
   if (failedValidation) {

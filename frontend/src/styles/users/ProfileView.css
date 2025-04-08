@@ -6,6 +6,7 @@
     min-height: 100vh;
     padding: 6rem 2rem 2rem;
     font-family: 'Abel', sans-serif;
+  margin-bottom: 150px;
 }
 
 .profile-view::-webkit-scrollbar {
@@ -31,12 +32,6 @@
 label {
   font-weight: 600;
   margin-left: 0.5rem;
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-  font-size: 0.95rem;
 }
 
 .profile-picture-wrapper {
@@ -80,14 +75,4 @@ label {
 /* Show edit icon on hover */
 .profile-picture-container:hover .edit-icon {
   opacity: 1;
-}
-
-.input-error {
-  border: 1px solid var(--error-msg) !important;
-}
-
-.input-error-text {
-  color: var(--error-msg);
-  font-size: 0.9rem;
-  margin: -0.5rem 0 1rem 0.5rem;
 }

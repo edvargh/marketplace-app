@@ -46,6 +46,11 @@
   background: linear-gradient(to right, var(--turquoise), var(--sky-blue));
 }
 
+.RegisterPage button[type='submit']:disabled {
+  background: var(--buttton-diabled);
+  cursor: not-allowed;
+}
+
 .AlreadyHaveAccountText {
   text-align: center;
   margin-top: 1.5rem;
@@ -60,13 +65,6 @@
 
 .AlreadyHaveAccountText a:hover {
   text-decoration: underline;
-}
-
-.error-message {
-  color: var(--error-msg);
-  font-size: 0.95rem;
-  margin-top: 1rem;
-  text-align: center;
 }
 
 .success-notification {
@@ -95,24 +93,4 @@
     top: 20px;
     opacity: 1;
   }
-}
-
-.input-error-text {
-  color: var(--error-msg);
-  font-size: 0.85rem;
-  margin-top: 0.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.input-error-border {
-  border-color: var(--error-msg) !important;
-}
-
-.error-message {
-  color: var(--error-msg);
-  font-size: 0.95rem;
-  margin-top: 1rem;
-  text-align: center;
-  padding: 0.5rem;
-  border-radius: 4px;
 }
