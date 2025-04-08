@@ -16,6 +16,7 @@ import ConversationView from '@/users/ConversationView.vue'
 import CategoriesAdminView from "@/views/CategoriesAdminView.vue";
 import SearchResultView from '@/views/SearchResultView.vue'
 import UserPaymentComplete from '@/users/UserPaymentComplete.vue'
+import UserPaymentFailView from '@/users/UserPaymentFailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -110,6 +111,11 @@ const router = createRouter({
       path: '/payment-complete',
       name: 'paymentComplete',
       component: UserPaymentComplete
+    },
+    {
+      path: '/payment-failed',
+      name: 'paymentFailed',
+      component: UserPaymentFailView
     },
   ],
 })
