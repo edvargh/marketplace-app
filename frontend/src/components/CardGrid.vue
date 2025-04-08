@@ -44,5 +44,4 @@ const variantClass = computed(() => {
 
 <style scoped>
 @import '../styles/components/CardGrid.css';
-@import '../styles/components/ItemFormButton.css';
 </style>

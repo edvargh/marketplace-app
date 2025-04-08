@@ -224,5 +224,4 @@ const canSubmit = computed(() =>
 
 <style scoped>
 @import '../styles/users/ProfileView.css';
-@import '../styles/components/ItemFormButton.css';
 </style>

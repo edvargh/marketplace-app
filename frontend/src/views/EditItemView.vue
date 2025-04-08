@@ -163,5 +163,4 @@ const handleDelete = async () => {
 </script>
 
 <style scoped>
-@import '../styles/components/ItemFormButton.css';
 </style>

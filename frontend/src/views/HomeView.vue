@@ -216,5 +216,4 @@ function handleCategoryClick(category) {
 
 <style scoped>
 @import '../styles/views/HomeView.css';
-@import '../styles/components/ItemFormButton.css';
 </style>
