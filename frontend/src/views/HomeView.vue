@@ -23,7 +23,12 @@
         <h2>{{ t('homeView.Your-recommendations') }}</h2>
       </div>
 
+      <div v-if="loadingRecommended" class="recommendation-skeleton">
+        <div v-for="i in 5" :key="`skeleton-${i}`" class="skeleton-card"></div>
+      </div>
+
       <HorizontalPagination
+        v-else-if="recommendedItems.length > 0"
         @update:cloneStart="handleCloneStart"
         @update:cloneEnd="handleCloneEnd"
       >
@@ -32,28 +37,31 @@
           :key="item.id"
           :item="item"
           :seller="sellerMap[item.sellerId]"
+          class="carousel-item"
         />
 
-        <template #clone-start v-if="cloneStartItems.length">
+        <template #clone-start v-if="cloneStartItems.length > 0">
           <DetailedItemCard
             v-for="item in cloneStartItems"
             :key="`clone-start-${item.id}`"
             :item="item"
             :seller="sellerMap[item.sellerId]"
+            class="carousel-item"
           />
         </template>
 
-        <template #clone-end v-if="cloneEndItems.length">
+        <template #clone-end v-if="cloneEndItems.length > 0">
           <DetailedItemCard
             v-for="item in cloneEndItems"
             :key="`clone-end-${item.id}`"
             :item="item"
             :seller="sellerMap[item.sellerId]"
+            class="carousel-item"
           />
         </template>
       </HorizontalPagination>
 
-      <div v-if="recommendedItems.length === 0" class="no-items-message">
+      <div v-else class="no-items-message">
         {{ t('homeView.No-recommendet-items-found') }}
       </div>
     </section>
@@ -82,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import DetailedItemCard from "@/components/DetailedItemCard.vue"
 import CardGrid from '@/components/CardGrid.vue'
 import CompactItemCard from "@/components/CompactItemCard.vue"
@@ -100,7 +108,6 @@ import { useFilterStore } from '@/stores/filterStore'
 import { usePaginatedLoader } from '@/usePaginatedLoader.js'
 import { useUserStore } from '@/stores/userStore'
 
-
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -116,6 +123,7 @@ const cloneEndItems = ref([])
 const categories = ref([])
 const recommendedItems = ref([])
 const showFilters = ref(false)
+const loadingRecommended = ref(true)
 
 const {
   items: marketItems,
@@ -127,11 +135,11 @@ const {
 } = usePaginatedLoader(itemStore.fetchMarketItems)
 
 const handleCloneStart = ({ start, end }) => {
-  cloneStartItems.value = recommendedItems.value ? recommendedItems.value.slice(start, end) : [];
+  cloneStartItems.value = [...(recommendedItems.value.slice(start, end) || [])];
 };
 
 const handleCloneEnd = ({ start, end }) => {
-  cloneEndItems.value = recommendedItems.value ? recommendedItems.value.slice(start, end) : [];
+  cloneEndItems.value = [...(recommendedItems.value.slice(start, end) || [])];
 };
 
 const fetchAllSellers = async (items) => {
@@ -169,23 +177,37 @@ const fetchAllSellers = async (items) => {
 
 onMounted(async () => {
   try {
-    const categoriesPromise = categoryStore.fetchCategories().then(cats => {
-      categories.value = cats
-    })
-    const recommendedPromise = itemStore.fetchRecommendedItems().then(items => {
-      recommendedItems.value = items || []
-    })
+    loadingRecommended.value = true;
+    
+    const categoriesPromise = categoryStore.fetchCategories()
+      .then(cats => {
+        categories.value = cats;
+      });
+    
     const marketPromise = loadMoreMarketItems();
-    await Promise.all([categoriesPromise, recommendedPromise, marketPromise]);
-
-    if (recommendedItems.value.length) {
-      await fetchAllSellers(recommendedItems.value);
-    }
-    if (marketItems.value.length) {
+    
+    await categoriesPromise;
+    
+    const recommendedPromise = itemStore.fetchRecommendedItems()
+      .then(items => {
+        recommendedItems.value = items || [];
+        if (items && items.length > 0) {
+          return fetchAllSellers(items);
+        }
+      })
+      .finally(() => {
+        loadingRecommended.value = false;
+      });
+    
+    await Promise.all([recommendedPromise, marketPromise]);
+    
+    if (marketItems.value && marketItems.value.length > 0) {
       await fetchAllSellers(marketItems.value);
     }
   } catch (e) {
-    error.value = "Something wrong happened while loading Home Page. Please try again."
+    console.error("Error loading home page:", e);
+    error.value = "Something wrong happened while loading Home Page. Please try again.";
+    loadingRecommended.value = false;
   }
 });
 
