@@ -20,7 +20,8 @@
     flex-wrap: wrap;
     gap: 25px;
     list-style-type: none;
-    padding: 0px;
+    padding: 0;
+    justify-content: center;
 }
 
 .categories li {
