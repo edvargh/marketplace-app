@@ -2,6 +2,11 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { ref } from 'vue';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+if (!API_BASE_URL) {
+throw new Error('VITE_API_BASE_URL is not defined. Please set it in your .env file.');
+}
+
 export const useItemStore = defineStore('items', () => {
   const getAuthHeaders = () => {
     const userData = localStorage.getItem('user');
@@ -19,7 +24,7 @@ export const useItemStore = defineStore('items', () => {
   const fetchMarketItems = async (page = 0, size = 6) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get('http://localhost:8080/api/items', {
+      const response = await axios.get(`${API_BASE_URL}/api/items`, {
         headers,
         params: { page, size }
       });
@@ -32,7 +37,7 @@ export const useItemStore = defineStore('items', () => {
   const fetchItemById = async (id) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get(`http://localhost:8080/api/items/${id}`, { headers });
+      const response = await axios.get(`${API_BASE_URL}/api/items/${id}`, { headers });
       return response.data;
     } catch (err) {
       throw err;
@@ -42,7 +47,7 @@ export const useItemStore = defineStore('items', () => {
   const fetchUserItems = async (page = 0, size = 6) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get(`http://localhost:8080/api/items/my-items`, {
+      const response = await axios.get(`${API_BASE_URL}/api/items/my-items`, {
         headers,
         params: { page, size }
       });
@@ -55,7 +60,7 @@ export const useItemStore = defineStore('items', () => {
   const fetchRecommendedItems = async () => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get(`http://localhost:8080/api/items/recommended`, { headers });
+      const response = await axios.get(`${API_BASE_URL}/api/items/recommended`, { headers });
       return response.data;
 
     } catch (err) {
@@ -68,7 +73,7 @@ export const useItemStore = defineStore('items', () => {
     try {
       const headers = getAuthHeaders();
       const response = await axios.post(
-        `http://localhost:8080/api/items/${itemId}/view`, 
+        `${API_BASE_URL}/api/items/${itemId}/view`, 
         {}, 
         { headers }
       );
@@ -81,7 +86,7 @@ export const useItemStore = defineStore('items', () => {
   const fetchUserFavoriteItems = async (page = 0, size = 6) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.get(`http://localhost:8080/api/items/favorites`, {
+      const response = await axios.get(`${API_BASE_URL}/api/items/favorites`, {
         headers,
         params: { page, size }
       });
@@ -94,7 +99,7 @@ export const useItemStore = defineStore('items', () => {
   const toggleFavorite = async (itemId) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.put(`http://localhost:8080/api/items/${itemId}/favorite-toggle`, {}, { headers });
+      const response = await axios.put(`${API_BASE_URL}/api/items/${itemId}/favorite-toggle`, {}, { headers });
       return response.status === 200;
     } catch (err) {
       throw err;
@@ -132,7 +137,7 @@ export const useItemStore = defineStore('items', () => {
         });
       }
 
-      const response = await fetch('http://localhost:8080/api/items/create', {
+      const response = await fetch('${API_BASE_URL}/api/items/create', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formDataToSend
@@ -179,7 +184,7 @@ export const useItemStore = defineStore('items', () => {
         });
       }
 
-      const response = await fetch(`http://localhost:8080/api/items/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/items/${id}`, {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formDataToSend
@@ -199,7 +204,7 @@ export const useItemStore = defineStore('items', () => {
   const deleteItem = async (id) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.delete(`http://localhost:8080/api/items/${id}`, { headers });
+      const response = await axios.delete(`${API_BASE_URL}/api/items/${id}`, { headers });
       return response.status === 204;
 
     } catch (err) {
@@ -228,7 +233,7 @@ export const useItemStore = defineStore('items', () => {
       queryParams.append('page', page);
       queryParams.append('size', size);
 
-      const url = `http://localhost:8080/api/items?${queryParams.toString()}`;
+      const url = `${API_BASE_URL}/api/items?${queryParams.toString()}`;
       const headers = getAuthHeaders();
       
       const response = await axios.get(url, { headers });
@@ -244,7 +249,7 @@ export const useItemStore = defineStore('items', () => {
   const updateItemStatus = async (id, newStatus) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.put(`http://localhost:8080/api/items/${id}/status`,
+      const response = await axios.put(`${API_BASE_URL}/api/items/${id}/status`,
         null,
         {
           headers,
@@ -263,7 +268,7 @@ export const useItemStore = defineStore('items', () => {
     try {
       const headers = getAuthHeaders();
       const response = await axios.post(
-        `http://localhost:8080/api/payments/vipps?itemId=${itemId}`,
+        `${API_BASE_URL}/api/payments/vipps?itemId=${itemId}`,
         {},
         { headers }
       );

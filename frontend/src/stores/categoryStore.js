@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia';
 import axios from 'axios';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+if (!API_BASE_URL) {
+  throw new Error('VITE_API_BASE_URL is not defined. Please set it in your .env file.');
+}
+
 export const useCategoryStore = defineStore('categories', () => {
   const getAuthHeaders = () => {
     const userData = localStorage.getItem('user');
@@ -15,8 +20,8 @@ export const useCategoryStore = defineStore('categories', () => {
 
   const fetchCategories = async () => {
     try {
-      const headers = getAuthHeaders();  // Now required
-      const response = await axios.get('http://localhost:8080/api/categories', { headers });
+      const headers = getAuthHeaders();  
+      const response = await axios.get(`${API_BASE_URL}/api/categories`, { headers });
       return response.data;
       
     } catch (err) {
@@ -27,7 +32,7 @@ export const useCategoryStore = defineStore('categories', () => {
   const createCategory = async (categoryData) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.post('http://localhost:8080/api/categories', categoryData, { headers });
+      const response = await axios.post(`${API_BASE_URL}/api/categories`, categoryData, { headers });
       return response.data;
 
     } catch (err) {
@@ -39,7 +44,7 @@ export const useCategoryStore = defineStore('categories', () => {
   const updateCategory = async (id, categoryData) => {
     try {
       const headers = getAuthHeaders();
-      const response = await axios.put(`http://localhost:8080/api/categories/${id}`, categoryData, { headers });
+      const response = await axios.put(`${API_BASE_URL}/api/categories/${id}`, categoryData, { headers });
       return response.data;
 
     } catch (err) {
