@@ -10,16 +10,18 @@ export const useFilterStore = defineStore('filter', () => {
   const longitude = ref(null)
 
   function setFilters(filters = {}) {
-    selectedCategoryIds.value = filters.categoryIds
-      ? (Array.isArray(filters.categoryIds)
-        ? filters.categoryIds.map(Number)
-        : [Number(filters.categoryIds)])
+    const safeFilters = filters || {}
+    
+    selectedCategoryIds.value = safeFilters.categoryIds
+      ? (Array.isArray(safeFilters.categoryIds)
+        ? safeFilters.categoryIds.map(Number)
+        : [Number(safeFilters.categoryIds)])
       : []
-    priceMin.value = filters.priceMin ?? ''
-    priceMax.value = filters.priceMax ?? ''
-    distanceKm.value = filters.distanceKm ?? ''
-    latitude.value = filters.latitude ?? null
-    longitude.value = filters.longitude ?? null
+    priceMin.value = safeFilters.priceMin ?? ''
+    priceMax.value = safeFilters.priceMax ?? ''
+    distanceKm.value = safeFilters.distanceKm ?? ''
+    latitude.value = safeFilters.latitude ?? null
+    longitude.value = safeFilters.longitude ?? null
   }
 
   function buildFiltersQuery(baseQuery = {}) {

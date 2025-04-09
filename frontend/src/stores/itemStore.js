@@ -64,7 +64,6 @@ export const useItemStore = defineStore('items', () => {
       return response.data;
 
     } catch (err) {
-      console.error('Failed to fetch recommended items:', err);
       return [];
     }
   }
@@ -137,7 +136,7 @@ export const useItemStore = defineStore('items', () => {
         });
       }
 
-      const response = await fetch('${API_BASE_URL}/api/items/create', {
+      const response = await fetch(`${API_BASE_URL}/api/items/create`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formDataToSend
@@ -175,7 +174,6 @@ export const useItemStore = defineStore('items', () => {
           new Blob([JSON.stringify(itemData)], { type: 'application/json' })
       );
 
-      // TODO: Better handling maybe
       if (Array.isArray(rawFormData.images)) {
         rawFormData.images.forEach(img => {
           if (img?.file) {
@@ -264,7 +262,6 @@ export const useItemStore = defineStore('items', () => {
       return response.status === 200;
 
     } catch (err) {
-      console.error(`Failed to update status for item ${id}:`, err);
       throw err;
     }
   };
@@ -277,9 +274,8 @@ export const useItemStore = defineStore('items', () => {
         {},
         { headers }
       );
-      return response.data; // This should be the redirect URL
+      return response.data; 
     } catch (err) {
-      console.error('Failed to initiate Vipps payment:', err);
       throw err;
     }
   };
