@@ -10,7 +10,7 @@ describe('InputBox.vue', () => {
     expect(input.element.value).toBe('')
   })
 
-  it('renders with provided modelValue and placeholder', () => {
+  it('displays given modelValue and placeholder correctly', () => {
     const wrapper = mount(InputBox, {
       props: {
         modelValue: 'Test',
@@ -22,7 +22,7 @@ describe('InputBox.vue', () => {
     expect(input.attributes('placeholder')).toBe('Enter text here')
   })
 
-  it('emits update:modelValue when user types', async () => {
+  it('emits update:modelValue on user input', async () => {
     const wrapper = mount(InputBox, {
       props: {
         modelValue: 'initial'
@@ -34,7 +34,7 @@ describe('InputBox.vue', () => {
     expect(wrapper.emitted()['update:modelValue'][0][0]).toBe('new value')
   })
 
-  it('applies required and disabled attributes when provided', () => {
+  it('sets required and disabled attributes based on props', () => {
     const wrapper = mount(InputBox, {
       props: {
         required: true,
@@ -46,7 +46,7 @@ describe('InputBox.vue', () => {
     expect(input.attributes()).toHaveProperty('disabled')
   })
 
-  it('applies error border class when hasError is true', () => {
+  it('does not apply error border class when hasError is false or not set', () => {
     const wrapper = mount(InputBox, {
       props: { hasError: true }
     })

@@ -143,7 +143,7 @@ describe('LocationDisplay.vue', () => {
     expect(emittedLng[0]).toEqual([40.0])
   })
 
-  it('displays geolocation error when useCurrentLocation fails', async () => {
+  it('display geolocation error when useCurrentLocation fails', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {});
 
     const fakeError = { code: 1 };
@@ -156,8 +156,27 @@ describe('LocationDisplay.vue', () => {
     await flushPromises();
     await wrapper.vm.useCurrentLocation();
     await flushPromises();
-
     const errorMsg = wrapper.find('.error-message').text();
     expect(errorMsg).toBe("Permission denied");
-  });
+  })
+
+  it('display "Location unavailable" error on geolocation code 2', async () => {
+    const fakeError = { code: 2 }
+    navigator.geolocation.getCurrentPosition = vi.fn((s, e) => e(fakeError))
+
+    wrapper = mountComponent({ isEditMode: true })
+    await wrapper.vm.useCurrentLocation()
+    await flushPromises()
+    expect(wrapper.find('.error-message').text()).toBe("Location unavailable")
+  })
+
+  it('display "Request timed out" error on geolocation code 3', async () => {
+    const fakeError = { code: 3 }
+    navigator.geolocation.getCurrentPosition = vi.fn((s, e) => e(fakeError))
+
+    wrapper = mountComponent({ isEditMode: true })
+    await wrapper.vm.useCurrentLocation()
+    await flushPromises()
+    expect(wrapper.find('.error-message').text()).toBe("Request timed out")
+  })
 })

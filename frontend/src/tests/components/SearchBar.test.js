@@ -50,7 +50,7 @@ describe('SearchBar.vue', () => {
     await router.isReady()
 
     const input = wrapper.find('input')
-    await input.setValue('   ') // spaces only
+    await input.setValue('   ')
     await wrapper.find('button').trigger('click')
 
     expect(router.currentRoute.value.fullPath).not.toContain('searchQuery')
