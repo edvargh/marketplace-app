@@ -69,3 +69,9 @@ Cypress.Commands.add('isInViewport', { prevSubject: true }, (subject) => {
   return subject;
 });
 
+Cypress.Commands.add('mockProfileUpdate', (updatedUser) => {
+  cy.intercept('PATCH', '/api/auth/update', {
+    statusCode: 200,
+    body: updatedUser
+  }).as('updateProfile');
+});
