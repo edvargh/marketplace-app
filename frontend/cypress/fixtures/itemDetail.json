@@ -1,0 +1,22 @@
+{
+  "id": "123",
+  "title": "MacBook Pro M4",
+  "description": "Latest MacBook Pro with M4 chip, 16GB RAM, 512GB SSD",
+  "price": 1999.00,
+  "status": "For Sale",
+  "imageUrls": [
+    "https://example.com/macbook1.jpg",
+    "https://example.com/macbook2.jpg"
+  ],
+  "categoryId": 2,
+  "categoryName": "Electronics",
+  "createdAt": "2025-03-01T15:30:00Z",
+  "seller": {
+    "id": "user6",
+    "username": "techseller"
+  },
+  "favorite": false,
+  "latitude": 59.9139,
+  "longitude": 10.7522,
+  "views": 42
+}

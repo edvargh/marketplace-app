@@ -1,0 +1,38 @@
+[
+  {
+    "id": "3",
+    "title": "Sony Headphones",
+    "description": "Sony WH-1000XM5 Noise Cancelling",
+    "price": 299.00,
+    "status": "For Sale",
+    "imageUrls": ["https://example.com/headphones.jpg"],
+    "categoryId": 2,
+    "categoryName": "Electronics",
+    "createdAt": "2025-03-18T14:30:00Z",
+    "seller": {
+      "id": "user3",
+      "username": "mikebrown"
+    },
+    "favorite": false,
+    "latitude": 59.9139,
+    "longitude": 10.7522
+  },
+  {
+    "id": "4",
+    "title": "Camping Tent",
+    "description": "4-person tent, used once",
+    "price": 120.00,
+    "status": "For Sale",
+    "imageUrls": ["https://example.com/tent.jpg"],
+    "categoryId": 1,
+    "categoryName": "Sports & Outdoors",
+    "createdAt": "2025-03-19T09:45:00Z",
+    "seller": {
+      "id": "user4",
+      "username": "sarahlee"
+    },
+    "favorite": false,
+    "latitude": 59.9139,
+    "longitude": 10.7522
+  }
+]

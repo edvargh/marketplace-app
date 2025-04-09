@@ -1,0 +1,46 @@
+{
+  "content": [
+    {
+      "id": "1",
+      "title": "Mountain Bike",
+      "description": "Great condition mountain bike",
+      "price": 250.00,
+      "status": "For Sale",
+      "imageUrls": ["https://example.com/bike1.jpg"],
+      "categoryId": 1,
+      "categoryName": "Sports & Outdoors",
+      "createdAt": "2025-03-15T12:00:00Z",
+      "seller": {
+        "id": "user1",
+        "username": "johndoe"
+      },
+      "favorite": false,
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    },
+    {
+      "id": "8",
+      "title": "Electric Bike",
+      "description": "Urban electric bike, barely used",
+      "price": 450.00,
+      "status": "For Sale",
+      "imageUrls": ["https://example.com/ebike.jpg"],
+      "categoryId": 1,
+      "categoryName": "Sports & Outdoors",
+      "createdAt": "2025-03-22T14:10:00Z",
+      "seller": {
+        "id": "user7",
+        "username": "bikelover"
+      },
+      "favorite": false,
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 6,
+    "totalElements": 2,
+    "totalPages": 1
+  }
+}
