@@ -137,3 +137,72 @@ Cypress.Commands.add('mockApiRequestsConversation', (user, conversations, messag
     }).as(`getItem-${item.id}`);
   });
 });
+
+Cypress.Commands.add('mockReservationFlow', (user, item) => {
+  const sellerId = item.sellerId;
+  let conversationRequested = false;
+
+  cy.intercept('GET', '**/api/users/me', {
+    statusCode: 200,
+    body: user
+  }).as('getMe');
+
+  cy.intercept('GET', `**/api/items/${item.id}`, {
+    statusCode: 200,
+    body: item
+  }).as('getItem');
+
+  cy.intercept('POST', `**/api/items/${item.id}/view`, { statusCode: 200, body: { success: true } }).as('logItemView');
+  cy.intercept('POST', `**/api/items/${item.id}/views`, { statusCode: 200, body: { success: true } }).as('logItemViewAlt');
+
+  cy.intercept('GET', `**/api/users/${sellerId}`, {
+    statusCode: 200,
+    body: {
+      id: sellerId,
+      fullName: 'Jane Doe',
+      email: 'JaneDoe@test.com',
+      profilePicture: '/default-picture.jpg'
+    }
+  }).as('getSeller');
+
+  cy.intercept('GET', '**/api/messages/conversation**', req => {
+    if (!conversationRequested) {
+      conversationRequested = true;
+      req.reply({ statusCode: 200, body: [] });
+    } else {
+      req.reply({
+        statusCode: 200,
+        body: [
+          {
+            messageId: 123,
+            fromYou: true,
+            senderId: user.id,
+            text: "I would like to reserve this item",
+            sentAt: new Date().toISOString(),
+            reservationStatus: 'PENDING'
+          }
+        ]
+      });
+    }
+  }).as('getMessages');
+
+  cy.intercept('POST', '**/api/messages/send-reservation-request', {
+    statusCode: 200,
+    body: { success: true, messageId: 123 }
+  }).as('sendReservation');
+
+  cy.intercept('POST', '**/api/messages/reservation', {
+    statusCode: 200,
+    body: { success: true, messageId: 123 }
+  }).as('sendReservationAlt');
+
+  cy.intercept('POST', '**/api/messages/conversation/reservation', {
+    statusCode: 200,
+    body: { success: true, messageId: 123 }
+  }).as('sendReservationConversation');
+
+  cy.intercept('POST', '**/api/messages/send', {
+    statusCode: 200,
+    body: { success: true, messageId: 123 }
+  }).as('sendMessage');
+});
