@@ -75,3 +75,10 @@ Cypress.Commands.add('mockProfileUpdate', (updatedUser) => {
     body: updatedUser,
   }).as('updateProfile');
 });
+
+Cypress.Commands.add('mockRegister', (responseBody = {}, statusCode = 200) => {
+  cy.intercept('POST', '/api/auth/register', {
+    statusCode,
+    body: responseBody
+  }).as('registerRequest');
+});
