@@ -1,20 +1,20 @@
 [
   {
     "messageId": 101,
-    "fromYou": false,
-    "senderId": 4,
-    "content": "Is this still available?",
-    "sentAt": "2025-04-09T10:00:00Z",
-    "isReservationRequest": false,
-    "reservationStatus": null
+    "itemId": 1,
+    "senderId": 1,
+    "receiverId": 4,
+    "text": "Is this still available?",
+    "sentAt": "2024-04-08T12:00:00.000Z",
+    "fromYou": true
   },
   {
     "messageId": 102,
-    "fromYou": true,
-    "senderId": 1,
-    "content": "Yes, it is.",
-    "sentAt": "2025-04-09T10:05:00Z",
-    "isReservationRequest": false,
-    "reservationStatus": null
+    "itemId": 1,
+    "senderId": 4,
+    "receiverId": 1,
+    "text": "Yes, it is!",
+    "sentAt": "2024-04-08T12:01:00.000Z",
+    "fromYou": false
   }
 ]

@@ -83,7 +83,17 @@ Cypress.Commands.add('mockRegister', (responseBody = {}, statusCode = 200) => {
   }).as('registerRequest');
 });
 
-Cypress.Commands.add('mockApiRequests', (user, conversations, messages, items = []) => {
+Cypress.Commands.add('mockApiRequestsConversation', (user, conversations, messages, items = []) => {
+  const itemId = messages[0].itemId;
+  const withUserId = messages.find(m => m.senderId !== user.id)?.senderId ?? 4;
+
+  const otherUser = {
+    id: withUserId,
+    fullName: 'Jane Doe',
+    email: 'JaneDoe@test.com',
+    profilePicture: '/images/test.jpg'
+  };
+
   cy.intercept('POST', '/api/auth/login', {
     statusCode: 200,
     body: {
@@ -105,10 +115,20 @@ Cypress.Commands.add('mockApiRequests', (user, conversations, messages, items = 
     body: conversations
   }).as('getConversations');
 
-  cy.intercept('GET', `/api/messages/conversation?itemId=${messages[0].itemId}&withUserId=${messages[0].senderId}`, {
+  cy.intercept('GET', `/api/users/${withUserId}`, {
+    statusCode: 200,
+    body: otherUser
+  }).as(`getUser-${withUserId}`);
+
+  cy.intercept('GET', new RegExp(`/api/messages/conversation\\?.*itemId=${itemId}.*withUserId=${withUserId}.*`), {
     statusCode: 200,
     body: messages
   }).as('getMessages');
+
+  cy.intercept('GET', /\/api\/users\/\d+/, {
+    statusCode: 200,
+    body: otherUser
+  }).as('getAnyUser');
 
   items.forEach((item) => {
     cy.intercept('GET', `/api/items/${item.id}`, {
@@ -117,5 +137,3 @@ Cypress.Commands.add('mockApiRequests', (user, conversations, messages, items = 
     }).as(`getItem-${item.id}`);
   });
 });
-
-
