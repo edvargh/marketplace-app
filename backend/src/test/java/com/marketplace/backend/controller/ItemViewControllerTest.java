@@ -4,7 +4,6 @@ import com.marketplace.backend.model.*;
 import com.marketplace.backend.repository.CategoryRepository;
 import com.marketplace.backend.repository.ItemRepository;
 import com.marketplace.backend.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ class ItemViewControllerTest {
 
   @Autowired
   private CategoryRepository categoryRepository;
-
-  @Autowired
-  private EntityManager entityManager;
 
   private User testUser;
   private Item testItem;

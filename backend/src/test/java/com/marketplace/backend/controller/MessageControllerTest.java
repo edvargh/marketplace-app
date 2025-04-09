@@ -1,11 +1,9 @@
 package com.marketplace.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.backend.model.*;
 import com.marketplace.backend.repository.ItemRepository;
 import com.marketplace.backend.repository.MessageRepository;
 import com.marketplace.backend.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MessageControllerTest {
 
   @Autowired private MockMvc mockMvc;
-  @Autowired private ObjectMapper objectMapper;
-  @Autowired private EntityManager entityManager;
   @Autowired private UserRepository userRepository;
   @Autowired private ItemRepository itemRepository;
   @Autowired private MessageRepository messageRepository;
