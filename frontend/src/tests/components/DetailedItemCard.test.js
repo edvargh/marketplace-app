@@ -14,6 +14,7 @@ describe('DetailedItemCard.vue', () => {
     title: 'Test Item',
     price: 100,
     imageUrls: ['item-image.png'],
+    description: "Description",
     status: 'Reserved',
     sellerId: 'user123'
   }
@@ -40,6 +41,7 @@ describe('DetailedItemCard.vue', () => {
     expect(wrapper.text()).toContain('Test Item')
     expect(wrapper.text()).toContain('Price')
     expect(wrapper.text()).toContain('100 kr')
+    expect(wrapper.text()).toContain('Description')
     expect(wrapper.findComponent({ name: 'RouterLink' }).exists()).toBe(true)
   })
 
