@@ -83,7 +83,6 @@ describe('NotificationBanner.vue', () => {
 
   it('auto-closes after timeout and emits events', async () => {
     vi.useFakeTimers()
-
     const wrapper = mount(NotificationBanner, {
       props: {
         message: 'Test',
@@ -93,7 +92,6 @@ describe('NotificationBanner.vue', () => {
     })
     await nextTick()
     expect(wrapper.find('.popup-overlay').exists()).toBe(true)
-
     vi.advanceTimersByTime(3000)
     await nextTick()
 
@@ -107,7 +105,6 @@ describe('NotificationBanner.vue', () => {
 
   it('does not auto-close if autoClose is false', async () => {
     vi.useFakeTimers()
-
     const wrapper = mount(NotificationBanner, {
       props: {
         message: 'Persistent',

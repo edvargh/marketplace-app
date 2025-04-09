@@ -116,7 +116,16 @@ describe('Navbar.vue', () => {
       wrapper.vm.dropdownRef = { contains: () => false }
       const clickEvent = new Event('click')
       wrapper.vm.handleClickOutside(clickEvent)
+      expect(wrapper.vm.dropdownOpen).toBe(false)
+    })
 
+    it('toggle dropdownOpen on each call', async () => {
+      wrapper = mountComponent()
+      await wrapper.vm.$nextTick()
+      expect(wrapper.vm.dropdownOpen).toBe(false)
+      wrapper.vm.toggleDropdown()
+      expect(wrapper.vm.dropdownOpen).toBe(true)
+      wrapper.vm.toggleDropdown()
       expect(wrapper.vm.dropdownOpen).toBe(false)
     })
   })
@@ -152,10 +161,8 @@ describe('Navbar.vue', () => {
     it('closes mobile menu when clicked outside', async () => {
       wrapper = mountComponent()
       await wrapper.vm.$nextTick()
-
       wrapper.vm.showMobileMenu = true
       await wrapper.vm.$nextTick()
-
       wrapper.vm.mobileMenuRef = { contains: () => false }
       const clickEvent = new Event('click')
 
@@ -172,13 +179,11 @@ describe('Navbar.vue', () => {
 
       wrapper = mountComponent()
       await wrapper.vm.$nextTick()
-
       wrapper.vm.dropdownOpen = true
       await wrapper.vm.$nextTick()
 
       const logoutButton = wrapper.find('.logout-button')
       expect(logoutButton.exists()).toBe(true)
-
       await logoutButton.trigger('click')
 
       expect(userStore.logout).toHaveBeenCalled()
@@ -213,10 +218,8 @@ describe('Navbar.vue', () => {
         configurable: true,
         value: 800
       })
-
       wrapper = mountComponent()
       await wrapper.vm.$nextTick()
-
       wrapper.vm.showMobileMenu = true
       await wrapper.vm.$nextTick()
 
@@ -238,14 +241,13 @@ describe('Navbar.vue', () => {
       const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener')
 
       wrapper = mountComponent()
-
       expect(addEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function))
       expect(addEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function))
 
       wrapper.unmount()
-
       expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function))
       expect(removeEventListenerSpy).toHaveBeenCalledWith('resize', expect.any(Function))
     })
   })
+
 })

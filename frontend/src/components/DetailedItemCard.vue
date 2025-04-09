@@ -9,7 +9,7 @@
           @error="handleImageError"
         />
       </div>
-      
+
       <div class="profile-badge">
         <img
           :src="sellerProfilePicture"
@@ -25,7 +25,10 @@
             <h3 class="title">{{ item.title }}</h3>
           </div>
         </div>
-        
+        <p class="card-description">
+          {{ item.description }}
+        </p>
+
         <div class="card-footer">
           <div class="price-frame">
             <label class="price-label">Price</label>

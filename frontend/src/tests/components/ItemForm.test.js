@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import ItemForm from '@/components/ItemForm.vue'
 import { createI18n } from 'vue-i18n'
-import { createPinia, setActivePinia } from 'pinia'
+import { createPinia } from 'pinia'
 
 vi.mock('@/stores/categoryStore', () => {
   return {
@@ -51,13 +51,10 @@ const i18n = createI18n({
   }
 })
 
-const pinia = createPinia()
-setActivePinia(pinia)
-
 const mountComponent = (props = {}) => {
   return mount(ItemForm, {
     global: {
-      plugins: [i18n, pinia],
+      plugins: [i18n, createPinia()],
       stubs: {
         ImageGallery: true,
         SelectBox: true,
@@ -68,6 +65,26 @@ const mountComponent = (props = {}) => {
       }
     },
     props
+  })
+}
+
+const createValidData = (overrides = {}) => ({
+  status: 'FOR_SALE',
+  title: 'Test Title',
+  price: 100,
+  categoryId: 1,
+  description: 'Test Desc',
+  latitude: 10,
+  longitude: 20,
+  images: [],
+  currentImageIndex: 0,
+  ...overrides
+})
+
+const stubURL = (url = 'dummy-url') => {
+  vi.stubGlobal('URL', {
+    createObjectURL: vi.fn(() => url),
+    revokeObjectURL: vi.fn()
   })
 }
 
@@ -92,17 +109,7 @@ describe('ItemForm.vue', () => {
   })
 
   it('emits submit event on valid form', async () => {
-    const validData = {
-      status: 'FOR_SALE',
-      title: 'Test Title',
-      price: 100,
-      categoryId: 1,
-      description: 'Test Desc',
-      latitude: 10,
-      longitude: 20,
-      images: [],
-      currentImageIndex: 0
-    }
+    const validData = createValidData()
     wrapper = mountComponent({ title: 'Test Title', initialData: validData, showStatus: true })
     await flushPromises()
 
@@ -120,17 +127,7 @@ describe('ItemForm.vue', () => {
   })
 
   it('does not emit submit event on invalid form', async () => {
-    const invalidData = {
-      status: 'FOR_SALE',
-      title: '',
-      price: 100,
-      categoryId: 1,
-      description: 'Test Desc',
-      latitude: 10,
-      longitude: 20,
-      images: [],
-      currentImageIndex: 0
-    }
+    const invalidData = createValidData({ title: '' })
     wrapper = mountComponent({ title: 'Test Title', initialData: invalidData, showStatus: true })
     await flushPromises()
 
@@ -141,19 +138,8 @@ describe('ItemForm.vue', () => {
     expect(wrapper.emitted().submit).toBeFalsy()
   })
 
-  it('display error message if title exceeds max length', async () => {
-    const initialData = {
-      status: 'FOR_SALE',
-      title: 'Test Title',
-      price: 100,
-      categoryId: 1,
-      description: 'Test Desc',
-      latitude: 10,
-      longitude: 20,
-      images: [],
-      currentImageIndex: 0
-    }
-
+  it('display title error message if title exceeds max length', async () => {
+    const initialData = createValidData()
     wrapper = mountComponent({ title: 'Test Title', initialData, showStatus: true })
     await flushPromises()
     expect(wrapper.find('.error-message').exists()).toBe(false)
@@ -167,18 +153,7 @@ describe('ItemForm.vue', () => {
   })
 
   it('display location error if latitude and longitude is not provided', async () => {
-    const incompleteData = {
-      status: 'FOR_SALE',
-      title: 'Test Title',
-      price: 100,
-      categoryId: 1,
-      description: 'Test Desc',
-      latitude: null,
-      longitude: null,
-      images: [],
-      currentImageIndex: 0
-    }
-
+    const incompleteData = createValidData({ latitude: null, longitude: null })
     wrapper = mountComponent({ title: 'Test Title', initialData: incompleteData, showStatus: true })
     await flushPromises()
 
@@ -188,22 +163,8 @@ describe('ItemForm.vue', () => {
   })
 
   it('handle image upload and updates formData.images', async () => {
-    vi.stubGlobal('URL', {
-      createObjectURL: vi.fn(() => 'dummy-url'),
-      revokeObjectURL: vi.fn()
-    })
-
-    const initialData = {
-      status: 'FOR_SALE',
-      title: 'Test Title',
-      price: 100,
-      categoryId: 1,
-      description: 'Test Desc',
-      latitude: 10,
-      longitude: 20,
-      images: [],
-      currentImageIndex: 0
-    }
+    stubURL()
+    const initialData = createValidData()
     wrapper = mountComponent({ title: 'Test Title', initialData, showStatus: true })
     await flushPromises()
 
@@ -224,23 +185,9 @@ describe('ItemForm.vue', () => {
   })
 
   it('removes current image on removeCurrentImage', async () => {
-    vi.stubGlobal('URL', {
-      createObjectURL: vi.fn(() => 'dummy-url'),
-      revokeObjectURL: vi.fn()
-    })
-
+    stubURL()
     const dummyImage = { file: {}, url: 'dummy-url' }
-    const initialData = {
-      status: 'FOR_SALE',
-      title: 'Test Title',
-      price: 100,
-      categoryId: 1,
-      description: 'Test Desc',
-      latitude: 10,
-      longitude: 20,
-      images: [dummyImage],
-      currentImageIndex: 0
-    }
+    const initialData = createValidData({ images: [dummyImage] })
     wrapper = mountComponent({ title: 'Test Title', initialData, showStatus: true })
     await flushPromises()
 
@@ -250,17 +197,7 @@ describe('ItemForm.vue', () => {
   })
 
   it('display price error for negative price', async () => {
-    const initialData = {
-      status: 'FOR_SALE',
-      title: 'Test Title',
-      price: 0,
-      categoryId: 1,
-      description: 'Test Desc',
-      latitude: 10,
-      longitude: 20,
-      images: [],
-      currentImageIndex: 0
-    }
+    const initialData = createValidData()
     wrapper = mountComponent({ title: 'Test Title', initialData, showStatus: true })
     await flushPromises()
     wrapper.vm.formData.price = -10
@@ -272,17 +209,7 @@ describe('ItemForm.vue', () => {
   })
 
   it('display price error for too high price', async () => {
-    const initialData = {
-      status: 'FOR_SALE',
-      title: 'Test Title',
-      price: 0,
-      categoryId: 1,
-      description: 'Test Desc',
-      latitude: 10,
-      longitude: 20,
-      images: [],
-      currentImageIndex: 0
-    }
+    const initialData = createValidData()
     wrapper = mountComponent({ title: 'Test Title', initialData, showStatus: true })
     await flushPromises()
     wrapper.vm.formData.price = 10000001
@@ -293,4 +220,55 @@ describe('ItemForm.vue', () => {
     expect(found).toBe(true)
   })
 
+  it('trigger a click on file input when triggerFileInput is called', async () => {
+    wrapper = mountComponent({ title: 'Test Title', initialData: { images: [], currentImageIndex: 0 }, showStatus: true })
+    await flushPromises()
+    const fileInputWrapper = wrapper.find('input[type="file"]')
+    const clickSpy = vi.spyOn(fileInputWrapper.element, 'click')
+    wrapper.vm.triggerFileInput()
+    expect(clickSpy).toHaveBeenCalled()
+  })
+
+  it('update formData when initialData prop changes', async () => {
+    const initialData = createValidData({ title: 'Initial Title' })
+    wrapper = mountComponent({ title: 'Test Title', initialData, showStatus: true })
+    await flushPromises()
+    expect(wrapper.vm.formData.title).toBe('Initial Title')
+
+    const newData = {
+      ...initialData,
+      title: 'Updated Title',
+      description: 'Updated Desc'
+    }
+    await wrapper.setProps({ initialData: newData })
+    await flushPromises()
+    expect(wrapper.vm.formData.title).toBe('Updated Title')
+    expect(wrapper.vm.formData.description).toBe('Updated Desc')
+  })
+
+  it('revokes image URLs on unmount', async () => {
+    const revokeSpy = vi.fn()
+    vi.stubGlobal('URL', {
+      createObjectURL: vi.fn(() => 'fake-url'),
+      revokeObjectURL: revokeSpy
+    })
+    wrapper = mountComponent({
+      initialData: {
+        images: [{ file: {}, url: 'fake-url' }],
+        currentImageIndex: 0
+      }
+    })
+    await flushPromises()
+    wrapper.unmount()
+    expect(revokeSpy).toHaveBeenCalledWith('fake-url')
+  })
+
+
+  it('set no error when price is empty or null', async () => {
+    const initialData = createValidData({ price: 0 })
+    wrapper = mountComponent({ initialData })
+    wrapper.vm.formData.price = ''
+    await flushPromises()
+    expect(wrapper.vm.priceError).toBe('')
+  })
 })
