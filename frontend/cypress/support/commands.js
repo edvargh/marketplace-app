@@ -68,3 +68,4 @@ Cypress.Commands.add('isInViewport', { prevSubject: true }, (subject) => {
   
   return subject;
 });
+
