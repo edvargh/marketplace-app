@@ -23,9 +23,11 @@ export const useCategoryStore = defineStore('categories', () => {
       const headers = getAuthHeaders();  
       const response = await axios.get(`${API_BASE_URL}/api/categories`, { headers });
       return response.data;
-      
     } catch (err) {
-      console.error('Error fetching categories:', err);
+      if (err.message === 'User not authenticated') {
+        throw new Error('User not authenticated');
+      }
+      throw err; 
     }
   };
 
@@ -36,7 +38,6 @@ export const useCategoryStore = defineStore('categories', () => {
       return response.data;
 
     } catch (err) {
-      console.error('Error creating category:', err);
       throw err;
     }
   };
@@ -48,7 +49,6 @@ export const useCategoryStore = defineStore('categories', () => {
       return response.data;
 
     } catch (err) {
-      console.error(`Error updating category with ID ${id}:`, err);
       throw err;
     }
   };

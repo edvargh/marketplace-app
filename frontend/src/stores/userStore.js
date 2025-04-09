@@ -155,7 +155,8 @@ export const useUserStore = defineStore('user', () => {
   };
 
   const getProfileImageUrl = (profileImagePath) => {
-    if (!profileImagePath) return '/default-picture.jpg';
+    if (!profileImagePath || typeof profileImagePath !== 'string') 
+      return '/default-picture.jpg';
     
     if (profileImagePath.startsWith('http://') || profileImagePath.startsWith('https://')) {
       return profileImagePath;

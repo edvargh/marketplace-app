@@ -24,7 +24,6 @@
           const response = await axios.get(`${API_BASE_URL}/api/messages/conversations`, { headers })
           return response.data
         } catch (err) {
-          console.error('Error fetching user conversations:', err)
           return []
         }
       }
@@ -38,7 +37,6 @@
           })
           return response.data
         } catch (err) {
-          console.error('Error fetching conversation:', err)
           return []
         }
       }
@@ -50,7 +48,6 @@
           const response = await axios.post(`${API_BASE_URL}/api/messages/send`, payload, { headers })
           return response.status === 200
         } catch (err) {
-          console.error('Error sending message:', err)
           return false
         }
       }
@@ -76,7 +73,6 @@
           const response = await axios.post(`${API_BASE_URL}/api/messages/send-reservation-request`, payload, { headers })
           return response.status === 200
         } catch (err) {
-          console.error('Error sending reservation request:', err)
           return false
         }
       }
@@ -93,7 +89,6 @@
           return response.status === 200
 
         } catch (err) {
-          console.error('Error updating reservation status:', err)
           return false
         }
       }
