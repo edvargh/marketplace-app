@@ -1,5 +1,9 @@
+// Admin has one extra functionality (create/modify categories).
+// Therefore, all admin related is only for this test (admin log in, categories creation/modifying)
+
 describe('E2E - Admin User Login, Create and Edit Categories', () => {
   let adminUser, categories;
+  let currentCategories;
 
   before(() => {
     cy.fixture('adminUser.json').then((data) => { adminUser = data; });
@@ -7,7 +11,8 @@ describe('E2E - Admin User Login, Create and Edit Categories', () => {
   });
 
   it('logs in as admin, navigates to categories, creates and edits a category', () => {
-    // Set up login mocks
+    currentCategories = [...categories];
+
     cy.intercept('POST', '/api/auth/login', {
       statusCode: 200,
       body: adminUser
@@ -18,10 +23,7 @@ describe('E2E - Admin User Login, Create and Edit Categories', () => {
       body: adminUser
     }).as('getMe');
 
-    // Initial categories setup
-    let currentCategories = [...categories];
-
-    // Use a function to dynamically respond with the current categories
+    // Current categories
     cy.intercept('GET', '/api/categories', (req) => {
       req.reply({
         statusCode: 200,
@@ -32,9 +34,7 @@ describe('E2E - Admin User Login, Create and Edit Categories', () => {
     // Create category endpoint
     cy.intercept('POST', '/api/categories', (req) => {
       const newCategory = { id: 11, name: 'New Category' };
-      // Update our local state to match what the backend would do
       currentCategories = [...currentCategories, newCategory];
-
       req.reply({
         statusCode: 201,
         body: newCategory
@@ -44,11 +44,9 @@ describe('E2E - Admin User Login, Create and Edit Categories', () => {
     // Update category endpoint
     cy.intercept('PUT', '/api/categories/*', (req) => {
       const updatedCategory = { id: 2, name: 'Updated Category' };
-      // Update our local state
       currentCategories = currentCategories.map(c =>
           c.id === 2 ? updatedCategory : c
       );
-
       req.reply({
         statusCode: 200,
         body: updatedCategory

@@ -20,28 +20,6 @@ Cypress.Commands.add('login', (email = 'test@example.com', password = 'password1
   cy.get('button[type="submit"]').click();
 });
 
-Cypress.Commands.add('loginAdmin', (email = 'test@example.com', password = 'password123', role = 'USER') => {
-  cy.intercept('POST', '/api/auth/login', {
-    statusCode: 200,
-    body: {
-      email: email,
-      name: 'Test User',
-      token: 'fake-jwt-token',
-      id: 1,
-      role: role,
-    },
-  }).as('loginRequest');
-
-  cy.window().then((win) => {
-    win.localStorage.setItem('auth_token', token);
-  });
-
-  cy.visit('/login');
-  cy.get('#email').type(email);
-  cy.get('#password').type(password);
-  cy.get('button[type="submit"]').click();
-});
-
 
 Cypress.Commands.add('mockApiRequests', (user, categories, recommendedItems) => {
   cy.intercept('GET', '/api/users/me', {
@@ -53,16 +31,6 @@ Cypress.Commands.add('mockApiRequests', (user, categories, recommendedItems) => 
     statusCode: 200,
     body: categories
   }).as('getCategories');
-
-  cy.intercept('POST', '/api/categories', {
-    statusCode: 201,
-    body: { id: 11, name: 'New Category' }
-  }).as('createCategory');
-
-  cy.intercept('PUT', '/api/categories/*', {
-    statusCode: 200,
-    body: { id: 2, name: 'Updated Category' }
-  }).as('updateCategory');
 
   cy.intercept('GET', '/api/items/recommended', {
     statusCode: 200,
@@ -90,8 +58,6 @@ Cypress.Commands.add('mockApiRequests', (user, categories, recommendedItems) => 
     });
   }).as('getItems');
 });
-
-
 
 Cypress.Commands.add('isInViewport', { prevSubject: true }, (subject) => {
   const bottom = Cypress.$(cy.state('window')).height();
