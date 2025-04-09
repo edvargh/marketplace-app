@@ -15,6 +15,7 @@ describe('E2E - Messages View with Mocked Conversations', () => {
     cy.wait('@getMe');
     
     cy.visit('/messages/conversations');
+    cy.wait(800)
     cy.wait('@getConversations');
     cy.wait(`@getItem-${items[0].id}`);
     

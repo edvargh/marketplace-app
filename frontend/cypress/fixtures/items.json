@@ -7,5 +7,14 @@
     "sellerId": 99,
     "sellerName": "Jane Doe",
     "imageUrls": ["https://res.cloudinary.com/demo/image/upload/sample.jpg"]
+  },
+  {
+    "id": 2,
+    "title": "Laptop",
+    "price": 800,
+    "status": "FOR_SALE",
+    "sellerId": 99,
+    "sellerName": "Jane Doe",
+    "imageUrls": ["https://res.cloudinary.com/demo/image/upload/sample.jpg"]
   }
 ]
