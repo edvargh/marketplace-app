@@ -1,6 +1,17 @@
+[
 {
   "id": 1,
   "email": "user@example.com",
   "name": "Test User",
-  "role": "USER"
+  "role": "USER",
+  "profilePicture": "images/test.jpg"
+
+},
+{
+  "id": 4,
+  "email": "JaneDoe@test.com",
+  "name": "Jane Doe",
+  "role": "USER",
+  "profilePicture": "images/test.jpg"
 }
+]

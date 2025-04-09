@@ -1,0 +1,20 @@
+[
+  {
+    "messageId": 101,
+    "fromYou": false,
+    "senderId": 4,
+    "content": "Is this still available?",
+    "sentAt": "2025-04-09T10:00:00Z",
+    "isReservationRequest": false,
+    "reservationStatus": null
+  },
+  {
+    "messageId": 102,
+    "fromYou": true,
+    "senderId": 1,
+    "content": "Yes, it is.",
+    "sentAt": "2025-04-09T10:05:00Z",
+    "isReservationRequest": false,
+    "reservationStatus": null
+  }
+]

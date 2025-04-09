@@ -82,3 +82,40 @@ Cypress.Commands.add('mockRegister', (responseBody = {}, statusCode = 200) => {
     body: responseBody
   }).as('registerRequest');
 });
+
+Cypress.Commands.add('mockApiRequests', (user, conversations, messages, items = []) => {
+  cy.intercept('POST', '/api/auth/login', {
+    statusCode: 200,
+    body: {
+      email: user.email,
+      name: user.fullName,
+      token: 'fake-jwt-token',
+      id: user.id,
+      role: 'USER',
+    },
+  }).as('loginRequest');
+
+  cy.intercept('GET', '/api/users/me', {
+    statusCode: 200,
+    body: user
+  }).as('getMe');
+
+  cy.intercept('GET', '/api/messages/conversations', {
+    statusCode: 200,
+    body: conversations
+  }).as('getConversations');
+
+  cy.intercept('GET', `/api/messages/conversation?itemId=${messages[0].itemId}&withUserId=${messages[0].senderId}`, {
+    statusCode: 200,
+    body: messages
+  }).as('getMessages');
+
+  items.forEach((item) => {
+    cy.intercept('GET', `/api/items/${item.id}`, {
+      statusCode: 200,
+      body: item
+    }).as(`getItem-${item.id}`);
+  });
+});
+
+

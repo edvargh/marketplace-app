@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1,
+    "title": "Desktop pc",
+    "price": 400,
+    "status": "RESERVED",
+    "sellerId": 99,
+    "sellerName": "Jane Doe",
+    "imageUrls": ["https://res.cloudinary.com/demo/image/upload/sample.jpg"]
+  }
+]
