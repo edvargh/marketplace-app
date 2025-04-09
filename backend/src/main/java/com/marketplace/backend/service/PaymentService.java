@@ -1,5 +1,7 @@
 package com.marketplace.backend.service;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import com.marketplace.backend.model.Item;
 import com.marketplace.backend.model.ItemStatus;
 import com.marketplace.backend.model.Order;
@@ -41,6 +43,7 @@ public class PaymentService {
   private final ItemRepository itemRepository;
   private final OrderRepository orderRepository;
   private final RestTemplate restTemplate = new RestTemplate();
+  private final ConcurrentMap<String, Boolean> paymentStatusMap = new ConcurrentHashMap<>();
 
   /**
    * Constructor for PaymentService.
@@ -165,7 +168,15 @@ public class PaymentService {
    *
    * @param orderId the ID of the order
    */
-  public void finalizeOrderFromVippsCallback(String orderId) {
+  public void finalizeOrderFromVippsCallback(String orderId, Map<String, Object> payload) {
+    Map<String, Object> transactionInfo = (Map<String, Object>) payload.get("transactionInfo");
+    String status = (String) transactionInfo.get("status");
+
+    System.out.println("Status from Vipps callback payload: " + status);
+
+    if (!"SALE".equalsIgnoreCase(status)) {
+      throw new IllegalStateException("Payment not completed, status was: " + status);
+    }
     String[] parts = orderId.split("-");
     Long itemId = Long.parseLong(parts[1]);
     Long buyerId = Long.parseLong(parts[2]);
@@ -191,6 +202,7 @@ public class PaymentService {
     order.setPrice(item.getPrice());
 
     orderRepository.save(order);
+    paymentStatusMap.put(orderId, true);
   }
 
   /**
@@ -198,11 +210,9 @@ public class PaymentService {
    *
    * @param itemId        the ID of the item
    * @param userEmail     the email of the user
-   * @param callbackPrefix the callback URL prefix
-   * @param fallBackUrl   the fallback URL
    * @return the payment URL for redirection
    */
-  public String createVippsPayment(Long itemId, String userEmail, String callbackPrefix, String fallBackUrl) {
+  public String createVippsPayment(Long itemId, String userEmail) {
     User user = userRepository.findByEmail(userEmail).orElseThrow();
     Item item = itemRepository.findById(itemId).orElse(null);
     if (item == null) throw new RuntimeException("Item not found");
@@ -214,6 +224,36 @@ public class PaymentService {
     double amount = item.getPrice();
     String orderId = "order-" + itemId + "-" + user.getId() + "-" + System.currentTimeMillis();
 
+    String callbackPrefix = "https://mentally-crucial-quagga.ngrok-free.app/api/payments/vipps-callback";
+    String fallBackUrl = "https://mentally-crucial-quagga.ngrok-free.app/api/payments/vipps-complete?orderId=" + orderId;
+
     return initiatePayment(orderId, amount, user.getPhoneNumber(), callbackPrefix, fallBackUrl);
+  }
+
+  /**
+   * Checks if the order has been finalized.
+   *
+   * @param orderId the ID of the order
+   * @return true if the order has been finalized, false otherwise
+   */
+  public boolean hasOrderBeenFinalized(String orderId) {
+    int retries = 8;
+    int delayMs = 1000;
+
+    for (int i = 0; i < retries; i++) {
+      Boolean status = paymentStatusMap.get(orderId);
+      if (status != null && status) {
+        return true;
+      }
+
+      try {
+        Thread.sleep(delayMs);
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        break;
+      }
+    }
+
+    return false;
   }
 }
