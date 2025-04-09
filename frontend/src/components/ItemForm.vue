@@ -44,6 +44,7 @@
         <label for="status">{{ t('itemFormComponent.status') }}</label>
         <SelectBox
             label="Status"
+            class="status-select-box"
             v-model="formData.status"
             :options="statusOptions"
             option-label="label"
@@ -57,6 +58,7 @@
       <label for="Category">{{ t('itemFormComponent.category') }}</label>
       <SelectBox
           label="Category"
+          class="category-select-box"
           v-model="formData.categoryId"
           :options="categories"
           option-label="name"

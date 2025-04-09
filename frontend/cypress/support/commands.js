@@ -18,6 +18,10 @@ Cypress.Commands.add('login', (email = 'test@example.com', password = 'password1
   cy.get('#email').type(email);
   cy.get('#password').type(password);
   cy.get('button[type="submit"]').click();
+
+  cy.window().then((win) => {
+    win.localStorage.setItem('token', 'fake-jwt-token');
+  });
 });
 
 
@@ -205,4 +209,68 @@ Cypress.Commands.add('mockReservationFlow', (user, item) => {
     statusCode: 200,
     body: { success: true, messageId: 123 }
   }).as('sendMessage');
+});
+
+Cypress.Commands.add('mockProfileUpdate', (updatedUser) => {
+  cy.intercept('PUT', `/api/users/${updatedUser.id}`, (req) => {
+    expect(req.headers).to.have.property('Authorization', 'Bearer fake-jwt-token');
+    req.reply({
+      statusCode: 200,
+      body: updatedUser,
+    });
+  }).as('updateProfile');
+});
+
+Cypress.Commands.add('mockCreateItem', (itemDetail) => {
+  cy.intercept('POST', '**/api/items/create', {
+    statusCode: 201,
+    body: itemDetail
+  }).as('createItem');
+});
+
+Cypress.Commands.add('mockGetItemDetails', (itemId, itemDetail, sellerId) => {
+  cy.intercept('GET', `/api/items/${itemId}`, {
+    statusCode: 200,
+    body: {
+      id: itemDetail.id,
+      title: itemDetail.title,
+      description: itemDetail.description,
+      category: { id: itemDetail.categoryId, name: itemDetail.categoryName },
+      price: itemDetail.price,
+      status: itemDetail.status,
+      location: { lat: itemDetail.latitude, lng: itemDetail.longitude },
+      images: itemDetail.imageUrls,
+      sellerId: sellerId,
+      sellerName: itemDetail.seller.username,
+      reservedById: null
+
+    }
+  }).as('getItemDetails');
+});
+
+Cypress.Commands.add('mockGetMessages', (itemId, sellerId) => {
+  cy.intercept('GET', `/api/messages/conversation?itemId=${itemId}&withUserId=${sellerId}`, {
+    statusCode: 200,
+    body: []
+  }).as('getMessages');
+});
+
+Cypress.Commands.add('mockGetSeller', (sellerId, itemDetail) => {
+  cy.intercept('GET', `/api/users/${sellerId}`, {
+    statusCode: 200,
+    body: {
+      id: sellerId,
+      name: itemDetail.seller.username,
+      email: 'seller@example.com',
+      profilePicture: '/images/seller.jpg',
+      role: 'USER'
+    }
+  }).as('getSeller');
+});
+
+Cypress.Commands.add('mockTrackView', (itemId) => {
+  cy.intercept('POST', `/api/items/${itemId}/view`, {
+    statusCode: 200,
+    body: {}
+  }).as('trackView');
 });

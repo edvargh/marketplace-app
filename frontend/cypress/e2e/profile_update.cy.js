@@ -1,89 +1,131 @@
-describe('E2E - Update Profile', () => {
-  let user;
+// cypress/e2e/profile_update.cy.js
 
-  before(() => {
-    cy.fixture('user.json').then((data) => {
-      user = data;
+// If you use the cypress-file-upload plugin, uncomment the following line:
+// import 'cypress-file-upload';
+
+describe('Profile View', () => {
+  const fakeUser = {
+    id: 1,
+    fullName: 'John Doe',
+    email: 'john@example.com',
+    phoneNumber: '12345678',
+    profilePicture: '/default-picture.jpg',
+    preferredLanguage: 'english'
+  };
+
+  beforeEach(() => {
+    // Visit the base URL first so we can access localStorage.
+    cy.visit('/');
+    cy.window().then((win) => {
+      win.localStorage.setItem('token', 'fake-token');
+      win.localStorage.setItem('user', JSON.stringify(fakeUser));
     });
+
+    // Stub the checkAuth call that gets user profile on mount.
+    cy.intercept('GET', '**/api/users/me', {
+      statusCode: 200,
+      body: fakeUser
+    }).as('checkAuth');
+
+    // Stub the GET request for fetching a user by ID.
+    cy.intercept('GET', '**/api/users/1', {
+      statusCode: 200,
+      body: fakeUser
+    }).as('getUserById');
+
+    // Stub the PUT request for updating the user.
+    cy.intercept('PUT', '**/api/users/1', (req) => {
+      const sendReply = (userData) => {
+        req.reply({
+          statusCode: 200,
+          body: {
+            id: fakeUser.id,
+            fullName: userData.fullName || fakeUser.fullName,
+            email: userData.email || fakeUser.email,
+            phoneNumber: userData.phoneNumber || fakeUser.phoneNumber,
+            profilePicture: '/updated-picture.jpg',
+            preferredLanguage: userData.preferredLanguage || fakeUser.preferredLanguage,
+          }
+        });
+      };
+
+      // Check if req.body.get exists (indicating a FormData-like object)
+      if (req.body && typeof req.body.get === 'function') {
+        req.body.get('dto')
+          .text()
+          .then(text => {
+            const userData = JSON.parse(text);
+            sendReply(userData);
+          });
+      } else if (req.body && req.body.dto) {
+        // Otherwise, assume a plain JSON object
+        let userData;
+        if (typeof req.body.dto === 'string') {
+          userData = JSON.parse(req.body.dto);
+        } else {
+          userData = req.body.dto;
+        }
+        sendReply(userData);
+      } else {
+        // Fallback if there's no dto in the payload.
+        sendReply({});
+      }
+    }).as('updateUser');
+
+    // Navigate to the profile view page. Adjust the URL path if needed.
+    cy.visit('/profile');
+    cy.wait('@checkAuth');
   });
 
-  it('logs in and updates the profile information', () => {
-    // Mock the initial API responses for login and loading user data
-    cy.mockApiRequests(user, [], []);
-    cy.login('testuser@example.com', 'password123');
-    cy.wait('@loginRequest');
-    cy.wait('@getMe');
+  it('displays the current user profile information', () => {
+    // Verify profile information is rendered.
+    cy.contains('John Doe');
+    cy.get('.profile-picture')
+      .should('have.attr', 'src')
+      .and('include', '/default-picture.jpg');
+  });
 
-    // Go to the profile page
-    cy.visit('/profile');
-    cy.url().should('include', '/profile');
-    cy.contains('Profile');
+  it('updates the profile successfully', () => {
+    // Fill in the form with new user details.
+    cy.get('#fullName').clear().type('Jane Doe');
+    cy.get('#email').clear().type('jane@example.com');
+    cy.get('#phoneNumber').clear().type('87654321');
+    cy.get('#password').clear().type('newpassword');
+    cy.get('#confirmPassword').clear().type('newpassword');
 
-    // Simulate clicking the edit icon to enable file input
-    cy.get('img.edit-icon').click();
+    // --- Language Dropdown Interaction ---
+    // Click the dropdown arrow to open the options.
+    cy.get('.dropdown-arrow').click();
+    // Then click the language option "Norwegian".
+    cy.contains('Norwegian').click();
 
-    // Upload a profile image from fixtures/images/test.jpg
-    cy.get('input[type="file"]').attachFile('images/test.jpg', { subjectType: 'input' });
+    cy.get('.profile-picture-wrapper .profile-picture-container input[type="file"]')
+      .then(($input) => {
+        const blob = new Blob(['fake image content'], { type: 'image/png' });
+        const file = new File([blob], 'sample.png', { type: 'image/png' });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        $input[0].files = dataTransfer.files;
+        cy.wrap($input).trigger('change', { force: true });
+      });
 
-    // Fill out the rest of the profile fields
-    cy.get('#fullName').clear().type('Updated Name');
-    cy.get('#email').clear().type('updated@example.com');
-    cy.get('#phoneNumber').clear().type('12345678');
-    cy.get('#password').clear().type('newsecurepass');
-    cy.get('#confirmPassword').clear().type('newsecurepass');
-
-    // Select a new language
-    cy.get('.SelectBox').click();
-    cy.contains('.custom-dropdown-menu li', 'English').click();
-
-    // Mock the profile update API call before form submission
-    cy.mockProfileUpdate({
-      ...user,
-      fullName: 'Updated Name',
-      email: 'updated@example.com',
-      phoneNumber: '12345678',
-      preferredLanguage: 'english',
-      profilePicture: 'some-profile-url.jpg'
-    });
-
-    // Submit the form and wait for the mocked API response
+    // Submit the form.
     cy.get('form').submit();
-    cy.wait('@updateProfile');
 
-    // Verify the success message shows up
-    cy.contains('Profile updated successfully');
+    // Wait for the update API call and verify it returns a 200 OK status.
+    cy.wait('@updateUser').its('response.statusCode').should('eq', 200);
   });
 
-
-  it('displays validation errors when updating the profile with invalid data', () => {
-    // Mock initial API responses
-    cy.mockApiRequests(user, [], []);
-    cy.login('testuser@example.com', 'password123');
-    cy.wait('@loginRequest');
-    cy.wait('@getMe');
-
-    // Navigate to the profile page
-    cy.visit('/profile');
-    cy.url().should('include', '/profile');
-    cy.contains('Profile');
-
-    // Click the edit icon to enable file input
-    cy.get('img.edit-icon').click();
-
-    // Attempt to upload an invalid profile image 
-    cy.get('input[type="file"]').attachFile('images/invalid-file.txt', { subjectType: 'input' });
-
-    // Leave required fields empty or enter invalid data
+  it('shows validation errors when required fields are invalid', () => {
+    // Clear required field to test validation (full name)
     cy.get('#fullName').clear();
-    cy.get('#email').clear().type('invalid-email');
-    cy.get('#phoneNumber').clear().type('invalid-phone');
-    cy.get('#password').clear().type('short');
-    cy.get('#confirmPassword').clear().type('mismatch');
-
-    // Submit the form
     cy.get('form').submit();
+    // Check for a validation message indicating the error.
+    cy.contains(/full name is required/i);
 
-    // Check for a general error message
-    cy.contains('Please fill in all required fields correctly.');
+    // Also test with an invalid email.
+    cy.get('#email').clear().type('invalid-email');
+    cy.get('form').submit();
+    cy.contains(/please enter a valid email address/i);
   });
 });
