@@ -12,7 +12,7 @@ describe('E2E - Login, Search, Filter', () => {
     cy.mockApiRequests(user, categories, recommendedItems);
 
     // Login and home page
-    cy.login('testuser@example.com', 'password123');
+    cy.login(user.email, 'password123');
     cy.wait('@loginRequest');
     cy.wait('@getMe');
     cy.wait('@getCategories');

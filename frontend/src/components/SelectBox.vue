@@ -1,6 +1,6 @@
 <template>
   <div class="InputBox-wrapper" ref="dropdownRef">
-    <div class="InputBox" @click="isOpen = !isOpen">
+    <div class="InputBox SelectBox" @click="isOpen = !isOpen">
       <input
           type="text"
           class="InputBox-input"

@@ -20,6 +20,7 @@ Cypress.Commands.add('login', (email = 'test@example.com', password = 'password1
   cy.get('button[type="submit"]').click();
 });
 
+
 Cypress.Commands.add('mockApiRequests', (user, categories, recommendedItems) => {
   cy.intercept('GET', '/api/users/me', {
     statusCode: 200,
@@ -35,6 +36,7 @@ Cypress.Commands.add('mockApiRequests', (user, categories, recommendedItems) => 
     statusCode: 200,
     body: recommendedItems
   }).as('getRecommended');
+
 
   cy.intercept('GET', /\/api\/items/, (req) => {
     const url = new URL(req.url);
@@ -56,8 +58,6 @@ Cypress.Commands.add('mockApiRequests', (user, categories, recommendedItems) => 
     });
   }).as('getItems');
 });
-
-
 
 Cypress.Commands.add('isInViewport', { prevSubject: true }, (subject) => {
   const bottom = Cypress.$(cy.state('window')).height();
