@@ -80,5 +80,5 @@ watch(() => props.options, () => {
 </script>
 
 <style scoped>
-@import '../styles/components/CheckBoxGroup.css';
+@import '../styles/components/CheckboxGroup.css';
 </style>
