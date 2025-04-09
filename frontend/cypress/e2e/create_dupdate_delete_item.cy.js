@@ -28,7 +28,7 @@ describe('E2E - Item Management', () => {
 
     // Upload image
     cy.contains('button', 'Import Images').click();
-    cy.get('input[type="file"]').selectFile('cypress/fixtures/test.jpg', { force: true });
+    cy.get('input[type="file"]').selectFile('cypress/images/test.jpg', { force: true });
 
     // Select category
     cy.get('.SelectBox').click();
