@@ -39,11 +39,8 @@ public class PaymentController {
   @PostMapping("/vipps")
   public ResponseEntity<String> buyNowWithVipps(@RequestParam Long itemId,
                                                 @AuthenticationPrincipal UserDetails userDetails) {
-    String callbackPrefix = "https://mentally-crucial-quagga.ngrok-free.app/api/payments/vipps-callback";
-    String fallBackUrl = "https://mentally-crucial-quagga.ngrok-free.app/api/payments/vipps-complete";
-
     try {
-      String redirectUrl = paymentService.createVippsPayment(itemId, userDetails.getUsername(), callbackPrefix, fallBackUrl);
+      String redirectUrl = paymentService.createVippsPayment(itemId, userDetails.getUsername());
       return ResponseEntity.ok(redirectUrl);
     } catch (IllegalStateException e) {
       return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -63,9 +60,11 @@ public class PaymentController {
   @PostMapping("/vipps-callback/v2/payments/{orderId}")
   public ResponseEntity<Void> handleVippsCallback(@RequestBody Map<String, Object> payload,
                                                   @PathVariable String orderId) {
+    System.out.println("Vipps CALLBACK received for order: " + orderId);
+    System.out.println("Payload: " + payload);
 
     try {
-      paymentService.finalizeOrderFromVippsCallback(orderId);
+      paymentService.finalizeOrderFromVippsCallback(orderId, payload);
       return ResponseEntity.ok().build();
     } catch (Exception e) {
       e.printStackTrace();
@@ -79,10 +78,17 @@ public class PaymentController {
    * @return a response entity redirecting to the payment completion page
    */
   @GetMapping("/vipps-complete")
-  public ResponseEntity<Void> vippsComplete() {
-    URI redirectUri = URI.create("http://localhost:5173/payment-complete");
-    return ResponseEntity.status(HttpStatus.FOUND)
-        .location(redirectUri)
-        .build();
+  public ResponseEntity<Void> vippsComplete(@RequestParam String orderId) {
+    try {
+      boolean isFinalized = paymentService.hasOrderBeenFinalized(orderId);
+      URI redirectUri = isFinalized
+          ? URI.create("http://localhost:5173/payment-complete")
+          : URI.create("http://localhost:5173/payment-failed");
+
+      return ResponseEntity.status(HttpStatus.FOUND).location(redirectUri).build();
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.FOUND)
+          .location(URI.create("http://localhost:5173/payment-failed")).build();
+    }
   }
 }
