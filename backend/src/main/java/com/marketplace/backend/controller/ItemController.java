@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/items")
 @CrossOrigin(origins = "http://localhost:5173")
 public class ItemController {
+
+  private static final Logger logger = LoggerFactory.getLogger(ItemController.class);
 
   private final ItemService itemService;
 
@@ -58,6 +62,9 @@ public class ItemController {
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "6") int size
   ) {
+    logger.info("Fetching filtered items with params: minPrice={}, maxPrice={}, categoryIds={}, search={}, location=({},{}), distance={}, page={}, size={}",
+        minPrice, maxPrice, categoryIds, searchQuery, latitude, longitude, distanceKm, page, size);
+
     List<ItemResponseDto> items = itemService.getFilteredItems(
             minPrice, maxPrice, categoryIds, searchQuery, latitude, longitude, distanceKm, page, size
     );
@@ -73,9 +80,16 @@ public class ItemController {
    */
   @GetMapping("/{id}")
   public ResponseEntity<ItemResponseDto> getItemById(@PathVariable Long id) {
+    logger.info("Fetching item with ID: {}", id);
+
     Optional<ItemResponseDto> item = itemService.getItemById(id);
-    return item.map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    if (item.isPresent()) {
+      logger.debug("Found item: {}", item.get().getTitle());
+      return ResponseEntity.ok(item.get());
+    } else {
+      logger.warn("Item with ID {} not found", id);
+      return ResponseEntity.notFound().build();
+    }
   }
 
   /**
@@ -88,6 +102,7 @@ public class ItemController {
           @RequestParam(defaultValue = "0") int page,
           @RequestParam(defaultValue = "6") int size
   ) {
+    logger.info("Fetching current user's items");
     List<ItemResponseDto> myItems = itemService.getItemsForCurrentUser(page, size);
     return ResponseEntity.ok(myItems);
   }
@@ -102,22 +117,32 @@ public class ItemController {
           @RequestParam(defaultValue = "0") int page,
           @RequestParam(defaultValue = "6") int size
   ) {
+    logger.info("Fetching favorite items for current user");
     List<ItemResponseDto> favorites = itemService.getFavoriteItemsForCurrentUser(page, size);
     return ResponseEntity.ok(favorites);
   }
 
   /**
    * Toggle favorite status for an item.
-   * If the item is already favorited, it will be removed.
-   * If it's not favorited, it will be added.
+   * If the item is already marked favorite, it will be removed.
+   * If it's not, it will be added.
    *
    * @param itemId the ID of the item to toggle
    * @return 200 OK if successful, 404 if item not found
    */
   @PutMapping("/{itemId}/favorite-toggle")
   public ResponseEntity<Void> toggleFavorite(@PathVariable Long itemId) {
+    logger.info("Toggling favorite status for item with ID: {}", itemId);
+
     boolean success = itemService.toggleFavoriteItem(itemId);
-    return success ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+
+    if (success) {
+      logger.info("Successfully toggled favorite status for item {}", itemId);
+      return ResponseEntity.ok().build();
+    } else {
+      logger.warn("Failed to toggle favorite for item {}: item not found", itemId);
+      return ResponseEntity.notFound().build();
+    }
   }
 
 
@@ -132,8 +157,17 @@ public class ItemController {
       @RequestPart("item") ItemCreateDto dto,
       @RequestPart(value = "images", required = false) List<MultipartFile> images
   ) throws IOException {
-    dto.setImages(images);
-    return ResponseEntity.ok(itemService.createItem(dto));
+    logger.info("Creating new item: {}", dto.getTitle());
+    try {
+      dto.setImages(images);
+      ItemResponseDto createdItem = itemService.createItem(dto);
+
+      logger.info("Item created successfully with ID: {}", createdItem.getId());
+      return ResponseEntity.ok(createdItem);
+    } catch (Exception e) {
+      logger.error("Failed to create item {}: {}", dto.getTitle(), e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -149,10 +183,22 @@ public class ItemController {
       @RequestPart("dto") ItemUpdateDto dto,
       @RequestPart(value = "images", required = false) List<MultipartFile> images
   ) {
-    dto.setImages(images);
-    Optional<ItemResponseDto> updatedItem = itemService.updateItem(id, dto);
-    return updatedItem.map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    logger.info("Updating item with ID: {}", id);
+    try {
+      dto.setImages(images);
+      Optional<ItemResponseDto> updatedItem = itemService.updateItem(id, dto);
+
+      if (updatedItem.isPresent()) {
+        logger.info("Item {} updated successfully", id);
+        return ResponseEntity.ok(updatedItem.get());
+      } else {
+        logger.warn("Item with ID {} not found for update", id);
+        return ResponseEntity.notFound().build();
+      }
+    } catch (Exception e) {
+      logger.error("Failed to update item {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -163,9 +209,21 @@ public class ItemController {
    */
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
-    boolean deleted = itemService.deleteItem(id);
-    return deleted ? ResponseEntity.noContent().build()
-        : ResponseEntity.notFound().build();
+    logger.info("Deleting item with ID: {}", id);
+    try {
+      boolean deleted = itemService.deleteItem(id);
+
+      if (deleted) {
+        logger.info("Item {} deleted successfully", id);
+        return ResponseEntity.noContent().build();
+      } else {
+        logger.warn("Item with ID {} not found for deletion", id);
+        return ResponseEntity.notFound().build();
+      }
+    } catch (Exception e) {
+      logger.error("Failed to delete item {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -181,7 +239,20 @@ public class ItemController {
       @RequestParam("value") ItemStatus newStatus,
       @RequestParam(value = "buyerId", required = false) Long buyerId
   ) {
-    boolean updated = itemService.updateItemStatus(id, newStatus, buyerId);
-    return updated ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    logger.info("Updating status of item with ID: {} to {}", id, newStatus);
+    try {
+      boolean updated = itemService.updateItemStatus(id, newStatus, buyerId);
+
+      if (updated) {
+        logger.info("Status for item {} updated successfully to {}", id, newStatus);
+        return ResponseEntity.ok().build();
+      } else {
+        logger.warn("Item with ID {} not found for status update", id);
+        return ResponseEntity.notFound().build();
+      }
+    } catch (Exception e) {
+      logger.error("Failed to update status for item {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 }

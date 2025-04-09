@@ -11,6 +11,9 @@ import com.marketplace.backend.repository.OrderRepository;
 import com.marketplace.backend.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,8 @@ import java.util.Map;
  */
 @Service
 public class PaymentService {
+
+  private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
   @Value("${vipps.client-id}")
   private String clientId;
@@ -69,11 +74,14 @@ public class PaymentService {
    * @return the payment URL for redirection
    */
   public String initiatePayment(String orderId, double amount, String userPhoneNumber, String callbackPrefix, String fallBackUrl) {
+    logger.info("Initiating payment for order {} with amount {} NOK", orderId, amount);
+
     String accessToken;
     try {
       accessToken = fetchAccessToken();
+      logger.debug("Successfully fetched access token for order {}", orderId);
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error("Failed to fetch access token for order {}: {}", orderId, e.getMessage(), e);
       throw e;
     }
 
@@ -109,17 +117,22 @@ public class PaymentService {
           Map.class
       );
 
-      if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+      if (!response.getStatusCode().is2xxSuccessful()) {
+        logger.error("Vipps API error during payment initiation for order {}: {}", orderId, response.getStatusCode());
         throw new RuntimeException("Vipps API error: " + response.getStatusCode());
       }
 
+
       Object url = response.getBody().get("url");
       if (url == null) {
+        logger.error("No payment URL returned from Vipps for order {}", orderId);
         throw new RuntimeException("Missing payment URL from Vipps response.");
       }
 
+      logger.info("Vipps payment URL created for order {}: {}", orderId, url);
       return url.toString();
     } catch (Exception e) {
+      logger.error("Failed to initiate Vipps payment for order {}: {}", orderId, e.getMessage(), e);
       throw new RuntimeException("Failed to initiate Vipps payment: " + e.getMessage(), e);
     }
   }
@@ -130,6 +143,8 @@ public class PaymentService {
    * @return the access token
    */
   private String fetchAccessToken() {
+    logger.debug("Fetching Vipps access token...");
+
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     headers.setBasicAuth(clientId, clientSecret);
@@ -148,17 +163,20 @@ public class PaymentService {
           Map.class
       );
 
-      if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+      if (!response.getStatusCode().is2xxSuccessful()) {
+        logger.error("Failed to fetch Vipps token: {}", response.getStatusCode());
         throw new RuntimeException("Failed to fetch Vipps token: " + response.getStatusCode());
       }
 
       Object token = response.getBody().get("access_token");
       if (token == null) {
+        logger.error("Vipps token response missing 'access_token'");
         throw new RuntimeException("Vipps token response missing 'access_token'");
       }
 
       return token.toString();
     } catch (Exception e) {
+      logger.error("Error fetching Vipps access token: {}", e.getMessage(), e);
       throw new RuntimeException("Error fetching Vipps access token: " + e.getMessage(), e);
     }
   }
@@ -169,14 +187,18 @@ public class PaymentService {
    * @param orderId the ID of the order
    */
   public void finalizeOrderFromVippsCallback(String orderId, Map<String, Object> payload) {
+    logger.info("Finalizing order from Vipps callback: {}", orderId);
+
     Map<String, Object> transactionInfo = (Map<String, Object>) payload.get("transactionInfo");
     String status = (String) transactionInfo.get("status");
 
-    System.out.println("Status from Vipps callback payload: " + status);
+    logger.debug("Vipps callback status for order {}: {}", orderId, status);
 
     if (!"SALE".equalsIgnoreCase(status)) {
+      logger.warn("Vipps payment status is not 'SALE': {}", status);
       throw new IllegalStateException("Payment not completed, status was: " + status);
     }
+
     String[] parts = orderId.split("-");
     Long itemId = Long.parseLong(parts[1]);
     Long buyerId = Long.parseLong(parts[2]);
@@ -185,6 +207,7 @@ public class PaymentService {
     Optional<User> buyerOpt = userRepository.findById(buyerId);
 
     if (itemOpt.isEmpty() || buyerOpt.isEmpty()) {
+      logger.error("Item or buyer not found for order {}", orderId);
       throw new RuntimeException("Item or buyer not found");
     }
 
@@ -203,6 +226,7 @@ public class PaymentService {
 
     orderRepository.save(order);
     paymentStatusMap.put(orderId, true);
+    logger.info("Order {} finalized successfully", orderId);
   }
 
   /**
@@ -213,11 +237,21 @@ public class PaymentService {
    * @return the payment URL for redirection
    */
   public String createVippsPayment(Long itemId, String userEmail) {
-    User user = userRepository.findByEmail(userEmail).orElseThrow();
+    logger.info("Creating Vipps payment for item {} by user {}", itemId, userEmail);
+
+    User user = userRepository.findByEmail(userEmail).orElseThrow(() -> {
+      logger.error("User not found with email {}", userEmail);
+      return new RuntimeException("User not found");
+    });
     Item item = itemRepository.findById(itemId).orElse(null);
-    if (item == null) throw new RuntimeException("Item not found");
+
+    if (item == null) {
+      logger.error("Item {} not found", itemId);
+      throw new RuntimeException("Item not found");
+    }
 
     if (item.getStatus() == ItemStatus.SOLD || item.getStatus() == ItemStatus.RESERVED) {
+      logger.warn("Item {} is not available for purchase. Status: {}", itemId, item.getStatus());
       throw new IllegalStateException("Item is not available for purchase.");
     }
 
@@ -237,12 +271,15 @@ public class PaymentService {
    * @return true if the order has been finalized, false otherwise
    */
   public boolean hasOrderBeenFinalized(String orderId) {
+    logger.debug("Checking if order {} has been finalized", orderId);
+
     int retries = 8;
     int delayMs = 1000;
 
     for (int i = 0; i < retries; i++) {
       Boolean status = paymentStatusMap.get(orderId);
       if (status != null && status) {
+        logger.debug("Order {} was finalized", orderId);
         return true;
       }
 
@@ -250,10 +287,12 @@ public class PaymentService {
         Thread.sleep(delayMs);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
+        logger.warn("Thread interrupted while waiting for order {} finalization", orderId);
         break;
       }
     }
 
+    logger.debug("Order {} was not finalized in time", orderId);
     return false;
   }
 }

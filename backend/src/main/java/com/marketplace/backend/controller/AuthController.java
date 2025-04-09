@@ -1,14 +1,11 @@
 package com.marketplace.backend.controller;
 
 import com.marketplace.backend.model.User;
-import com.marketplace.backend.model.Role;
-import com.marketplace.backend.repository.UserRepository;
-import com.marketplace.backend.security.JwtService;
+import com.marketplace.backend.service.AuthService;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -20,11 +17,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:5173")
 
 public class AuthController {
+  private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-  private final UserRepository userRepo;
-  private final PasswordEncoder passwordEncoder;
-  private final JwtService jwtService;
-  private final AuthenticationManager authManager;
+  private final AuthService authService;
 
   /**
    * Register a new user.
@@ -34,11 +29,13 @@ public class AuthController {
    */
   @PostMapping("/register")
   public Map<String, String> register(@RequestBody User user) {
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    user.setRole(Role.USER);
-    userRepo.save(user);
-    String token = jwtService.generateToken(user.getEmail());
-    return Map.of("token", token);
+    try {
+      String token = authService.registerUser(user);
+      return Map.of("token", token);
+    } catch (Exception e) {
+      logger.error("Failed to register user {}: {}", user.getEmail(), e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -49,10 +46,12 @@ public class AuthController {
    */
   @PostMapping("/login")
   public Map<String, String> login(@RequestBody User loginReq) {
-    authManager.authenticate(
-        new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
-    String token = jwtService.generateToken(loginReq.getEmail());
-
-    return Map.of("token", token);  // ✅ JSON object like: { "token": "..." }
+    try {
+      String token = authService.loginUser(loginReq.getEmail(), loginReq.getPassword());
+      return Map.of("token", token);
+    } catch (Exception e) {
+      logger.warn("Login failed for user {}: {}", loginReq.getEmail(), e.getMessage());
+      throw e;
+    }
   }
 }

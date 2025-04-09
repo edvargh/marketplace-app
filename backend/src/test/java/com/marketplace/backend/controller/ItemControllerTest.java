@@ -289,7 +289,7 @@ class ItemControllerTest {
   @Test
   @WithMockUser(username = "john@example.com")
   void shouldReturnNotFoundWhenDeletingNonExistentItem() throws Exception {
-    Long nonExistentId = 999999L;
+    long nonExistentId = 999999L;
 
     mockMvc.perform(delete("/api/items/" + nonExistentId))
         .andExpect(status().isNotFound());
