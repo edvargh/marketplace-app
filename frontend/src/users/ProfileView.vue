@@ -1,5 +1,6 @@
 <template>
   <LoadingState :loading="loading" :error="error" loadingMessage="Loading your profile..."/>
+  <ErrorMessage v-if="!loading && errorMessage" :message="errorMessage" />
 
   <div class="profile-view">
     <h1>{{ t("profile.Profile") }}</h1>
@@ -72,10 +73,6 @@
         type="success"
         @close="showPopup = false"
       />
-
-      <div v-if="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
     </form>
   </div>
 </template>
@@ -119,19 +116,19 @@ const languageOptions = [
 ]
 
 const fullNameError = computed(() => {
-  if (fullName.value === "") return t("profile.fullNameRequired") || "Full name is required"
+  if (fullName.value === "") return t("profile.fullNameRequired")
   if (fullName.value.length > maxFullNameLength)
-    return t("profile.fullNameTooLong") || `Full name cannot exceed ${maxFullNameLength} characters`
+    return t("profile.fullNameTooLong", { maxLength: maxFullNameLength });
   return ""
 })
 
 const emailError = computed(() => {
   if (email.value === "") {
-    return t("profile.emailRequired") || "Email is required"
+    return t("profile.emailRequired")
   } else {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email.value)) {
-      return t("profile.emailInvalid") || "Please enter a valid email address"
+      return t("profile.emailInvalid")
     }
   }
   return ""
@@ -139,10 +136,10 @@ const emailError = computed(() => {
 
 const phoneError = computed(() => {
   if (phoneNumber.value === "") {
-    return t("profile.phoneRequired") || "Phone number is required"
+    return t("profile.phoneRequired")
   }
   if (phoneNumber.value.length !== phoneNumberLength) {
-    return t("profile.phoneLength") || "Phone number must be 8 digits"
+    return t("profile.phoneLength", { length: phoneNumberLength });
   }
   return ""
 })
@@ -188,10 +185,9 @@ const handleFileChange = (e) => {
 
 const handleUpdateProfile = async () => {
   if (!canSubmit.value) {
-    errorMessage.value = 'Please fill in all required fields correctly.'
+    errorMessage.value = t("profile.errorRequiredFields");
     return
   }
-
   isSubmitting.value = true
   errorMessage.value = ''
 
@@ -204,12 +200,13 @@ const handleUpdateProfile = async () => {
       preferredLanguage: language.value,
       profilePicture: selectedImageFile.value
     }
-
     await userStore.updateUser(updateData)
     locale.value = language.value
     showPopup.value = true
+
   } catch (err) {
     errorMessage.value = err.message
+    setTimeout(() => {errorMessage.value = '';}, 5000);
   } finally {
     isSubmitting.value = false
   }

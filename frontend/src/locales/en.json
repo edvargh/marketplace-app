@@ -29,15 +29,16 @@
     "fullNameRequired": "Full name is required",
     "emailRequired": "Email is required",
     "phoneRequired": "Phone number is required",
-    "fullNameTooLong": "Full name cannot exceed 30 characters",
+    "fullNameTooLong": "Full name cannot exceed {maxLength} characters",
     "emailInvalid": "Please enter a valid email address",
-    "phoneLength": "Phone number must be 8 digits",
+    "phoneLength": "Phone number must be exactly {length} digits",
     "placeholderName": "Enter your full name",
     "placeholderEmail": "Enter your email",
     "placeholderPhone": "Enter your phone number",
     "placeholderPass": "Enter new password",
     "placeholderConfirmPass": "Confirm new password",
-    "passwordTooShort": "Password must be at least 8 characters"
+    "passwordTooShort": "Password must be at least {minLength} characters",
+    "errorRequiredFields": "Please fill in all required fields correctly."
   },
   "homeView": {
     "Your-recommendations": "Your recommendations",

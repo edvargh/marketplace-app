@@ -29,15 +29,16 @@
     "fullNameRequired": "Fullt navn er påkrevd",
     "emailRequired": "E-post er påkrevd",
     "phoneRequired": "Telefonnummer er påkrevd",
-    "fullNameTooLong": "Fullt navn kan ikke være lengre enn 30 tegn",
+    "fullNameTooLong": "Fullt navn kan ikke være lengre enn {maxLength} tegn",
     "emailInvalid": "Vennligst skriv inn en gyldig e-postadresse",
-    "phoneLength": "Telefonnummer må være på 8 sifre",
+    "phoneLength": "Telefonnummer må være på {length} sifre",
     "placeholderName": "Skriv inn ditt fulle navn",
     "placeholderEmail": "Skriv inn e-posten din",
     "placeholderPhone": "Skriv inn telefonnummeret ditt",
     "placeholderPass": "Skriv inn nytt passord",
     "placeholderConfirmPass": "Bekreft nytt passord",
-    "passwordTooShort": "Nytt passord må være minst 8 karakterer"
+    "passwordTooShort": "Nytt passord må være minst {minLength} karakterer",
+    "errorRequiredFields": "Vennligst fyll ut alle påkrevde felt riktig."
   },
   "homeView":{
     "Your-recommendations": "Dine anbefalinger",
