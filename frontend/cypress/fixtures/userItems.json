@@ -1,0 +1,50 @@
+{
+  "content": [
+    {
+      "id": "6",
+      "title": "Acoustic Guitar",
+      "description": "Yamaha acoustic guitar with case",
+      "price": 250.00,
+      "status": "For Sale",
+      "imageUrls": ["https://example.com/guitar.jpg"],
+      "categoryId": 4,
+      "categoryName": "Musical Instruments",
+      "createdAt": "2025-03-17T11:30:00Z",
+      "seller": {
+        "id": "currentUser",
+        "username": "currentUser"
+      },
+      "favorite": false,
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    },
+    {
+      "id": "7",
+      "title": "Coffee Maker",
+      "description": "Breville espresso machine",
+      "price": 180.00,
+      "status": "Sold",
+      "imageUrls": ["https://example.com/coffeemaker.jpg"],
+      "categoryId": 5,
+      "categoryName": "Kitchen Appliances",
+      "createdAt": "2025-03-10T08:45:00Z",
+      "seller": {
+        "id": "currentUser",
+        "username": "currentUser"
+      },
+      "buyer": {
+        "id": "user1",
+        "username": "johndoe"
+      },
+      "favorite": false,
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 6,
+    "totalElements": 2,
+    "totalPages": 1
+  }
+}
