@@ -5,10 +5,8 @@
     :loadingMessage="t('MessagesView.loadingMessage')"
   />
 
-  <!-- Show explicit error message using the ErrorMessage component -->
   <ErrorMessage v-if="!loading && error" :message="error" />
 
-  <!-- Only display conversations when loading is complete and there is no error -->
   <div v-if="!loading && !error" class="messages-view-container">
     <h3 class="Message-header">{{ t("MessagesView.title") }}</h3>
     <CardGrid
@@ -61,10 +59,10 @@ onMounted(async () => {
         }
       })
     )
-
     conversations.value = enriched.filter(c => c !== null)
+
   } catch (e) {
-    error.value = "Failed to load messages."
+    error.value = t("MessagesView.errorLoadingMessages");
   } finally {
     loading.value = false
   }

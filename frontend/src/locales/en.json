@@ -15,6 +15,7 @@
     "title": "Register new account"
   },
   "profile": {
+    "LoadingProfile": "Loading your profile...",
     "Profile": "My Profile",
     "fullName": "Full Name",
     "email": "Email",
@@ -73,14 +74,21 @@
   "MessagesView": {
     "title": "Messages",
     "loadingMessage": "Loading messages...",
-    "noMessages": "No messages yet."
+    "noMessages": "No messages yet.",
+    "errorLoadingMessages": "Failed to load messages."
   },
   "ConversationView": {
     "loadingMessage": "Loading conversation...",
     "noMessages": "No messages here yet",
     "messagePlaceholder": "Type your message...",
     "sending": "Sending...",
-    "send": "Send"
+    "send": "Send",
+    "unknownUser": "Unknown User",
+    "errorLoadingConversation": "An error occurred while loading the conversation.",
+    "errorLoadingSellerData": "An error occurred while loading the seller data.",
+    "errorSendingMessage": "An error occurred while sending the message.",
+    "errorAcceptingReservation": "An error occurred while accepting the reservation.",
+    "errorDecliningReservation": "An error occurred while declining the reservation."
   },
   "MyFavouriteView": {
   "My-favorite-items": "My Favorite Items",

@@ -1,5 +1,5 @@
 <template>
-  <LoadingState :loading="loading" :error="error" loadingMessage="Loading your profile..."/>
+  <LoadingState :loading="loading" :error="error" :loadingMessage="t('profile.LoadingProfile')" />
   <ErrorMessage v-if="!loading && errorMessage" :message="errorMessage" />
 
   <div class="profile-view">

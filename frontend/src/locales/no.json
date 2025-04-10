@@ -15,6 +15,7 @@
     "title": "Registrer ny konto"
   },
   "profile": {
+    "LoadingProfile": "Laster inn profilen din...",
     "Profile": "Min Profil",
     "fullName": "Fullt navn",
     "email": "E-post",
@@ -73,14 +74,22 @@
   "MessagesView": {
     "title": "Meldinger",
     "loadingMessage": "Laster meldinger...",
-    "noMessages": "Ingen meldinger ennå."
+    "noMessages": "Ingen meldinger ennå.",
+    "errorLoadingMessages": "Kunne ikke laste meldinger."
+
   },
   "ConversationView": {
     "loadingMessage": "Laster samtale...",
     "noMessages": "Ingen meldinger her ennå",
     "messagePlaceholder": "Skriv her...",
     "sending": "Sender...",
-    "send": "Send"
+    "send": "Send",
+    "unknownUser": "Ukjent Bruker",
+    "errorLoadingConversation": "En feil oppstod under lastingen av samtalen.",
+    "errorLoadingSellerData": "En feil oppstod under lastingen av selgerdata.",
+    "errorSendingMessage": "En feil oppstod under sendingen av meldingen.",
+    "errorAcceptingReservation": "En feil oppstod under aksept av reservasjonen.",
+    "errorDecliningReservation": "En feil oppstod under avslåelse av reservasjonen."
   },
   "MyFavouriteView": {
   "My-favorite-items": "Mine favoritter",
