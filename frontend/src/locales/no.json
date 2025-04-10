@@ -226,6 +226,16 @@
     "seller-accepted": "Selgeren har akseptert reservasjonsforespørselen din!",
     "seller-declined": "Selgeren har avslått reservasjonsforespørselen din.",
     "cancel": "Avbryt"
+  },
+  "PaymentFailView": {
+    "title": "Oi, noe gikk galt",
+    "message": "Din Vipps betaling har ikke blitt behandlet",
+    "returnHome": "Tilbake til Hjem"
+  },
+  "PaymentCompleteView": {
+    "title": "Takk!",
+    "message": "Din Vipps betaling har blitt behandlet vellykket.",
+    "returnHome": "Tilbake til hjem"
   }
 
 }

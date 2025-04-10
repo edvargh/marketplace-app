@@ -1,8 +1,8 @@
 <template>
   <div class="payment-complete-container box">
-    <h1>Thank you!</h1>
-    <p>Your Vipps payment has been processed successfully.</p>
-    <CustomButton @click="goHome">Return to Home</CustomButton>
+    <h1>{{ t('PaymentCompleteView.title') }}</h1>
+    <p>{{ t('PaymentCompleteView.message') }}</p>
+    <CustomButton @click="goHome">{{ t('PaymentCompleteView.returnHome') }}</CustomButton>
   </div>
 </template>
 

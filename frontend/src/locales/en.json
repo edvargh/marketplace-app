@@ -227,6 +227,16 @@
     "seller-accepted": "The seller has accepted your reservation request!",
     "seller-declined": "The seller has declined your reservation request.",
     "cancel": "Cancel"
-   }
+   },
+  "PaymentFailView": {
+    "title": "Oops, something went wrong",
+    "message": "Your Vipps payment has not been processed",
+    "returnHome": "Return to Home"
+  },
+  "PaymentCompleteView": {
+    "title": "Thank you!",
+    "message": "Your Vipps payment has been processed successfully.",
+    "returnHome": "Return to Home"
+  }
 }
 
