@@ -60,7 +60,7 @@
 
     <!-- Location -->
     <div class="location-section">
-      <h3 class="filter-headers">Latitude & Longitude</h3>
+      <h3 class="filter-headers">{{ t('FilterPanel.choosePosition') }}</h3>
       <div class="geo-inputs">
         <div class="geo-input-wrapper">
           <label for="latitude">Latitude</label>
