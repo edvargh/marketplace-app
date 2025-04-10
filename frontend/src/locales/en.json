@@ -64,8 +64,9 @@
     "Min-price": "Min price (kr)",
     "Max-price": "Max price (kr)",
     "Apply-filters": "Apply filters",
-    "Distance": "Distance",
-    "Select-all": "Select all"
+    "Distance": "Max distance from your location",
+    "Select-all": "Select all",
+    "choosePosition": "Enter your location"
   },
   "ConversationPreviewCard": {
     "itemImageAlt": "Item image"
@@ -194,6 +195,9 @@
    "DetailedItemCard":{
     "price": "Price"
    },
+  "CompactItemCard":{
+    "price": "Price"
+  },
   "EditItemView": {
     "loadingMessage": "Loading advertisement...",
     "successUpdate": "Advertisement updated successfully!",
@@ -248,6 +252,11 @@
     "message": "Your Vipps payment has been processed successfully.",
     "returnHome": "Return to Home",
     "order": "Your order Id is:"
+  },
+  "status": {
+    "sold": "Sold",
+    "reserved": "Reserved",
+    "forSale": "For Sale"
   }
 }
 

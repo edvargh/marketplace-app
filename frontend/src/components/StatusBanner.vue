@@ -6,6 +6,7 @@
 
 <script setup>
 import { computed } from "vue";
+import { useI18n } from 'vue-i18n';
 
 const props = defineProps({
   status: {
@@ -14,9 +15,21 @@ const props = defineProps({
   }
 });
 
+const { t } = useI18n();
+
 const formattedStatus = computed(() => {
-  return props.status.replace(/_/g, ' ');
+  switch (props.status) {
+    case 'SOLD':
+      return t('status.sold');
+    case 'RESERVED':
+      return t('status.reserved');
+    case 'FOR_SALE':
+      return t('status.forSale');
+    default:
+      return props.status.replace(/_/g, ' ');
+  }
 });
+
 </script>
 
 <style scoped>

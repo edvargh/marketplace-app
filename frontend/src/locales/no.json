@@ -64,8 +64,9 @@
     "Min-price":"Min pris (kr)",
     "Max-price":"Maks pris (kr)",
     "Apply-filters":"Bruk filtre",
-    "Distance":"Avstand",
-    "Select-all":"Velg alle"
+    "Distance":"Max avstand fra din posisjon",
+    "Select-all":"Velg alle",
+    "choosePosition": "Velg din posisjon"
   },
   "ConversationPreviewCard": {
     "itemImageAlt": "Varebilde"
@@ -192,7 +193,10 @@
     "loadFailed": "Kunne ikke laste inn annonser. Vennligst prøv igjen."
   },
   "DetailedItemCard":{
-    "price": "pris"
+    "price": "Pris"
+  },
+  "CompactItemCard":{
+    "price": "Pris"
   },
   "EditItemView": {
     "loadingMessage": "Laster annonse...",
@@ -248,6 +252,10 @@
     "message": "Din Vipps betaling har blitt behandlet vellykket.",
     "returnHome": "Tilbake til hjem",
     "order": "Din bestillings-ID er:"
+  },
+  "status": {
+    "sold": "Solgt",
+    "reserved": "Reservert",
+    "forSale": "Til salgs"
   }
-
 }
