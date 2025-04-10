@@ -50,7 +50,8 @@
     "Show-filters": "Vis filtere",
     "Load-more": "Last inn flere gjenstander",
     "Loading": "Laster...",
-    "Loading-homeView": "Laster hjemsiden..."
+    "Loading-homeView": "Laster hjemsiden...",
+    "ErrorLoading": "Noe gikk galt under lasting av hjemmesiden. Vennligst prøv igjen."
   },
   "categories":{
     "Most-popular-categories": "Mest populære kategorier"

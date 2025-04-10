@@ -1,9 +1,9 @@
 <template>
-  <LoadingState :loading="loading" :error="error" :loadingMessage="t('itemView.loadingItem')"/>
+  <LoadingState :loading="loading" :error="loadingError" :loadingMessage="t('itemView.loadingItem')"/>
 
-  <p v-if="userWarning" class="user-warning">{{ userWarning }}</p>
+  <ErrorMessage v-if="!loading && errorMessage" :message="errorMessage" />
 
-  <div v-if="!loading && !error" class="item-detail-container">
+  <div v-if="!loading && !loadingError" class="item-detail-container">
     <!-- Image Gallery -->
     <ImageGallery
         :images="item.imageUrls || []"
@@ -102,6 +102,7 @@ import FavoriteBtn from "@/components/FavoriteBtn.vue";
 import LoadingState from "@/components/LoadingState.vue";
 import LocationDisplay from "@/components/LocationDisplay.vue";
 import StatusBanner from "@/components/StatusBanner.vue";
+import ErrorMessage from '@/components/ErrorMessage.vue'
 import { useI18n } from 'vue-i18n'
 
 const route = useRoute();
@@ -110,12 +111,12 @@ const userStore = useUserStore();
 const item = ref({});
 const loading = ref(true);
 const seller = ref(null);        
-const error = ref(null);
+const loadingError = ref(null);
+const errorMessage = ref('');
 const isMyItem = ref(false);
 const isFavorite = ref(false);
 const router = useRouter();
 const messageStore = useMessageStore();
-const userWarning = ref('');
 const hasPendingRes = ref(false);
 const showReserveTooltip = ref(false);
 const showBuyNowTooltip = ref(false);
@@ -123,22 +124,25 @@ const { t } = useI18n()
 
 
 const showWarning = (msg) => {
-  userWarning.value = msg;
-  setTimeout(() => userWarning.value = '', 5000); 
+  errorMessage.value = msg;
+  setTimeout(() => errorMessage.value = '', 5000);
 };
 
 onMounted(async () => {
   loading.value = true;
+  errorMessage.value = '';
+  loadingError.value = null;
+
   try {
     const itemId = route.params.id;
     if (!itemId) {
-      error.value = t('itemView.errors.invalidId');
+      loadingError.value = t('itemView.errors.invalidId');
       return;
     }
 
     const itemData = await itemStore.fetchItemById(itemId);
     if (!itemData) {
-      error.value = t('itemView.errors.itemNotFound');
+      loadingError.value = t('itemView.errors.itemNotFound');
       return;
     }
 
@@ -164,7 +168,7 @@ onMounted(async () => {
     }
 
   } catch {
-    error.value = t('itemView.errors.loadFailed');
+    loadingError.value = t('itemView.errors.loadFailed');
   } finally {
     loading.value = false;
   }
@@ -258,9 +262,6 @@ const checkPendingReservation = async () => {
     showWarning(t('itemView.errors.reservationCheckFailed'));
   }
 };
-
-
-
 </script>
 
 <style scoped>

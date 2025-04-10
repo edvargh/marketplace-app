@@ -1,6 +1,20 @@
 import { mount, flushPromises } from '@vue/test-utils'
 import { describe, it, expect, vi } from 'vitest'
+import { createI18n } from 'vue-i18n'
 import DetailedItemCard from '@/components/DetailedItemCard.vue'
+
+const i18n = createI18n({
+  legacy: false,
+  globalInjection: true,
+  locale: 'en',
+  messages: {
+    en: {
+      DetailedItemCard: {
+        price: 'Price'
+      }
+    }
+  }
+})
 
 vi.mock('@/stores/userStore', () => ({
   useUserStore: () => ({
@@ -23,6 +37,7 @@ describe('DetailedItemCard.vue', () => {
     return mount(DetailedItemCard, {
       props: { item: defaultItem, ...props },
       global: {
+        plugins: [i18n],
         stubs: {
           RouterLink: {
             name: 'RouterLink',
@@ -51,20 +66,9 @@ describe('DetailedItemCard.vue', () => {
     expect(imgMain.attributes('src')).toBe('item-image.png')
   })
 
-  it('display /no-image.png when images is empty or on error', async () => {
+  it('display /no-image.png when images is empty', () => {
     const itemWithoutImage = { ...defaultItem, imageUrls: [] }
-    const wrapper = mount(DetailedItemCard, {
-      props: { item: itemWithoutImage },
-      global: {
-        stubs: {
-          RouterLink: {
-            template: '<div><slot /></div>',
-            props: ['to']
-          },
-          StatusBanner: true
-        }
-      }
-    })
+    const wrapper = mountComponent({ item: itemWithoutImage })
     const imgMain = wrapper.find('img.card-image')
     expect(imgMain.attributes('src')).toBe('/no-image.png')
   })
