@@ -93,7 +93,7 @@ public class PaymentController {
     try {
       boolean isFinalized = paymentService.hasOrderBeenFinalized(orderId);
       URI redirectUri = isFinalized
-          ? URI.create("http://localhost:5173/payment-complete?orderId=" + orderId)
+          ? URI.create("http://localhost:5173/payment-complete")
           : URI.create("http://localhost:5173/payment-failed");
 
       logger.info("Redirecting to: {}", redirectUri);
