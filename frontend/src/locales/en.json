@@ -124,7 +124,9 @@
   "title": "Create New Advertisement",
   "create": "Create",
   "creating": "Creating...",
-  "successMessage": "Advertisement created successfully!"
+  "successMessage": "Advertisement created successfully!",
+  "errorCreate": "Failed to create item. Please try again."
+
   },
   "itemFormComponent": {
   "importImages": "Import Images",
@@ -181,6 +183,40 @@
   },
    "DetailedItemCard":{
     "price": "Price"
-   }
+   },
+  "EditItemView": {
+    "loadingMessage": "Loading advertisement...",
+    "successUpdate": "Advertisement updated successfully!",
+    "successDelete": "Advertisement deleted successfully!",
+    "title": "Edit Advertisement",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "confirmDelete": "Are you sure you want to delete this item?",
+    "errorUpdate": "Failed to update item.",
+    "errorDelete": "Failed to delete item.",
+    "errorLoad": "Something wrong happened while loading the page. Please try again."
+  },
+  "categoriesAdmin": {
+    "loadingCategories": "Loading categories...",
+    "successCreate": "Category created successfully!",
+    "successUpdate": "Category updated successfully!",
+    "allCategories": "All Categories",
+    "createNewCategory": "Create new category",
+    "edit": "Edit",
+    "createCategory": "Create Category",
+    "updateCategory": "Update Category",
+    "categoryName": "Category Name",
+    "create": "Create",
+    "update": "Update",
+    "cancel": "Cancel",
+    "categoryNameError": "Category name cannot exceed {maxLength} characters",
+    "errorLoad": "Something went wrong while loading categories. Please try again.",
+    "errorCreate": "Failed to create category.",
+    "errorUpdate": "Failed to update category."
+  }
+
+
 }
 

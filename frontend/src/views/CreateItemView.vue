@@ -1,10 +1,13 @@
 <template>
+  <ErrorMessage v-if="errorMessage" :message="errorMessage" />
+
   <div class="create-item-view">
     <Notification
         v-if="showCreateSuccess"
         type="success"
         :message="t('createItemView.successMessage')"
-        :autoClose="true"
+        :autoClose="false"
+        :showClose="false"
         @close="showCreateSuccess = false"
     />
 
@@ -43,24 +46,28 @@ import ItemForm from '@/components/ItemForm.vue';
 import { useItemStore } from '@/stores/itemStore';
 import { useI18n } from 'vue-i18n';
 import Notification from "@/components/NotificationBanner.vue";
+import ErrorMessage from '@/components/ErrorMessage.vue'
 
 const router = useRouter();
 const isSubmitting = ref(false);
 const showCreateSuccess = ref(false);
+const errorMessage = ref('');
 const itemStore = useItemStore();
 const { t } = useI18n();
 
 const handleSubmit = async (formData) => {
   try {
     isSubmitting.value = true;
+    errorMessage.value = '';
+
     const createdItem = await itemStore.createItem(formData);
     showCreateSuccess.value = true;
     setTimeout(() => {
       router.push({ name: 'ItemView', params: { id: createdItem.id } });}, 2000);
 
   } catch (error) {
-    console.error('Failed to create item:', error);
-
+    errorMessage.value = t('createItemView.errorCreate');
+    setTimeout(() => errorMessage.value = '', 5000);
   } finally {
     isSubmitting.value = false;
   }

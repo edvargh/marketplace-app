@@ -124,7 +124,8 @@
   "title": "Opprett ny annonse",
   "create": "Opprett",
   "creating": "Oppretter...",
-  "successMessage": "Annonse opprettet!"
+  "successMessage": "Annonse opprettet!",
+  "errorCreate": "Kunne ikke lage annonse. Vennligst prøv igjen."
  },
  "itemFormComponent": {
   "importImages": "Importer bilder",
@@ -181,5 +182,38 @@
   },
   "DetailedItemCard":{
     "price": "pris"
+  },
+  "EditItemView": {
+    "loadingMessage": "Laster annonse...",
+    "successUpdate": "Annonsen ble oppdatert!",
+    "successDelete": "Annonsen ble slettet!",
+    "title": "Rediger annonse",
+    "save": "Lagre",
+    "saving": "Lagrer...",
+    "delete": "Slett",
+    "deleting": "Sletter...",
+    "confirmDelete": "Er du sikker på at du vil slette denne annonsen?",
+    "errorUpdate": "Kunne ikke oppdatere annonsen.",
+    "errorDelete": "Kunne ikke slette annonsen.",
+    "errorLoad": "Noe gikk galt under innlasting av siden. Vennligst prøv igjen."
+  },
+  "categoriesAdmin": {
+    "loadingCategories": "Laster inn kategorier...",
+    "successCreate": "Kategori opprettet!",
+    "successUpdate": "Kategori oppdatert!",
+    "allCategories": "Alle kategorier",
+    "createNewCategory": "Opprett ny kategori",
+    "edit": "Rediger",
+    "createCategory": "Opprett kategori",
+    "updateCategory": "Oppdater kategori",
+    "categoryName": "Navn på kategori",
+    "create": "Opprett",
+    "update": "Oppdater",
+    "cancel": "Avbryt",
+    "categoryNameError": "Kategorinavnet kan ikke overskride {maxLength} tegn",
+    "errorLoad": "Noe gikk galt mens kategoriene ble lastet. Vennligst prøv igjen.",
+    "errorCreate": "Feil ved oppretting av kategori.",
+    "errorUpdate": "Feil ved oppdatering av kategori."
   }
+
 }
