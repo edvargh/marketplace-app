@@ -20,6 +20,6 @@ export default {
 };
 </script>
 
-<style scoped>
-@import '../styles/users/UserPaymentComplete.css';
+<style>
+@import "@/styles/views/users/UserPaymentComplete.css";
 </style>
