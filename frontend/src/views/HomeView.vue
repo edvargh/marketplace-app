@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import DetailedItemCard from "@/components/DetailedItemCard.vue"
 import CardGrid from '@/components/CardGrid.vue'
 import CompactItemCard from "@/components/CompactItemCard.vue"
@@ -126,13 +126,21 @@ const showFilters = ref(false)
 const loadingRecommended = ref(true)
 
 const {
-  items: marketItems,
-  loadMore: loadMoreMarketItems,
+  items: allMarketItems,
+  loadMore: loadMoreAllMarketItems,
   moreAvailable,
   loadingInitial,
   loadingMore,
   error
 } = usePaginatedLoader(itemStore.fetchMarketItems)
+
+const marketItems = computed(() => {
+  return allMarketItems.value.filter(item => item.status !== 'SOLD');
+});
+
+const loadMoreMarketItems = async () => {
+  await loadMoreAllMarketItems();
+};
 
 const handleCloneStart = ({ start, end }) => {
   cloneStartItems.value = [...(recommendedItems.value.slice(start, end) || [])];
@@ -187,16 +195,16 @@ onMounted(async () => {
     
     await categoriesPromise;
     
-    const recommendedPromise = itemStore.fetchRecommendedItems()
-      .then(items => {
-        recommendedItems.value = items || [];
-        if (items && items.length > 0) {
-          return fetchAllSellers(items);
-        }
-      })
-      .finally(() => {
-        loadingRecommended.value = false;
-      });
+const recommendedPromise = itemStore.fetchRecommendedItems()
+  .then(items => {
+    recommendedItems.value = items?.filter(item => item.status !== 'SOLD') || [];
+    if (items && items.length > 0) {
+      return fetchAllSellers(recommendedItems.value);
+    }
+  })
+  .finally(() => {
+    loadingRecommended.value = false;
+  });
     
     await Promise.all([recommendedPromise, marketPromise]);
     

@@ -1,5 +1,3 @@
-// npm install --save-dev cypress-file-upload
-
 import 'cypress-file-upload';
 
 Cypress.Commands.add('login', (email = 'test@example.com', password = 'password123') => {
