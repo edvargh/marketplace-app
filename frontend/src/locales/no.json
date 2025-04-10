@@ -129,7 +129,7 @@
   "Loading-my-items": "Laster dine annonser...",
   "loadingMore": "Laster...",
   "loadMore": "Last inn mer",
-  "noItems": "Du har ikke lagt ut noen gjenstander ennå.",
+  "no-items": "Du har ikke lagt ut noen gjenstander ennå.",
   "loadingError": "Noe gikk galt ved lasting av dine annonser. Vennligst prøv igjen."
   },
  "createItemView": {

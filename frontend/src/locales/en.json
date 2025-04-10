@@ -102,7 +102,7 @@
     "title": "My Items",
     "Loading-my-items": "Loading your listings...",
     "loadMore": "Load More",
-    "No-items": "You have not listed any items yet.",
+    "no-items": "You have not listed any items yet.",
     "Loading-items": "Loading your listed advertisements...",
     "Error-loading": "Something went wrong while loading your listed advertisements. Please try again."
   },
@@ -188,7 +188,7 @@
     "resultsForSearch": "Results for \"{search}\"",
     "resultsForCategory": "Results for category \"{category}\"",
     "loadingMessage": "Searching for items...",
-    "noItemsFound": "No items found.",
+    "no-items": "No items found.",
     "initFailed": "Failed to initialize search. Please try again.",
     "loadFailed": "Failed to load items. Please try again."
   },
