@@ -36,10 +36,12 @@ public class AuthService {
     logger.info("Registering new user with email: {}", request.getEmail());
 
     if (userRepository.existsByEmail(request.getEmail())) {
+      logger.warn("Email already in use: {}", request.getEmail());
       throw new IllegalArgumentException("Email already in use");
     }
 
     if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+      logger.warn("Phone number already in use: {}", request.getPhoneNumber());
       throw new IllegalArgumentException("Phone number already in use");
     }
 
