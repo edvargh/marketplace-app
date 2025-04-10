@@ -6,8 +6,8 @@
     padding: 1rem 2rem;
     border: 1px solid transparent;
     background:
-      linear-gradient(to right, var(--light-blue), var(--light-blue-cold)) padding-box,
-      linear-gradient(to right, var(--sky-blue), var(--turquoise)) border-box;
+      linear-gradient(to right, var(--box-background), var(--box-background)) padding-box,
+      linear-gradient(to right, var(--dark-blue), var(--mid-blue)) border-box;
     background-clip: padding-box, border-box;
     font-size: 1rem;
     font-family: 'Abel', sans-serif;
@@ -20,8 +20,8 @@
   .custom-button:hover {
     opacity: 0.85;
     background:
-        linear-gradient(to right, var(--light-blue), var(--light-blue-cold)) padding-box,
-        linear-gradient(to right, var(--turquoise), var(--sky-blue)) border-box;
+        linear-gradient(to right, var(--box-background), var(--box-background)) padding-box,
+        linear-gradient(to right, var(--mid-blue), var(--dark-blue)) border-box;
   }
 
   .custom-button:disabled {

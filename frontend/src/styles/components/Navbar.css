@@ -5,7 +5,7 @@
   padding: 1rem 2rem;
   border-radius: 9999px;
   backdrop-filter: blur(12px);
-  background: linear-gradient(to right, var(--component-half-1), var(--component-half-2));
+  background: linear-gradient(to right, var(--darker-blue), var(--dark-blue));
   border-bottom: 1px solid var(--component-border-bottom);
   box-shadow: 0 2px 8px var(--navbar-shadow);
 }
@@ -39,7 +39,7 @@
   left: 0;
   min-width: max-content;
   width: auto;
-  background: linear-gradient(to right, var(--component-half-1), var(--component-half-2));
+  background-color: var(--box-background);
   border: 1px solid var(--navbar-border);
   border-radius: 16px;
   padding: 1rem;

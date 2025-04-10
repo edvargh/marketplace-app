@@ -21,8 +21,8 @@ html, body {
   padding: 1rem 2rem;
   border: 1px solid transparent;
   background:
-    linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
-    linear-gradient(to right, #4facfe, #00f2fe) border-box;
+    linear-gradient(to right, var(--box-background), var(--box-background)) padding-box,
+    linear-gradient(to right, var(--dark-blue), var(--mid-blue)) border-box;
   background-clip: padding-box, border-box;
   width: 100%;
   max-width: 600px;
@@ -39,7 +39,6 @@ html, body {
   width: 100%;
   font-size: 1rem;
   font-family: 'Abel', sans-serif;
-  color: #333;
   padding: 0;
 }
 
@@ -60,14 +59,14 @@ html, body {
   font-weight: 600;
   border: none;
   border-radius: 8px;
-  background: linear-gradient(to right, var(--sky-blue), var(--turquoise));
+  background: linear-gradient(to right, var(--mid-blue), var(--dark-blue));
   color: var(--log-in-register-button-text);
   cursor: pointer;
   transition: background 0.3s ease;
 }
 
 .custom-button-filled:hover {
-  background: linear-gradient(to right, var(--turquoise), var(--sky-blue));
+  background: linear-gradient(to right, var(--dark-blue), var(--mid-blue));
 }
 
 .custom-button-filled:disabled {

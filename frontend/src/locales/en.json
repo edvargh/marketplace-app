@@ -155,8 +155,8 @@
     "title": "Enter a title",
     "description": "Write a description...",
     "price": "Enter price in kr",
-    "category": "Select a category",
-    "status": "Select a status"
+    "category": "Click to select a category",
+    "status": "Click to select status"
   },
   "statusOptions": {
     "forSale": "For Sale",

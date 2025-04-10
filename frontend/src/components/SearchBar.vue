@@ -9,7 +9,7 @@
       v-model="searchQuery"
       @keyup.enter="performSearch"
     />
-    <button class="search-button" @click="performSearch">
+    <button class="search-button" @click="performSearch" aria-label="Search">
       <img src="/search-icon.png" alt="Search button image" class="search-button-image" />
     </button>
   </div>

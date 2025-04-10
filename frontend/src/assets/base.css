@@ -15,12 +15,12 @@
   /* BUTTONS */
   --buttton-diabled: #cccccc;
   --button-text: white;
-  --button-primary: #2e7d15;
-  --button-primary-hover: #45a049;
+  --button-primary: #33741e;
+  --button-primary-hover: #398721;
   --button-cancel: #444444;
   --button-cancel-hover: #555555;
-  --button-danger: #d32f2f;
-  --button-danger-hover: #f44336;
+  --button-danger: #9e1515;
+  --button-danger-hover: #c01616;
   --button-blue: #4facfe;
   --button-text-blue: white;
   --button-reserve: #e8f5e9;
@@ -32,6 +32,12 @@
   --button-nav: #333;
   --button-nav-hover: black;
   --button-text-nav: white;
+
+  /* APP BACKGROUND COLORS */
+  --bg-light-blue: rgba(173, 216, 230, 0.4); /* #ADD8E6 */
+  --bg-light-purple: rgba(221, 160, 221, 0.4); /* #DDA0DD */
+  --bg-light-green: rgba(144, 238, 144, 0.4); /* #90EE90 */
+  --bg-base: #fefefe;
 
   /* LOADING */
   --loading-wheel: var(--medium-gray);
@@ -108,13 +114,25 @@
   --coordinates: var(--medium-gray);
 
   /* LOG IN + REGISTER */
-  --log-in-register-link: #4facfe;
-  --log-in-register-button-text: white;
+  --log-in-register-link: #0062b8;
+  --log-in-register-button-text: #FFFF;
 
   /* CARDS */
   --item-card-border: #4facfe;
   --item-card-border-top: #cccccc;
   --conv-card-latest-msg: #555;
+
+
+
+
+  /* NEW COLORS */
+  --darker-blue: #00396b;
+  --dark-blue: #0062b8;
+  --mid-blue: #007ae6;
+  --mid-light-blue: #a0c4ff;
+  --box-background: #ebf5ff;
+  --real-box-background: #e1f0ff;
+
 }
 
 
@@ -129,11 +147,6 @@
 body {
   /* Colors here */
   color: var(--dark-gray);
-
-  background: radial-gradient(circle at 30% 30%, rgba(173, 216, 230, 0.4), transparent 40%),
-  radial-gradient(circle at 70% 70%, rgba(221, 160, 221, 0.4), transparent 40%),
-  radial-gradient(circle at 50% 50%, rgba(144, 238, 144, 0.4), transparent 40%),
-  #fefefe;
 
   background-repeat: no-repeat;
   background-size: cover;
