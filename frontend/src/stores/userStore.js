@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 if (!API_BASE_URL) {
-throw new Error('VITE_API_BASE_URL is not defined. Please set it in your ..env file.');
+  throw new Error('VITE_API_BASE_URL is not defined. Please set it in your .env file.');
 }
 
 export const useUserStore = defineStore('user', () => {
@@ -39,17 +39,34 @@ export const useUserStore = defineStore('user', () => {
   }
 
   const register = async (fullName, email, password, phoneNumber) => {
-    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName, email, password, phoneNumber })
-    })
-
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || 'Registration failed')
+    try {      
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ fullName, email, password, phoneNumber })
+      });      
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        if (data.error) {          
+          if (data.error.includes("Email already in use")) {
+            throw new Error("This email address is already registered. Please use a different email or try logging in.");
+          } else if (data.error.includes("Phone number already in use")) {
+            throw new Error("This phone number is already registered. Please use a different number.");
+          } else {
+            throw new Error(data.error);
+          }
+        } else {
+          throw new Error(`Registration failed: ${response.statusText}`);
+        }
+      }
+      return data;
+    } catch (error) {
+      throw error;
     }
-    return await response.json()
   }
 
   const logout = () => {
