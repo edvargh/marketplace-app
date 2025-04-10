@@ -25,40 +25,49 @@
 
       <div class="action-buttons">
         <template v-if="!isMyItem">
-          <button class="message-btn" @click="handleMessageSeller">{{ t('itemView.sendMessage') }}</button>
+          <button
+            class="message-btn"
+            @click="handleMessageSeller"
+            :disabled="isSold"
+            @mouseover="showSoldTooltip = isSold"
+            @mouseleave="showSoldTooltip = false"
+          >
+            {{ t('itemView.sendMessage') }}
+          </button>
+          <span v-if="showSoldTooltip && isSold" class="error-message">
+            {{ t('itemView.soldTooltip') }}
+          </span>
 
           <button
             class="reserve-btn"
             @click="handleReserveItem"
-            :disabled="hasPendingRes"
-            @mouseover="showReserveTooltip = hasPendingRes"
+            :disabled="hasPendingRes || isSold"
+            @mouseover="showReserveTooltip = hasPendingRes || isSold"
             @mouseleave="showReserveTooltip = false"
           >
             {{ t('itemView.reserveItem') }}
           </button>
-          <span v-if="showReserveTooltip && hasPendingRes" class="error-message">
-            {{ t('itemView.pendingReservationTooltip') }}
+          <span v-if="showReserveTooltip && (hasPendingRes || isSold)" class="error-message">
+            {{ isSold ? t('itemView.soldTooltip') : t('itemView.pendingReservationTooltip') }}
           </span>
 
           <button
               class="blue-btn"
               @click="handleBuyNow"
-              :disabled="!canBuyNow"
-              @mouseover="showBuyNowTooltip = !canBuyNow"
+              :disabled="!canBuyNow || isSold"
+              @mouseover="showBuyNowTooltip = !canBuyNow || isSold"
               @mouseleave="showBuyNowTooltip = false"
           >
             {{ t('itemView.buyNow') }}
           </button>
-          <span v-if="showBuyNowTooltip && !canBuyNow" class="error-message">
-            {{ t('itemView.reservedByOtherTooltip') }}
+          <span v-if="showBuyNowTooltip && (!canBuyNow || isSold)" class="error-message">
+            {{ isSold ? t('itemView.soldTooltip') : t('itemView.reservedByOtherTooltip') }}
           </span>
 
         </template>
         <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
           {{ t('itemView.editItem') }}
         </router-link>
-
-
       </div>
     </div>
 
@@ -120,8 +129,10 @@ const messageStore = useMessageStore();
 const hasPendingRes = ref(false);
 const showReserveTooltip = ref(false);
 const showBuyNowTooltip = ref(false);
+const showSoldTooltip = ref(false);
 const { t } = useI18n()
 
+const isSold = computed(() => item.value.status?.toLowerCase() === 'sold');
 
 const showWarning = (msg) => {
   errorMessage.value = msg;

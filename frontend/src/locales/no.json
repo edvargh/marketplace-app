@@ -105,6 +105,7 @@
     "reserveItem": "Reserver vare",
     "buyNow": "Kjøp nå",
     "pendingReservationTooltip": "Du har allerede en ventende reservasjonsforespørsel.",
+    "soldTooltip": "Denne varen har blitt solgt.",
     "reservedByOtherTooltip": "Reservert av en annen bruker.",
     "editItem": "Rediger annonse",
     "descriptionOfItem": "Beskrivelse av varen",

@@ -113,6 +113,7 @@
     "buyNow": "Buy Now",
     "pendingReservationTooltip": "You already have a pending reservation request.",
     "reservedByOtherTooltip": "Reserved by another user.",
+    "soldTooltip": "This item has been sold.",
     "editItem": "Edit Advertisement",
     "descriptionOfItem": "Description of the item",
     "seller": "Seller",
