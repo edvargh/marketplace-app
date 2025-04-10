@@ -86,6 +86,7 @@ import EditIcon from '@/components/EditIcon.vue'
 import NotificationBanner from '@/components/NotificationBanner.vue'
 import LoadingState from '@/components/LoadingState.vue'
 import SelectBox from '@/components/SelectBox.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
 
 const userStore = useUserStore()
 const { t, locale } = useI18n()
