@@ -21,5 +21,5 @@
   </script>
   
   <style scoped>
-  @import '../styles/users/UserPaymentComplete.css';
+  @import '../../styles/views/users/UserPaymentComplete.css';
   </style>

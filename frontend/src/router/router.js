@@ -2,21 +2,21 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LogInView from '../views/LogInView.vue'
 import RegisterView from '../views/RegisterView.vue'
-import ProfileView from '../users/ProfileView.vue'
+import ProfileView from '@/views/users/ProfileView.vue'
 import { useUserStore } from '@/stores/userStore'  
 import { getActivePinia } from 'pinia'
-import CreateItemView from "@/views/CreateItemView.vue";
-import MyItemsView from '@/users/MyItemsView.vue'
-import ItemView from "@/views/ItemView.vue";
-import EditItemView from "@/views/EditItemView.vue";
-import MyFavoriteView from '@/users/MyFavoriteView.vue'
+import CreateItemView from "@/views/items/CreateItemView.vue";
+import MyItemsView from '@/views/users/MyItemsView.vue'
+import ItemView from "@/views/items/ItemView.vue";
+import EditItemView from "@/views/items/EditItemView.vue";
+import MyFavoriteView from '@/views/users/MyFavoriteView.vue'
 import FrontPageView from "@/views/FrontPageView.vue";
-import MessagesView from '@/users/MessagesView.vue'
-import ConversationView from '@/users/ConversationView.vue'
+import MessagesView from '@/views/users/MessagesView.vue'
+import ConversationView from '@/views/users/ConversationView.vue'
 import CategoriesAdminView from "@/views/CategoriesAdminView.vue";
 import SearchResultView from '@/views/SearchResultView.vue'
-import UserPaymentComplete from '@/users/UserPaymentComplete.vue'
-import UserPaymentFailView from '@/users/UserPaymentFailView.vue'
+import UserPaymentComplete from '@/views/users/UserPaymentComplete.vue'
+import UserPaymentFailView from '@/views/users/UserPaymentFailView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

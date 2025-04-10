@@ -26,7 +26,7 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import { useItemStore } from '@/stores/itemStore'
+import { useItemStore } from '@/stores/itemStore.js'
 import { usePaginatedLoader } from '@/usePaginatedLoader.js'
 import CompactItemCard from '@/components/CompactItemCard.vue'
 import LoadingState from "@/components/LoadingState.vue";
@@ -56,6 +56,6 @@ onMounted(async () => {
 </script>
 
 <style>
-@import '../styles/users/MyItemsView.css';
+@import '../../styles/views/users/MyItemsView.css';
 </style>
   

@@ -53,7 +53,7 @@ import { ref, onMounted, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ItemForm from '@/components/ItemForm.vue';
 import Notification from '@/components/NotificationBanner.vue';
-import { useItemStore } from '@/stores/itemStore';
+import { useItemStore } from '@/stores/itemStore.js';
 import LoadingState from "@/components/LoadingState.vue";
 import ErrorMessage from '@/components/ErrorMessage.vue'
 import { useI18n } from 'vue-i18n'

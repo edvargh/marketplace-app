@@ -104,9 +104,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
-import { useItemStore } from "@/stores/itemStore";
-import { useUserStore } from "@/stores/userStore";
-import { useMessageStore } from '@/stores/messageStore';
+import { useItemStore } from "@/stores/itemStore.js";
+import { useUserStore } from "@/stores/userStore.js";
+import { useMessageStore } from '@/stores/messageStore.js';
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
 import LoadingState from "@/components/LoadingState.vue";
 import LocationDisplay from "@/components/LocationDisplay.vue";
@@ -276,5 +276,5 @@ const checkPendingReservation = async () => {
 </script>
 
 <style scoped>
-@import '../styles/views/ItemView.css';
+@import '../../styles/views/items/ItemView.css';
 </style>
