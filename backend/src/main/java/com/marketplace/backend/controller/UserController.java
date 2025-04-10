@@ -4,6 +4,7 @@ import com.marketplace.backend.dto.UserPublicDto;
 import com.marketplace.backend.dto.UserResponseDto;
 import com.marketplace.backend.dto.UserUpdateDto;
 import com.marketplace.backend.service.UserService;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -65,16 +66,15 @@ public class UserController {
    * @return a 200 response with the updated user if successful, 404 otherwise
    */
   @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<UserResponseDto> updateUser(
+  public ResponseEntity<?> updateUser(
       @PathVariable Long id,
       @RequestPart("dto") UserUpdateDto dto,
       @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
   ) {
-
     Long currentUserId = userService.getCurrentUserId();
     if (!id.equals(currentUserId)) {
       logger.warn("Unauthorized attempt to update user ID {}", id);
-      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not allowed to update this user");
     }
 
     logger.info("Updating user with ID: {}", id);
@@ -87,11 +87,14 @@ public class UserController {
         return ResponseEntity.ok(updatedUser.get());
       } else {
         logger.warn("User with ID {} not found for update", id);
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
       }
+    } catch (IllegalArgumentException e) {
+      logger.warn("Update failed: {}", e.getMessage());
+      return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
     } catch (Exception e) {
       logger.error("Failed to update user {}: {}", id, e.getMessage(), e);
-      throw e;
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred");
     }
   }
 
