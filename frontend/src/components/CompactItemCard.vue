@@ -51,7 +51,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  // Optional pre-fetched seller - can be passed from parent
   seller: {
     type: Object,
     default: null

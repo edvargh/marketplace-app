@@ -177,5 +177,8 @@
     "noItemsFound": "Ingen annonser funnet.",
     "initFailed": "Kunne ikke starte søket. Vennligst prøv igjen.",
     "loadFailed": "Kunne ikke laste inn annonser. Vennligst prøv igjen."
+  },
+  "DetailedItemCard":{
+    "price": "pris"
   }
 }

@@ -177,7 +177,9 @@
     "noItemsFound": "No items found.",
     "initFailed": "Failed to initialize search. Please try again.",
     "loadFailed": "Failed to load items. Please try again."
-  }
-
+  },
+   "DetailedItemCard":{
+    "price": "Price"
+   }
 }
 
