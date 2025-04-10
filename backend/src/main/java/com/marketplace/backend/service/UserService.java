@@ -1,5 +1,6 @@
 package com.marketplace.backend.service;
 
+import com.marketplace.backend.dto.UserPublicDto;
 import com.marketplace.backend.dto.UserResponseDto;
 import com.marketplace.backend.dto.UserUpdateDto;
 import com.marketplace.backend.model.User;
@@ -50,34 +51,15 @@ public class UserService {
   }
 
   /**
-   * Get all users.
-   *
-   * @return a list of all users as DTOs
-   */
-  public List<UserResponseDto> getAllUsers() {
-    logger.info("Fetching all users");
-    try {
-      List<UserResponseDto> users = userRepository.findAll().stream()
-          .map(UserResponseDto::fromEntity)
-          .collect(Collectors.toList());
-      logger.debug("Found {} users", users.size());
-      return users;
-    } catch (Exception e) {
-      logger.error("Failed to fetch all users: {}", e.getMessage(), e);
-      throw e;
-    }
-  }
-
-  /**
-   * Get a user by ID.
+   * Get public information about a user.
    *
    * @param id the user ID
    * @return an optional user DTO if found
    */
-  public Optional<UserResponseDto> getUserById(Long id) {
+  public Optional<UserPublicDto> getUserPublicInfo(Long id) {
     logger.info("Fetching user by ID: {}", id);
     try {
-      return userRepository.findById(id).map(UserResponseDto::fromEntity);
+      return userRepository.findById(id).map(UserPublicDto::fromEntity);
     } catch (Exception e) {
       logger.error("Error fetching user with ID {}: {}", id, e.getMessage(), e);
       throw e;
@@ -95,10 +77,20 @@ public class UserService {
     logger.info("Updating user with ID: {}", id);
     try {
       return userRepository.findById(id).map(user -> {
+        if (dto.getEmail() != null && !dto.getEmail().equals(user.getEmail())) {
+          if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
+          }
+          user.setEmail(dto.getEmail());
+        }
+        if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().equals(user.getPhoneNumber())) {
+          if (userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
+            throw new IllegalArgumentException("Phone number already in use");
+          }
+          user.setPhoneNumber(dto.getPhoneNumber());
+        }
         if (dto.getFullName() != null) user.setFullName(dto.getFullName());
-        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
         if (dto.getPassword() != null) user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        if (dto.getPhoneNumber() != null) user.setPhoneNumber(dto.getPhoneNumber());
         if (dto.getPreferredLanguage() != null) user.setPreferredLanguage(dto.getPreferredLanguage());
 
         MultipartFile picture = dto.getProfilePicture();
@@ -126,7 +118,6 @@ public class UserService {
     }
   }
 
-
   /**
    * Get the current user.
    *
@@ -143,6 +134,12 @@ public class UserService {
       logger.error("Failed to fetch current user {}: {}", email, e.getMessage(), e);
       throw e;
     }
+  }
+
+  public Long getCurrentUserId() {
+    return userRepository.findByEmail(getAuthenticatedEmail())
+        .orElseThrow()
+        .getId();
   }
 
   /**

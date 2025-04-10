@@ -156,7 +156,13 @@ const RegistrationLogic = async () => {
       router.push('/login')
     }, 2000) 
   } catch (err) {
-    errorMessage.value = err.message
+    if (err.message.includes("Email already in use")) {
+      errorMessage.value = "This email address is already registered. Please use a different email or try logging in."
+    } else if (err.message.includes("Phone number already in use")) {
+      errorMessage.value = "This phone number is already registered. Please use a different number."
+    } else {
+      errorMessage.value = err.message || "Registration failed. Please try again."
+    }
   } finally {
     isSubmitting.value = false
   }
@@ -166,4 +172,3 @@ const RegistrationLogic = async () => {
 <style scoped>
 @import '../styles/views/RegisterView.css';
 </style>
-  
