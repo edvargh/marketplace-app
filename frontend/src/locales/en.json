@@ -168,7 +168,15 @@
     "unavailable": "Location information is unavailable. Please check your network connection.",
     "timeout": "The request to get your location timed out. Please try again."
   }
-}
+  },
+  "searchResultView": {
+    "resultsForSearch": "Results for \"{search}\"",
+    "resultsForCategory": "Results for category \"{category}\"",
+    "loadingMessage": "Searching for items...",
+    "noItemsFound": "No items found.",
+    "initFailed": "Failed to initialize search. Please try again.",
+    "loadFailed": "Failed to load items. Please try again."
+  }
 
 }
 

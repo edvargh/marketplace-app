@@ -43,7 +43,7 @@
 
       <div>
         <p class="home-page">
-        Back to main page here: <router-link to="/">Main page</router-link>
+        Back to main welcome <router-link to="/">here</router-link>
         </p>
       </div>
 

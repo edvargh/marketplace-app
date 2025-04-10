@@ -168,5 +168,13 @@
     "unavailable": "Posisjonsinformasjon er utilgjengelig. Sjekk nettverkstilkoblingen din.",
     "timeout": "Forespørselen om å hente posisjon tok for lang tid. Prøv igjen."
   }
-}
+  },
+  "searchResultView": {
+    "resultsForSearch": "Resultater for \"{search}\"",
+    "resultsForCategory": "Resultater for kategori \"{category}\"",
+    "loadingMessage": "Søker etter annonser...",
+    "noItemsFound": "Ingen annonser funnet.",
+    "initFailed": "Kunne ikke starte søket. Vennligst prøv igjen.",
+    "loadFailed": "Kunne ikke laste inn annonser. Vennligst prøv igjen."
+  }
 }
