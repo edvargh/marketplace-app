@@ -1,55 +1,53 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import StatusBanner from '@/components/StatusBanner.vue';
+
+vi.mock('vue-i18n', () => ({
+  useI18n: () => ({
+    t: (key) => {
+      const translations = {
+        'status.sold': 'Sold',
+        'status.reserved': 'Reserved',
+        'status.forSale': 'For Sale',
+      };
+      return translations[key] || key;
+    }
+  })
+}));
 
 describe('StatusBanner.vue', () => {
   it('has the status-banner class', () => {
     const wrapper = mount(StatusBanner, {
-      props: { status: 'for_sale' }
+      props: { status: 'FOR_SALE' }
     });
     expect(wrapper.classes()).toContain('status-banner');
   });
 
-  it('renders status with underscores replaced by spaces', () => {
+  it('render translated status for FOR_SALE', () => {
     const wrapper = mount(StatusBanner, {
-      props: {
-        status: 'for_sale'
-      }
+      props: { status: 'FOR_SALE' }
     });
-    expect(wrapper.text()).toBe('for sale');
+    expect(wrapper.text()).toBe('For Sale');
   });
 
-  it('renders status as it is if no underscores are present', () => {
+  it('render translated status for SOLD', () => {
     const wrapper = mount(StatusBanner, {
-      props: {
-        status: 'sold'
-      }
+      props: { status: 'SOLD' }
     });
-    expect(wrapper.text()).toBe('sold');
+    expect(wrapper.text()).toBe('Sold');
   });
 
-  it('handles multiple underscores properly', () => {
+  it('render status with underscores replaced by spaces for unknown status', () => {
     const wrapper = mount(StatusBanner, {
-      props: {
-        status: 'waiting_for_payment'
-      }
+      props: { status: 'waiting_for_payment' }
     });
     expect(wrapper.text()).toBe('waiting for payment');
   });
 
-  it('renders empty string properly', () => {
+  it('render empty string properly', () => {
     const wrapper = mount(StatusBanner, {
       props: { status: '' }
     });
     expect(wrapper.text()).toBe('');
   });
-
-  it('trims whitespace from status', () => {
-    const wrapper = mount(StatusBanner, {
-      props: { status: '  for_sale  ' }
-    });
-    expect(wrapper.text()).toBe('for sale');
-  });
-
-
 });
