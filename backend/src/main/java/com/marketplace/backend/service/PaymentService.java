@@ -153,7 +153,7 @@ public class PaymentService {
     headers.set("Ocp-Apim-Subscription-Key", subscriptionKey);
     headers.set("Merchant-Serial-Number", merchantSerialNumber);
 
-    HttpEntity<Void> request = new HttpEntity<>(null, headers);
+    HttpEntity<Void> request = new HttpEntity<>(headers);
 
     try {
       ResponseEntity<Map> response = restTemplate.exchange(
