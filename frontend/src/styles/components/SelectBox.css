@@ -52,7 +52,7 @@
     position: absolute;
     width: 100%;
     margin-top: 0.5rem;
-    background: linear-gradient(to bottom right, var(--component-half-1), var(--component-half-2));
+    background-color: var(--box-background);
     border: 1px solid var(--select-border-shadow);
     border-radius: 16px;
     padding: 1rem;

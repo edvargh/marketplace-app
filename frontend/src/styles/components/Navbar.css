@@ -111,7 +111,7 @@
   position: fixed;
   top: 4.5rem;
   right: 1rem;
-  background: linear-gradient(to right, var(--component-half-1), var(--component-half-2));
+  background-color: var(--box-background);
   border: 1px solid var(--navbar-border);
   border-radius: 16px;
   padding: 1rem;

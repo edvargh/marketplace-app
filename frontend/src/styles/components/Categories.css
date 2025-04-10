@@ -49,6 +49,12 @@
     word-break: break-word;
 }
 
+::v-deep(.circle-button.custom-button) {
+    border: none !important;
+    background: var(--box-background) !important;
+    background-clip: padding-box !important;
+}
+
 ::v-deep(.circle-button span) {
     display: -webkit-box;
     -webkit-box-orient: vertical;

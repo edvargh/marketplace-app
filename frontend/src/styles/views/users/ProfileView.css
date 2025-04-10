@@ -46,7 +46,7 @@ label {
   height: 150px;
   border-radius: 50%;
   overflow: hidden;
-  border: 3px solid var(--profile-border);
+  border: 3px solid var(--darker-blue);
 }
 
 .profile-picture {
@@ -66,10 +66,10 @@ label {
   opacity: 0;
   transition: opacity 0.3s ease;
   cursor: pointer;
-  background: var(--profile-edit-icon);
+  background: var(--white);
   border-radius: 9999px;
   padding: 4px;
-  box-shadow: 0 2px 8px var(--profile-edit-icon-shadow);
+  box-shadow: 0 2px 8px var(--black);
 }
 
 /* Show edit icon on hover */
