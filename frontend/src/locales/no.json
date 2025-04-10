@@ -109,6 +109,7 @@
     "editItem": "Rediger annonse",
     "descriptionOfItem": "Beskrivelse av varen",
     "seller": "Selger",
+    "loading-seller": "Laster inn selger informasjon...",
     "errors": {
       "invalidId": "Ugyldig annonse-ID.",
       "itemNotFound": "Annonse ikke funnet.",
@@ -245,7 +246,8 @@
   "PaymentCompleteView": {
     "title": "Takk!",
     "message": "Din Vipps betaling har blitt behandlet vellykket.",
-    "returnHome": "Tilbake til hjem"
+    "returnHome": "Tilbake til hjem",
+    "order": "Din bestillings-ID er:"
   }
 
 }
