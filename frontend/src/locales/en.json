@@ -44,7 +44,6 @@
   "homeView": {
     "Your-recommendations": "Your recommendations",
     "No-recommended-items-found": "No recommended items found",
-    "Most-popular-items": "Most popular items",
     "No-popular-items-found": "No popular items found",
     "Market": "Market",
     "No-market-items-found": "No market items found",
@@ -56,7 +55,7 @@
     "ErrorLoading": "Something wrong happened while loading Home Page. Please try again."
   },
     "categories":{
-    "Most-popular-categories": "Most popular categories"
+    "Most-popular-categories": "Categories"
   },
   "FilterPanel": {
     "Categories": "Categories",

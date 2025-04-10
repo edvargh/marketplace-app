@@ -115,9 +115,9 @@
 <script setup>
 import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useMessageStore } from '@/stores/messageStore'
-import { useUserStore } from '@/stores/userStore'
-import { useItemStore } from '@/stores/itemStore'
+import { useMessageStore } from '@/stores/messageStore.js'
+import { useUserStore } from '@/stores/userStore.js'
+import { useItemStore } from '@/stores/itemStore.js'
 import LoadingState from "@/components/LoadingState.vue"
 import ReserveBox from '@/components/ReserveBox.vue'
 import StatusBanner from '@/components/StatusBanner.vue'
@@ -322,5 +322,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-@import '../styles/users/ConversationView.css';
+@import '../../styles/views/users/ConversationView.css';
 </style>

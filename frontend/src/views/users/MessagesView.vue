@@ -24,8 +24,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useMessageStore } from '@/stores/messageStore'
-import { useItemStore } from '@/stores/itemStore'
+import { useMessageStore } from '@/stores/messageStore.js'
+import { useItemStore } from '@/stores/itemStore.js'
 import { useI18n } from 'vue-i18n'
 import ConversationPreviewCard from '@/components/ConversationPreviewCard.vue'
 import LoadingState from "@/components/LoadingState.vue"
@@ -70,5 +70,5 @@ onMounted(async () => {
 </script>
 
 <style>
-@import '../styles/users/MessagesView.css';
+@import '../../styles/views/users/MessagesView.css';
 </style>

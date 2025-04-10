@@ -99,7 +99,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useUserStore } from '@/stores/userStore'
+import { useUserStore } from '@/stores/userStore.js'
 import { useI18n } from 'vue-i18n'
 import InputBox from '@/components/InputBox.vue'
 import EditIcon from '@/components/EditIcon.vue'
@@ -243,5 +243,5 @@ const canSubmit = computed(() =>
 </script>
 
 <style scoped>
-@import '../styles/users/ProfileView.css';
+@import '../../styles/views/users/ProfileView.css';
 </style>

@@ -43,7 +43,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import ItemForm from '@/components/ItemForm.vue';
-import { useItemStore } from '@/stores/itemStore';
+import { useItemStore } from '@/stores/itemStore.js';
 import { useI18n } from 'vue-i18n';
 import Notification from "@/components/NotificationBanner.vue";
 import ErrorMessage from '@/components/ErrorMessage.vue'
