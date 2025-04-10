@@ -54,14 +54,19 @@
           <button
               class="blue-btn"
               @click="handleBuyNow"
-              :disabled="!canBuyNow || isSold"
+              :disabled="!canBuyNow || isSold || !sellerLoaded"
               @mouseover="showBuyNowTooltip = !canBuyNow || isSold"
               @mouseleave="showBuyNowTooltip = false"
           >
             {{ t('itemView.buyNow') }}
           </button>
-          <span v-if="showBuyNowTooltip && (!canBuyNow || isSold)" class="error-message">
+          <span v-if="showBuyNowTooltip && (!canBuyNow || isSold || !sellerLoaded)" class="error-message">
+            <template v-if="!sellerLoaded">
+              {{t('itemView.loading-seller')}}
+            </template>
+            <template v-else>
             {{ isSold ? t('itemView.soldTooltip') : t('itemView.reservedByOtherTooltip') }}
+          </template>
           </span>
 
         </template>
@@ -133,6 +138,8 @@ const showSoldTooltip = ref(false);
 const { t } = useI18n()
 
 const isSold = computed(() => item.value.status?.toLowerCase() === 'sold');
+
+const sellerLoaded = computed(() => seller.value !== null);
 
 const showWarning = (msg) => {
   errorMessage.value = msg;
@@ -234,21 +241,25 @@ const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;
 };
 
+
 const canBuyNow = computed(() => {
   return item.value.reservedById === null || item.value.reservedById === userStore.user?.id;
 });
 
 const handleBuyNow = async () => {
   try {
+    if (!item.value || !item.value.id) {
+      showWarning(t('itemView.errors.invalidItem'));
+      return;
+    }
     const itemId = item.value.id;
-    const redirectUrl = await itemStore.initiateVippsPayment(itemId);
-    
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
+    const paymentUrl = await itemStore.initiateVippsPayment(itemId);
+    if (paymentUrl) {
+      window.location.href = paymentUrl;
     } else {
       showWarning(t('itemView.errors.paymentInitFailed'));
     }
-  } catch {
+  } catch (error) {
     showWarning(t('itemView.errors.paymentProcessFailed'));
   }
 };
