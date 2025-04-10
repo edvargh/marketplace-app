@@ -9,7 +9,7 @@
       :images="formData.images"
       :show-favorite-button="false"
       :current-index="formData.currentImageIndex"
-      @update:current-index="val => formData.currentImageIndex = val"
+      @update:current-index="(val) => (formData.currentImageIndex = val)"
     />
 
     <!-- Image Upload/Remove Buttons -->
@@ -28,7 +28,8 @@
       <CustomButton
         type="button"
         @click="removeCurrentImage"
-        :disabled="formData.images.length === 0">
+        :disabled="formData.images.length === 0"
+      >
         {{ t('itemFormComponent.removeCurrentImage') }}
       </CustomButton>
     </div>
@@ -69,9 +70,9 @@
 
       <!-- Title -->
       <label for="Title">{{ t('itemFormComponent.title') }}</label>
-      <InputBox 
-        label="Title" 
-        v-model="formData.title" 
+      <InputBox
+        label="Title"
+        v-model="formData.title"
         class="input-title"
         :placeholder="t('itemFormComponent.placeholders.title')"
         required
@@ -82,8 +83,8 @@
 
       <!-- Description -->
       <label for="description">{{ t('itemFormComponent.description') }}</label>
-      <CustomTextarea 
-        v-model="formData.description" 
+      <CustomTextarea
+        v-model="formData.description"
         class="input-description"
         :placeholder="t('itemFormComponent.placeholders.description')"
         :required="true"
@@ -94,11 +95,11 @@
 
       <!-- Price -->
       <label for="Price">{{ t('itemFormComponent.price') }}</label>
-      <InputBox 
-        label="Price" 
+      <InputBox
+        label="Price"
         class="input-price"
-        v-model="formData.price" 
-        type="number" 
+        v-model="formData.price"
+        type="number"
         :placeholder="t('itemFormComponent.placeholders.price')"
         required
       />
@@ -111,8 +112,8 @@
         :lat="formData.latitude"
         :lng="formData.longitude"
         :is-edit-mode="true"
-        @update:lat="val => formData.latitude = val"
-        @update:lng="val => formData.longitude = val"
+        @update:lat="(val) => (formData.latitude = val)"
+        @update:lng="(val) => (formData.longitude = val)"
       />
       <div v-if="!formData.latitude || !formData.longitude" class="error-message">
         {{ t('itemFormComponent.selectLocation') }}
@@ -130,13 +131,13 @@
 import { ref, reactive, onBeforeUnmount, computed, onMounted, watch } from 'vue'
 import InputBox from '@/components/InputBox.vue'
 import ImageGallery from '@/components/ImageGallery.vue'
-import SelectBox from "@/components/SelectBox.vue"
-import CustomButton from "@/components/CustomButton.vue"
-import CustomTextarea from "@/components/CustomTextarea.vue"
-import LocationDisplay from "@/components/LocationDisplay.vue"
-import { useCategoryStore } from "@/stores/categoryStore"
+import SelectBox from '@/components/SelectBox.vue'
+import CustomButton from '@/components/CustomButton.vue'
+import CustomTextarea from '@/components/CustomTextarea.vue'
+import LocationDisplay from '@/components/LocationDisplay.vue'
+import { useCategoryStore } from '@/stores/categoryStore'
 import { useI18n } from 'vue-i18n'
-import ErrorMessage from './ErrorMessage.vue'  
+import ErrorMessage from './ErrorMessage.vue'
 
 const categoryStore = useCategoryStore()
 const fileInput = ref(null)
@@ -144,7 +145,7 @@ const categories = ref([])
 const priceError = ref('')
 const titleError = ref('')
 const descriptionError = ref('')
-const errorMsg = ref('')  
+const errorMsg = ref('')
 
 const maxTitleLength = 50
 const maxDescriptionLength = 600
@@ -157,34 +158,41 @@ const props = defineProps({
   title: String,
   initialData: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
   showStatus: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 
 // Status options
 const statusOptions = ref([
   { value: 'FOR_SALE', label: t('itemFormComponent.statusOptions.forSale') },
   { value: 'RESERVED', label: t('itemFormComponent.statusOptions.reserved') },
-  { value: 'SOLD', label: t('itemFormComponent.statusOptions.sold') }
+  { value: 'SOLD', label: t('itemFormComponent.statusOptions.sold') },
 ])
 
 const formData = reactive({
   ...props.initialData,
-  status: 'FOR_SALE'
+  status: 'FOR_SALE',
 })
 
-watch(() => props.initialData, (newData) => {
-  Object.assign(formData, newData)
-}, { deep: true, immediate: true })
+watch(
+  () => props.initialData,
+  (newData) => {
+    Object.assign(formData, newData)
+  },
+  { deep: true, immediate: true },
+)
 
 // Price validator
-watch(() => formData.price, (newPrice) => {
-  validatePrice(newPrice)
-})
+watch(
+  () => formData.price,
+  (newPrice) => {
+    validatePrice(newPrice)
+  },
+)
 
 const validatePrice = (price) => {
   priceError.value = ''
@@ -195,9 +203,9 @@ const validatePrice = (price) => {
   const validations = [
     { condition: isNaN(numPrice), message: t('itemFormComponent.validation.invalidNumber') },
     { condition: numPrice < minPrice, message: t('itemFormComponent.validation.negativePrice') },
-    { condition: numPrice > maxPrice, message: t('itemFormComponent.validation.tooHighPrice') }
+    { condition: numPrice > maxPrice, message: t('itemFormComponent.validation.tooHighPrice') },
   ]
-  const failedValidation = validations.find(validation => validation.condition)
+  const failedValidation = validations.find((validation) => validation.condition)
   if (failedValidation) {
     priceError.value = failedValidation.message
     return false
@@ -206,27 +214,30 @@ const validatePrice = (price) => {
 }
 
 // Title and description validator
-watch(() => [formData.title, formData.description], ([newTitle, newDescription]) => {
-  titleError.value =
-    newTitle && newTitle.length > maxTitleLength
-      ? `Title cannot exceed ${maxTitleLength} characters`
-      : ''
-  descriptionError.value =
-    newDescription && newDescription.length > maxDescriptionLength
-      ? `Description cannot exceed ${maxDescriptionLength} characters`
-      : ''
-})
+watch(
+  () => [formData.title, formData.description],
+  ([newTitle, newDescription]) => {
+    titleError.value =
+      newTitle && newTitle.length > maxTitleLength
+        ? t('itemFormComponent.validation.titleTooLong', { max: maxTitleLength })
+        : ''
+    descriptionError.value =
+      newDescription && newDescription.length > maxDescriptionLength
+        ? t('itemFormComponent.validation.descriptionTooLong', { max: maxDescriptionLength })
+        : ''
+  },
+)
 
 onMounted(async () => {
   try {
-    categoryStore.fetchCategories().then(cats => {
-      categories.value = cats.map(category => ({
+    categoryStore.fetchCategories().then((cats) => {
+      categories.value = cats.map((category) => ({
         name: category.name,
-        id: category.id
+        id: category.id,
       }))
     })
   } catch (error) {
-    errorMsg.value = "Error fetching categories: " + error.message
+    errorMsg.value = t('itemFormComponent.errors.fetchCategories', { error: error.message })
   }
 })
 
@@ -236,8 +247,8 @@ const handleImageUpload = (event) => {
   const newImages = [
     ...formData.images,
     ...Array.from(files)
-      .filter(file => file.type.startsWith('image/'))
-      .map(file => ({ file, url: URL.createObjectURL(file) }))
+      .filter((file) => file.type.startsWith('image/'))
+      .map((file) => ({ file, url: URL.createObjectURL(file) })),
   ]
   formData.images = newImages
   fileInput.value.value = ''
@@ -255,7 +266,7 @@ const removeCurrentImage = () => {
 }
 
 onBeforeUnmount(() => {
-  formData.images.forEach(image => URL.revokeObjectURL(image.url))
+  formData.images.forEach((image) => URL.revokeObjectURL(image.url))
 })
 
 const triggerFileInput = () => {
@@ -270,9 +281,9 @@ const isFormValid = computed(() => {
     formData.categoryId,
     formData.description,
     formData.latitude,
-    formData.longitude
+    formData.longitude,
   ]
-  const hasAllRequiredFields = requiredFields.every(field => !!field)
+  const hasAllRequiredFields = requiredFields.every((field) => !!field)
   const isPriceValid = formData.price >= 0
   const noTextErrors = !titleError.value && !descriptionError.value
   return hasAllRequiredFields && isPriceValid && noTextErrors
@@ -285,8 +296,8 @@ const handleSubmit = async () => {
   try {
     emit('submit', formData)
   } catch (error) {
-    errorMsg.value = "Error submitting form: " + error.message
-    emit('error', 'Failed to prepare form data')
+    errorMsg.value = t('itemFormComponent.errors.submitForm', { error: error.message })
+    emit('error', t('itemFormComponent.errors.failedToPrepare'))
   }
 }
 </script>
