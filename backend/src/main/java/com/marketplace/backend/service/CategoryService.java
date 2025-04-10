@@ -55,6 +55,10 @@ public class CategoryService {
    * @return the created category
    */
   public Category createCategory(Category category) {
+    if (categoryRepository.existsByName(category.getName())) {
+      logger.debug("Category with name {} already exists", category.getName());
+      throw new IllegalArgumentException("Category name already exists");
+    }
     logger.debug("Creating new category: {}", category.getName());
     return categoryRepository.save(category);
   }
@@ -67,42 +71,20 @@ public class CategoryService {
    * @return the updated category, if found
    */
   public Optional<Category> updateCategory(Long id, Category category) {
-    logger.debug("Checking if category exists with ID: {}", id);
     if (!categoryRepository.existsById(id)) {
       logger.debug("Category with ID {} does not exist", id);
       return Optional.empty();
     }
+
+    if (categoryRepository.existsByName(category.getName())) {
+      logger.debug("Category with name {} already exists", category.getName());
+      throw new IllegalArgumentException("Category name already exists");
+    }
+
     category.setId(id);
     logger.debug("Updating category with ID {}: {}", id, category.getName());
     Category updated = categoryRepository.save(category);
     logger.debug("Category updated successfully: {}", updated.getName());
     return Optional.of(updated);
-  }
-
-  /**
-   * Delete a category by ID.
-   *
-   * @param id the id of the category to delete
-   */
-  public void deleteCategory(Long id) {
-    logger.debug("Deleting category with ID: {}", id);
-    try {
-      categoryRepository.deleteById(id);
-      logger.debug("Category with ID {} deleted successfully", id);
-    } catch (Exception e) {
-      logger.error("Error deleting category with ID {}: {}", id, e.getMessage());
-      throw e;
-    }
-  }
-
-  /**
-   * Check if a category exists by ID.
-   *
-   * @param id the category id
-   * @return true if the category exists, false otherwise
-   */
-  public boolean existsById(Long id) {
-    logger.debug("Checking if category exists with ID: {}", id);
-    return categoryRepository.existsById(id);
   }
 }

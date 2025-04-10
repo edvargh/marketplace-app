@@ -1,6 +1,7 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.model.User;
+import com.marketplace.backend.dto.LoginRequestDto;
+import com.marketplace.backend.dto.RegisterRequestDto;
 import com.marketplace.backend.service.AuthService;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +25,16 @@ public class AuthController {
   /**
    * Register a new user.
    *
-   * @param user the user to register
+   * @param request the user to register
    * @return a JWT token
    */
   @PostMapping("/register")
-  public Map<String, String> register(@RequestBody User user) {
+  public Map<String, String> register(@RequestBody RegisterRequestDto request) {
     try {
-      String token = authService.registerUser(user);
+      String token = authService.registerUser(request);
       return Map.of("token", token);
     } catch (Exception e) {
-      logger.error("Failed to register user {}: {}", user.getEmail(), e.getMessage(), e);
+      logger.error("Failed to register user {}: {}", request.getEmail(), e.getMessage(), e);
       throw e;
     }
   }
@@ -41,16 +42,16 @@ public class AuthController {
   /**
    * Log in a user.
    *
-   * @param loginReq the user to log in
+   * @param request the user to log in
    * @return a JWT token
    */
   @PostMapping("/login")
-  public Map<String, String> login(@RequestBody User loginReq) {
+  public Map<String, String> login(@RequestBody LoginRequestDto request) {
     try {
-      String token = authService.loginUser(loginReq.getEmail(), loginReq.getPassword());
+      String token = authService.loginUser(request.getEmail(), request.getPassword());
       return Map.of("token", token);
     } catch (Exception e) {
-      logger.warn("Login failed for user {}: {}", loginReq.getEmail(), e.getMessage());
+      logger.warn("Login failed for user {}: {}", request.getEmail(), e.getMessage());
       throw e;
     }
   }
