@@ -21,18 +21,24 @@ export const useItemStore = defineStore('items', () => {
 
   const items = ref([])
 
-  const fetchMarketItems = async (page = 0, size = 6) => {
-    try {
-      const headers = getAuthHeaders();
-      const response = await axios.get(`${API_BASE_URL}/api/items`, {
-        headers,
-        params: { page, size }
-      });
-      return response.data;
-    } catch (err) {
-      return [];
+const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
+  try {
+    const headers = getAuthHeaders();
+    const params = { page, size };
+    
+    if (excludeStatuses.length > 0) {
+      params.excludeStatuses = excludeStatuses.join(',');
     }
-  };
+    
+    const response = await axios.get(`${API_BASE_URL}/api/items`, {
+      headers,
+      params
+    });
+    return response.data;
+  } catch (err) {
+    return [];
+  }
+};
 
   const fetchItemById = async (id) => {
     try {
