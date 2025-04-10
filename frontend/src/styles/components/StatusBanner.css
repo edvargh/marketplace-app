@@ -3,7 +3,6 @@
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
     padding: 5px 10px;
     border-radius: 20px;
     background-color: var(--status-background);

@@ -89,7 +89,6 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CustomButton from '@/components/CustomButton.vue'
 import { useI18n } from 'vue-i18n'
-import { Teleport } from 'vue'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -102,7 +101,7 @@ const isAuthenticated = computed(() => userStore.isAuthenticated)
 
 const handleLogout = async () => {
   userStore.logout()
-  router.push('/login')
+  await router.push('/login')
 }
 
 const dropdownOpen = ref(false)
