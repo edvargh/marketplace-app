@@ -26,7 +26,7 @@
           :disabled="isSubmitting"
         />
 
-        <button type="submit" :disabled="isSubmitting">
+        <button type="submit" :disabled="isSubmitting" class="custom-button-filled">
           {{ isSubmitting ? 'Logging in...' : 'Log In' }}
         </button>
 

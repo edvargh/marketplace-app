@@ -50,7 +50,6 @@ import { useRoute, useRouter } from 'vue-router';
 import ItemForm from '@/components/ItemForm.vue';
 import Notification from '@/components/NotificationBanner.vue';
 import { useItemStore } from '@/stores/itemStore';
-import { useUserStore } from '@/stores/userStore';
 import LoadingState from "@/components/LoadingState.vue";
 
 const route = useRoute();

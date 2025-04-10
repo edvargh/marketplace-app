@@ -61,7 +61,7 @@
       />
       <p v-if="confirmPasswordError" class="error-message">{{ confirmPasswordError }}</p>
 
-      <button type="submit" :disabled="isSubmitting || hasErrors">
+      <button type="submit" :disabled="isSubmitting || hasErrors" class="custom-button-filled">
         {{ isSubmitting ? 'Registering...' : 'Register' }}
       </button>
 
