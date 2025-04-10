@@ -28,7 +28,7 @@
         
         <div class="card-footer">
           <div class="price-frame">
-            <span class="price-label">Price</span>
+            <span class="price-label"> {{t('DetailedItemCard.price')}} </span>
             <span class="price">{{ item.price }} kr</span>
           </div>
           
@@ -44,7 +44,9 @@ import StatusBanner from "@/components/StatusBanner.vue";
 import { ref, onMounted, watch } from 'vue';
 import { useUserStore } from "@/stores/userStore";
 import ErrorMessage from "./ErrorMessage.vue";
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n();
 const errorMessage = ref('');
 const userStore = useUserStore();
 const sellerProfilePicture = ref('/default-picture.jpg');

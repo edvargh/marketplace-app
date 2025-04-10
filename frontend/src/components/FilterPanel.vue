@@ -60,7 +60,7 @@
 
     <!-- Location -->
     <div class="location-section">
-      <h3 class="filter-headers">Latitude & Longitude</h3>
+      <h3 class="filter-headers">{{ t('FilterPanel.choosePosition') }}</h3>
       <div class="geo-inputs">
         <div class="geo-input-wrapper">
           <label for="latitude">Latitude</label>
@@ -132,29 +132,29 @@ const longitude = ref(null)
 
 onMounted(() => {
   if (route.query.categoryIds) {
-    const ids = Array.isArray(route.query.categoryIds) 
-      ? route.query.categoryIds 
+    const ids = Array.isArray(route.query.categoryIds)
+      ? route.query.categoryIds
       : [route.query.categoryIds]
-    
+
     selectedCategoryIds.value = ids.map(id => parseInt(id, 10))
   }
-  
+
   if (route.query.minPrice) priceMin.value = Number(route.query.minPrice)
   if (route.query.maxPrice) priceMax.value = Number(route.query.maxPrice)
   if (route.query.distanceKm) distanceKm.value = Number(route.query.distanceKm)
-  
+
   if (route.query.latitude) {
     const lat = Number(route.query.latitude)
     latitude.value = lat
     latitudeInput.value = lat.toString()
   }
-  
+
   if (route.query.longitude) {
     const lng = Number(route.query.longitude)
     longitude.value = lng
     longitudeInput.value = lng.toString()
   }
-  
+
   syncToStore()
 })
 
@@ -215,9 +215,9 @@ watch(() => props.categories, () => {
 
 const applyFilters = () => {
   handleLatLongChange()
-  
+
   syncToStore()
-  
+
   emit('applyFilters', {
     categoryIds: selectedCategoryIds.value,
     priceMin: priceMin.value !== '' ? priceMin.value : null,
