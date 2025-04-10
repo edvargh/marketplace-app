@@ -19,6 +19,14 @@
   display: none;
 }
 
+.clone-container.start-clone {
+  margin-right: 15px;
+}
+
+.clone-container.end-clone {
+  margin-left: 15px;
+}
+
 .clone-container,
 .original-container {
   display: flex;
