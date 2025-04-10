@@ -37,6 +37,7 @@
           
           <StatusBanner :status="item.status" class="status-banner" />
         </div>
+        <ErrorMessage v-if="sellerErrorMessage" :message="sellerErrorMessage" />
       </div>
     </div>
   </router-link>
@@ -47,6 +48,7 @@ import StatusBanner from "@/components/StatusBanner.vue";
 import { ref, onMounted, watch } from 'vue';
 import { useUserStore } from "@/stores/userStore";
 import { useI18n } from 'vue-i18n';
+import ErrorMessage from "./ErrorMessage.vue";
 
 const { t } = useI18n();
 const userStore = useUserStore();
@@ -85,7 +87,7 @@ const fetchSellerData = async () => {
         sellerProfilePicture.value = seller.profilePicture;
       }
     } catch (err) {
-      console.warn('Could not fetch seller profile picture:', err);
+      sellerErrorMessage.value = "Could not fetch seller data";
     }
   }
 };
