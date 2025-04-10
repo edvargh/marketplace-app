@@ -1,8 +1,8 @@
 <template>
   <LoadingState
     :loading="isLoading"
-    :error="hasError ? 'An error occurred while loading the conversation.' : ''"
-    loadingMessage="Loading conversation..."
+    :error="hasError ? errorMessage : ''"
+    :loadingMessage="t('ConversationView.loadingMessage')"
   />
 
   <ErrorMessage v-if="!isLoading && hasError" :message="errorMessage" />
@@ -14,6 +14,7 @@
         class="profile-pic"
         :src="participantProfileImage"
         @error="$event.target.src = '/default-picture.jpg'"
+        alt="Participant picture"
       />
       <h2>{{ otherUserName }}</h2>
     </div>
@@ -37,7 +38,7 @@
     <!-- Messages -->
     <div class="messages-section">
       <div v-if="messages.length === 0" class="empty-state">
-        No messages here yet
+        {{ t('ConversationView.noMessages') }}
       </div>
       <template v-else>
         <div v-for="msg in messages" :key="msg.id">
@@ -49,6 +50,7 @@
               class="bubble-profile-pic"
               :src="getProfileImageForUser(msg.senderId, msg.fromYou)"
               @error="$event.target.src = '/default-picture.jpg'"
+              alt="Profile picture"
             />
             <div class="bubble-content">
               <div class="bubble-time">
@@ -95,7 +97,7 @@
         <input
           v-model="newMessage"
           @keyup.enter="sendMessage"
-          placeholder="Type your message..."
+          :placeholder="t('ConversationView.messagePlaceholder')"
           class="message-input"
         />
       </div>
@@ -104,7 +106,7 @@
         :disabled="isSending"
         class="send-button"
       >
-        {{ isSending ? 'Sending...' : 'Send' }}
+        {{ isSending ? t("ConversationView.sending") : t("ConversationView.send") }}
       </button>
     </div>
   </div>
@@ -113,13 +115,14 @@
 <script setup>
 import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useMessageStore } from '@/stores/messageStore'
-import { useUserStore } from '@/stores/userStore'
-import { useItemStore } from '@/stores/itemStore'
+import { useMessageStore } from '@/stores/messageStore.js'
+import { useUserStore } from '@/stores/userStore.js'
+import { useItemStore } from '@/stores/itemStore.js'
 import LoadingState from "@/components/LoadingState.vue"
 import ReserveBox from '@/components/ReserveBox.vue'
 import StatusBanner from '@/components/StatusBanner.vue'
-import ErrorMessage from '@/components/ErrorMessage.vue' 
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import { useI18n } from 'vue-i18n'
 
 const route = useRoute()
 const itemId = Number(route.query.itemId)
@@ -143,6 +146,7 @@ const currentUserProfileImage = ref(userStore.getCurrentUserProfileImageUrl())
 const participantProfileImage = ref('/default-picture.jpg')
 const otherUser = ref(null)
 const processingReservation = ref(null)
+const { t } = useI18n()
 
 const isSeller = computed(() => {
   return item.value?.sellerId === currentUserId
@@ -193,7 +197,7 @@ const fetchConversation = async () => {
     messages.value = grouped
   } catch (err) {
     hasError.value = true
-    errorMessage.value = 'An error occurred while loading the conversation.'
+    errorMessage.value = t('ConversationView.errorLoadingConversation')
   }
 }
 
@@ -223,13 +227,13 @@ const fetchItem = async () => {
           }
         }
       } catch (err) {
-        errorMessage.value = 'An error occurred while loading the seller data.'
+        errorMessage.value = t('ConversationView.errorLoadingSellerData')
         hasError.value = true
       }
     }
   } catch (err) {
     hasError.value = true
-    errorMessage.value = 'An error occurred while loading the conversation.'
+    errorMessage.value = t('ConversationView.errorLoadingConversation')
   }
 }
 
@@ -250,7 +254,7 @@ const sendMessage = async () => {
     }
     await fetchConversation()
   } catch (err) {
-    errorMessage.value = 'An error occurred while sending the message.'
+    errorMessage.value = t('ConversationView.errorSendingMessage')
     hasError.value = true
   } finally {
     isSending.value = false
@@ -264,7 +268,7 @@ const handleAcceptReservation = async (messageId) => {
     await itemStore.updateItemStatus(itemId, 'RESERVED', withUserId)
     await Promise.all([fetchConversation(), fetchItem()])
   } catch (err) {
-    errorMessage.value = 'An error occurred while accepting the reservation.'
+    errorMessage.value = t('ConversationView.errorAcceptingReservation')
     hasError.value = true
   } finally {
     processingReservation.value = false
@@ -277,7 +281,7 @@ const handleDeclineReservation = async (messageId) => {
     await messageStore.updateReservationStatus(messageId, 'DECLINED')
     await fetchConversation()
   } catch (err) {
-    errorMessage.value = 'An error occurred while declining the reservation.'
+    errorMessage.value = t('ConversationView.errorDecliningReservation')
     hasError.value = true
   } finally {
     processingReservation.value = false
@@ -291,7 +295,7 @@ const getSenderName = (senderId) => {
   if (otherUser.value?.fullName) {
     return otherUser.value.fullName
   }
-  return item.value?.sellerName || 'Unknown User'
+  return item.value?.sellerName || t('ConversationView.unknownUser')
 }
 
 watch(messages, async () => {
@@ -310,7 +314,7 @@ onMounted(async () => {
     await fetchConversation()
   } catch (err) {
     hasError.value = true
-    errorMessage.value = 'An error occurred while loading the conversation.'
+    errorMessage.value = t('ConversationView.errorLoadingConversation')
   } finally {
     isLoading.value = false
   }
@@ -318,5 +322,5 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-@import '../styles/users/ConversationView.css';
+@import '../../styles/views/users/ConversationView.css';
 </style>

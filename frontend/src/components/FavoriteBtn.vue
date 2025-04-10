@@ -5,15 +5,19 @@
     </span>
     {{ isFavorite ? 'Unfavorite' : 'Favorite' }}
   </button>
+    <ErrorMessage v-if="errorMessage" :message="errorMessage" />
 </template>
 
 <script setup>
 import { useItemStore } from '@/stores/itemStore';
 import { useRoute } from 'vue-router';
+import ErrorMessage from './ErrorMessage.vue';
+import { ref } from 'vue';
 
 const route = useRoute();
 const itemStore = useItemStore();
 const itemId = route.params.id;
+const errorMessage = ref('');
 
 const props = defineProps({
   isFavorite: Boolean,
@@ -28,7 +32,7 @@ const toggleFavorite = async () => {
       emit('update:isFavorite', !props.isFavorite);
     }
   } catch (error) {
-    console.error('Failed to toggle favorite:', error);
+    errorMessage.value = 'Failed to toggle favorite status';
   }
 };
 </script>

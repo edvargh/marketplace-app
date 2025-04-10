@@ -25,40 +25,54 @@
 
       <div class="action-buttons">
         <template v-if="!isMyItem">
-          <button class="message-btn" @click="handleMessageSeller">{{ t('itemView.sendMessage') }}</button>
+          <button
+            class="message-btn"
+            @click="handleMessageSeller"
+            :disabled="isSold"
+            @mouseover="showSoldTooltip = isSold"
+            @mouseleave="showSoldTooltip = false"
+          >
+            {{ t('itemView.sendMessage') }}
+          </button>
+          <span v-if="showSoldTooltip && isSold" class="error-message">
+            {{ t('itemView.soldTooltip') }}
+          </span>
 
           <button
             class="reserve-btn"
             @click="handleReserveItem"
-            :disabled="hasPendingRes"
-            @mouseover="showReserveTooltip = hasPendingRes"
+            :disabled="hasPendingRes || isSold"
+            @mouseover="showReserveTooltip = hasPendingRes || isSold"
             @mouseleave="showReserveTooltip = false"
           >
             {{ t('itemView.reserveItem') }}
           </button>
-          <span v-if="showReserveTooltip && hasPendingRes" class="error-message">
-            {{ t('itemView.pendingReservationTooltip') }}
+          <span v-if="showReserveTooltip && (hasPendingRes || isSold)" class="error-message">
+            {{ isSold ? t('itemView.soldTooltip') : t('itemView.pendingReservationTooltip') }}
           </span>
 
           <button
               class="blue-btn"
               @click="handleBuyNow"
-              :disabled="!canBuyNow"
-              @mouseover="showBuyNowTooltip = !canBuyNow"
+              :disabled="!canBuyNow || isSold || !sellerLoaded"
+              @mouseover="showBuyNowTooltip = !canBuyNow || isSold"
               @mouseleave="showBuyNowTooltip = false"
           >
             {{ t('itemView.buyNow') }}
           </button>
-          <span v-if="showBuyNowTooltip && !canBuyNow" class="error-message">
-            {{ t('itemView.reservedByOtherTooltip') }}
+          <span v-if="showBuyNowTooltip && (!canBuyNow || isSold || !sellerLoaded)" class="error-message">
+            <template v-if="!sellerLoaded">
+              {{t('itemView.loading-seller')}}
+            </template>
+            <template v-else>
+            {{ isSold ? t('itemView.soldTooltip') : t('itemView.reservedByOtherTooltip') }}
+          </template>
           </span>
 
         </template>
         <router-link v-else :to="{ name: 'EditItemView', params: { id: item.id } }" class="blue-btn">
           {{ t('itemView.editItem') }}
         </router-link>
-
-
       </div>
     </div>
 
@@ -95,9 +109,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import ImageGallery from "@/components/ImageGallery.vue";
-import { useItemStore } from "@/stores/itemStore";
-import { useUserStore } from "@/stores/userStore";
-import { useMessageStore } from '@/stores/messageStore';
+import { useItemStore } from "@/stores/itemStore.js";
+import { useUserStore } from "@/stores/userStore.js";
+import { useMessageStore } from '@/stores/messageStore.js';
 import FavoriteBtn from "@/components/FavoriteBtn.vue";
 import LoadingState from "@/components/LoadingState.vue";
 import LocationDisplay from "@/components/LocationDisplay.vue";
@@ -120,8 +134,12 @@ const messageStore = useMessageStore();
 const hasPendingRes = ref(false);
 const showReserveTooltip = ref(false);
 const showBuyNowTooltip = ref(false);
+const showSoldTooltip = ref(false);
 const { t } = useI18n()
 
+const isSold = computed(() => item.value.status?.toLowerCase() === 'sold');
+
+const sellerLoaded = computed(() => seller.value !== null);
 
 const showWarning = (msg) => {
   errorMessage.value = msg;
@@ -223,21 +241,25 @@ const updateFavoriteStatus = (newStatus) => {
   isFavorite.value = newStatus;
 };
 
+
 const canBuyNow = computed(() => {
   return item.value.reservedById === null || item.value.reservedById === userStore.user?.id;
 });
 
 const handleBuyNow = async () => {
   try {
+    if (!item.value || !item.value.id) {
+      showWarning(t('itemView.errors.invalidItem'));
+      return;
+    }
     const itemId = item.value.id;
-    const redirectUrl = await itemStore.initiateVippsPayment(itemId);
-    
-    if (redirectUrl) {
-      window.location.href = redirectUrl;
+    const paymentUrl = await itemStore.initiateVippsPayment(itemId);
+    if (paymentUrl) {
+      window.location.href = paymentUrl;
     } else {
       showWarning(t('itemView.errors.paymentInitFailed'));
     }
-  } catch {
+  } catch (error) {
     showWarning(t('itemView.errors.paymentProcessFailed'));
   }
 };
@@ -265,5 +287,5 @@ const checkPendingReservation = async () => {
 </script>
 
 <style scoped>
-@import '../styles/views/ItemView.css';
+@import '../../styles/views/items/ItemView.css';
 </style>

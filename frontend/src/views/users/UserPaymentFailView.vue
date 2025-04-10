@@ -1,8 +1,8 @@
 <template>
   <div class="payment-complete-container box">
-    <h1>Thank you!</h1>
-    <p>Your Vipps payment has been processed successfully.</p>
-    <CustomButton @click="goHome">Return to Home</CustomButton>
+    <h1>{{ $t('PaymentFailView.title') }}</h1>
+    <p>{{ $t('PaymentFailView.message') }}</p>
+    <CustomButton @click="goHome">{{ $t('PaymentFailView.returnHome') }}</CustomButton>
   </div>
 </template>
 
@@ -10,7 +10,7 @@
 import CustomButton from '@/components/CustomButton.vue'
 
 export default {
-  name: "UserPaymentComplete",
+  name: "UserPaymentFail",
   components: { CustomButton },
   methods: {
     goHome() {
@@ -20,6 +20,6 @@ export default {
 };
 </script>
 
-<style scoped>
-@import '../styles/users/UserPaymentComplete.css';
+<style>
+@import "@/styles/views/users/UserPaymentComplete.css";
 </style>

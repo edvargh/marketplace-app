@@ -27,7 +27,7 @@
 import { onMounted } from 'vue'
 import CompactItemCard from '@/components/CompactItemCard.vue'
 import CardGrid from '@/components/CardGrid.vue'
-import { useItemStore } from '@/stores/itemStore'
+import { useItemStore } from '@/stores/itemStore.js'
 import LoadingState from "@/components/LoadingState.vue";
 import { useI18n } from 'vue-i18n'
 import { usePaginatedLoader } from '@/usePaginatedLoader.js'
@@ -54,5 +54,5 @@ onMounted(async () => {
 </script>
 
 <style>
-@import '../styles/users/MyFavoriteView.css';
+@import '../../styles/views/users/MyFavoriteView.css';
 </style>

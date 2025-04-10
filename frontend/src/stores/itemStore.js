@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 if (!API_BASE_URL) {
-throw new Error('VITE_API_BASE_URL is not defined. Please set it in your ..env file.');
+  throw new Error('VITE_API_BASE_URL is not defined. Please set it in your .env file.');
 }
 
 export const useItemStore = defineStore('items', () => {
@@ -19,14 +19,20 @@ export const useItemStore = defineStore('items', () => {
     };
   };
 
-  const items = ref([])
+  const items = ref([]);
 
-  const fetchMarketItems = async (page = 0, size = 6) => {
+  const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
     try {
       const headers = getAuthHeaders();
+      const params = { page, size };
+      
+      if (excludeStatuses.length > 0) {
+        params.excludeStatuses = excludeStatuses.join(',');
+      }
+      
       const response = await axios.get(`${API_BASE_URL}/api/items`, {
         headers,
-        params: { page, size }
+        params
       });
       return response.data;
     } catch (err) {
@@ -55,18 +61,17 @@ export const useItemStore = defineStore('items', () => {
     } catch (err) {
       throw err;
     }
-  }
+  };
 
   const fetchRecommendedItems = async () => {
     try {
       const headers = getAuthHeaders();
       const response = await axios.get(`${API_BASE_URL}/api/items/recommended`, { headers });
       return response.data;
-
     } catch (err) {
       return [];
     }
-  }
+  };
 
   const logItemView = async (itemId) => {
     try {
@@ -93,7 +98,7 @@ export const useItemStore = defineStore('items', () => {
     } catch (err) {
       throw err;
     }
-  }
+  };
 
   const toggleFavorite = async (itemId) => {
     try {
@@ -103,7 +108,7 @@ export const useItemStore = defineStore('items', () => {
     } catch (err) {
       throw err;
     }
-  }
+  };
 
   const createItem = async (rawFormData) => {
     try {
@@ -123,8 +128,8 @@ export const useItemStore = defineStore('items', () => {
 
       // JSON blob
       formDataToSend.append(
-          'item',
-          new Blob([JSON.stringify(itemData)], { type: 'application/json' })
+        'item',
+        new Blob([JSON.stringify(itemData)], { type: 'application/json' })
       );
 
       // Append images
@@ -147,7 +152,6 @@ export const useItemStore = defineStore('items', () => {
         throw new Error(error?.message || 'Failed to create item');
       }
       return await response.json();
-
     } catch (error) {
       throw error;
     }
@@ -170,8 +174,8 @@ export const useItemStore = defineStore('items', () => {
       };
 
       formDataToSend.append(
-          'dto',
-          new Blob([JSON.stringify(itemData)], { type: 'application/json' })
+        'dto',
+        new Blob([JSON.stringify(itemData)], { type: 'application/json' })
       );
 
       if (Array.isArray(rawFormData.images)) {
@@ -193,7 +197,6 @@ export const useItemStore = defineStore('items', () => {
         throw new Error(error?.message || 'Failed to update item');
       }
       return await response.json();
-
     } catch (error) {
       throw error;
     }
@@ -204,7 +207,6 @@ export const useItemStore = defineStore('items', () => {
       const headers = getAuthHeaders();
       const response = await axios.delete(`${API_BASE_URL}/api/items/${id}`, { headers });
       return response.status === 204;
-
     } catch (err) {
       throw err;
     }
@@ -237,12 +239,11 @@ export const useItemStore = defineStore('items', () => {
       const response = await axios.get(url, { headers });
       
       return response.data;
-      
     } catch (err) {
       items.value = [];
       throw err;
     }
-  }
+  };
 
   const updateItemStatus = async (id, newStatus, buyerId = null) => {
     try {
@@ -260,7 +261,6 @@ export const useItemStore = defineStore('items', () => {
         }
       );
       return response.status === 200;
-
     } catch (err) {
       throw err;
     }
@@ -268,13 +268,24 @@ export const useItemStore = defineStore('items', () => {
 
   const initiateVippsPayment = async (itemId) => {
     try {
+      if (!itemId) {
+        throw new Error('Item ID is missing');
+      }
+      
       const headers = getAuthHeaders();
       const response = await axios.post(
         `${API_BASE_URL}/api/payments/vipps?itemId=${itemId}`,
         {},
         { headers }
       );
-      return response.data; 
+      
+      if (typeof response.data === 'string') {
+        return response.data;
+      } else if (response.data && response.data.paymentUrl) {
+        return response.data.paymentUrl;
+      } else {
+        throw new Error('Invalid response format from payment service');
+      }
     } catch (err) {
       throw err;
     }
