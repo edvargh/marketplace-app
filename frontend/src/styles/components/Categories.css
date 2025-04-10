@@ -60,10 +60,30 @@
     font-size: 1rem;
 }
 
+@media (max-width: 650px) {
+    .circle-button span {
+        font-size: 0.8rem;
+    }
+    ::v-deep(.circle-button) {
+        padding: 0.7rem
+    }
+    .categories ul {
+        gap: 15px;
+    }
+}
+
 @media (max-width: 600px) or (max-height: 800px) {
     .categories h3 {
         font-size: 1.4rem;
     }
 }
+
+@media (max-width: 430px) {
+    .circle-button span {
+        font-size: 0.6rem;
+    }
+}
+
+
 
 
