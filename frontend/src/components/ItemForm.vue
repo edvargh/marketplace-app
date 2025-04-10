@@ -44,6 +44,7 @@
         <label for="status">{{ t('itemFormComponent.status') }}</label>
         <SelectBox
             label="Status"
+            class="status-select-box"
             v-model="formData.status"
             :options="statusOptions"
             option-label="label"
@@ -57,6 +58,7 @@
       <label for="Category">{{ t('itemFormComponent.category') }}</label>
       <SelectBox
           label="Category"
+          class="category-select-box"
           v-model="formData.categoryId"
           :options="categories"
           option-label="name"
@@ -67,7 +69,7 @@
 
       <!-- Title -->
       <label for="Title">{{ t('itemFormComponent.title') }}</label>
-      <InputBox label="Title" v-model="formData.title" 
+      <InputBox label="Title" v-model="formData.title" class="input-title"
       :placeholder="t('itemFormComponent.placeholders.title')"
       required />
       <div v-if="titleError" class="error-message">
@@ -76,7 +78,7 @@
 
       <!-- Description -->
       <label for="description">{{ t('itemFormComponent.description') }}</label>
-      <CustomTextarea v-model="formData.description" 
+      <CustomTextarea v-model="formData.description" class="input-description"
       :placeholder="t('itemFormComponent.placeholders.description')"
       :required="true"/>
       <div v-if="descriptionError" class="error-message">
@@ -86,7 +88,7 @@
 
       <!-- Price -->
       <label for="Price">{{ t('itemFormComponent.price') }}</label>
-      <InputBox label="Price"
+      <InputBox label="Price" class="input-price"
        v-model="formData.price" type="number" 
        :placeholder="t('itemFormComponent.placeholders.price')"
        required />

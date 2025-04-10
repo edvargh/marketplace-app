@@ -1,0 +1,46 @@
+{
+  "content": [
+    {
+      "id": "2",
+      "title": "iPhone 16",
+      "description": "Like new iPhone 16, 128GB",
+      "price": 700.00,
+      "status": "For Sale",
+      "imageUrls": ["https://example.com/iphone.jpg"],
+      "categoryId": 2,
+      "categoryName": "Electronics",
+      "createdAt": "2025-03-20T10:15:00Z",
+      "seller": {
+        "id": "user2",
+        "username": "janesmith"
+      },
+      "favorite": true,
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    },
+    {
+      "id": "5",
+      "title": "Coffee Table",
+      "description": "Solid wood coffee table",
+      "price": 150.00,
+      "status": "For Sale",
+      "imageUrls": ["https://example.com/table.jpg"],
+      "categoryId": 3,
+      "categoryName": "Furniture",
+      "createdAt": "2025-03-21T16:20:00Z",
+      "seller": {
+        "id": "user5",
+        "username": "robertjones"
+      },
+      "favorite": true,
+      "latitude": 59.9139,
+      "longitude": 10.7522
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 6,
+    "totalElements": 2,
+    "totalPages": 1
+  }
+}
