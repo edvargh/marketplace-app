@@ -116,6 +116,7 @@
     "editItem": "Edit Advertisement",
     "descriptionOfItem": "Description of the item",
     "seller": "Seller",
+    "loading-seller": "Loading seller information...",
     "errors": {
       "invalidId": "Invalid advertisement ID.",
       "itemNotFound": "Advertisement not found.",
@@ -245,7 +246,8 @@
   "PaymentCompleteView": {
     "title": "Thank you!",
     "message": "Your Vipps payment has been processed successfully.",
-    "returnHome": "Return to Home"
+    "returnHome": "Return to Home",
+    "order": "Your order Id is:"
   }
 }
 

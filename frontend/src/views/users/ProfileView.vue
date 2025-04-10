@@ -1,6 +1,5 @@
 <template>
   <LoadingState :loading="loading" :error="error" :loadingMessage="t('profile.LoadingProfile')" />
-  <ErrorMessage v-if="!loading && errorMessage" :message="errorMessage" />
 
   <div class="profile-view">
     <h1>{{ t("profile.Profile") }}</h1>
@@ -82,11 +81,10 @@
         v-model="language"
         :options="languageOptions"
       />
-
+      <ErrorMessage v-if="!loading && errorMessage" :message="errorMessage" />
       <button type="submit" :disabled="!canSubmit" class="action-button button-primary">
         {{ isSubmitting ? t("profile.updating") : t("profile.updateProfile") }}
       </button>
-
       <NotificationBanner
         v-if="showPopup"
         :message="t('profile.successMessage')"

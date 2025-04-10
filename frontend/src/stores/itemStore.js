@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 if (!API_BASE_URL) {
-throw new Error('VITE_API_BASE_URL is not defined. Please set it in your ..env file.');
+  throw new Error('VITE_API_BASE_URL is not defined. Please set it in your .env file.');
 }
 
 export const useItemStore = defineStore('items', () => {
@@ -19,26 +19,26 @@ export const useItemStore = defineStore('items', () => {
     };
   };
 
-  const items = ref([])
+  const items = ref([]);
 
-const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
-  try {
-    const headers = getAuthHeaders();
-    const params = { page, size };
-    
-    if (excludeStatuses.length > 0) {
-      params.excludeStatuses = excludeStatuses.join(',');
+  const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
+    try {
+      const headers = getAuthHeaders();
+      const params = { page, size };
+      
+      if (excludeStatuses.length > 0) {
+        params.excludeStatuses = excludeStatuses.join(',');
+      }
+      
+      const response = await axios.get(`${API_BASE_URL}/api/items`, {
+        headers,
+        params
+      });
+      return response.data;
+    } catch (err) {
+      return [];
     }
-    
-    const response = await axios.get(`${API_BASE_URL}/api/items`, {
-      headers,
-      params
-    });
-    return response.data;
-  } catch (err) {
-    return [];
-  }
-};
+  };
 
   const fetchItemById = async (id) => {
     try {
@@ -61,18 +61,17 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
     } catch (err) {
       throw err;
     }
-  }
+  };
 
   const fetchRecommendedItems = async () => {
     try {
       const headers = getAuthHeaders();
       const response = await axios.get(`${API_BASE_URL}/api/items/recommended`, { headers });
       return response.data;
-
     } catch (err) {
       return [];
     }
-  }
+  };
 
   const logItemView = async (itemId) => {
     try {
@@ -99,7 +98,7 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
     } catch (err) {
       throw err;
     }
-  }
+  };
 
   const toggleFavorite = async (itemId) => {
     try {
@@ -109,7 +108,7 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
     } catch (err) {
       throw err;
     }
-  }
+  };
 
   const createItem = async (rawFormData) => {
     try {
@@ -129,8 +128,8 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
 
       // JSON blob
       formDataToSend.append(
-          'item',
-          new Blob([JSON.stringify(itemData)], { type: 'application/json' })
+        'item',
+        new Blob([JSON.stringify(itemData)], { type: 'application/json' })
       );
 
       // Append images
@@ -153,7 +152,6 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
         throw new Error(error?.message || 'Failed to create item');
       }
       return await response.json();
-
     } catch (error) {
       throw error;
     }
@@ -176,8 +174,8 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
       };
 
       formDataToSend.append(
-          'dto',
-          new Blob([JSON.stringify(itemData)], { type: 'application/json' })
+        'dto',
+        new Blob([JSON.stringify(itemData)], { type: 'application/json' })
       );
 
       if (Array.isArray(rawFormData.images)) {
@@ -199,7 +197,6 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
         throw new Error(error?.message || 'Failed to update item');
       }
       return await response.json();
-
     } catch (error) {
       throw error;
     }
@@ -210,7 +207,6 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
       const headers = getAuthHeaders();
       const response = await axios.delete(`${API_BASE_URL}/api/items/${id}`, { headers });
       return response.status === 204;
-
     } catch (err) {
       throw err;
     }
@@ -243,12 +239,11 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
       const response = await axios.get(url, { headers });
       
       return response.data;
-      
     } catch (err) {
       items.value = [];
       throw err;
     }
-  }
+  };
 
   const updateItemStatus = async (id, newStatus, buyerId = null) => {
     try {
@@ -266,7 +261,6 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
         }
       );
       return response.status === 200;
-
     } catch (err) {
       throw err;
     }
@@ -274,13 +268,24 @@ const fetchMarketItems = async (page = 0, size = 6, excludeStatuses = []) => {
 
   const initiateVippsPayment = async (itemId) => {
     try {
+      if (!itemId) {
+        throw new Error('Item ID is missing');
+      }
+      
       const headers = getAuthHeaders();
       const response = await axios.post(
         `${API_BASE_URL}/api/payments/vipps?itemId=${itemId}`,
         {},
         { headers }
       );
-      return response.data; 
+      
+      if (typeof response.data === 'string') {
+        return response.data;
+      } else if (response.data && response.data.paymentUrl) {
+        return response.data.paymentUrl;
+      } else {
+        throw new Error('Invalid response format from payment service');
+      }
     } catch (err) {
       throw err;
     }

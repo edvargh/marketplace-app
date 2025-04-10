@@ -149,7 +149,7 @@ public class PaymentControllerTest {
     mockMvc.perform(get("/api/payments/vipps-complete")
             .param("orderId", orderId))
         .andExpect(status().isFound())
-        .andExpect(header().string("Location", "http://localhost:5173/payment-complete"));
+        .andExpect(header().string("Location", "http://localhost:5173/payment-complete?orderId=" + orderId));
 
     verify(paymentService, times(1)).hasOrderBeenFinalized(orderId);
   }
