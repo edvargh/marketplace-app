@@ -1,8 +1,8 @@
 <template>
   <div class="payment-complete-container box">
-    <h1>{{ t('PaymentCompleteView.title') }}</h1>
-    <p>{{ t('PaymentCompleteView.message') }}</p>
-    <CustomButton @click="goHome">{{ t('PaymentCompleteView.returnHome') }}</CustomButton>
+    <h1>{{ $t('PaymentCompleteView.title') }}</h1>
+    <p>{{ $t('PaymentCompleteView.message') }}</p>
+    <CustomButton @click="goHome">{{ $t('PaymentCompleteView.returnHome') }}</CustomButton>
   </div>
 </template>
 
@@ -20,6 +20,6 @@ export default {
 };
 </script>
 
-<style scoped>
-@import '../../styles/views/users/UserPaymentComplete.css';
+<style>
+@import "@/styles/views/users/UserPaymentComplete.css";
 </style>
