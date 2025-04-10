@@ -147,8 +147,7 @@ onMounted(async () => {
 
     if (itemData.sellerId) {
       try {
-        const sellerData = await userStore.getUserById(itemData.sellerId);
-        seller.value = sellerData;
+        seller.value = await userStore.getUserById(itemData.sellerId);
       } catch {
         showWarning(t('itemView.errors.sellerInfoFailed'));
       }
@@ -240,12 +239,26 @@ const handleBuyNow = async () => {
 
 const checkPendingReservation = async () => {
   try {
-    hasPendingRes.value = item.value.reservedById === userStore.user?.id;
+    const itemId = item.value.id;
+    const sellerId = item.value.sellerId;
+    const messages = await messageStore.fetchConversationWithUser(itemId, sellerId);
+
+    const reservationMessages = messages.filter(
+      msg =>
+        msg.fromYou === true &&
+        msg.reservationStatus != null
+    );
+    const pendingMessages = reservationMessages.filter(
+      msg => String(msg.reservationStatus).toUpperCase() === 'PENDING'
+    );
+    hasPendingRes.value = pendingMessages.length > 0;
 
   } catch (err) {
     showWarning(t('itemView.errors.reservationCheckFailed'));
   }
 };
+
+
 
 </script>
 

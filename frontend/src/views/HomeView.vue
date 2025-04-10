@@ -62,7 +62,7 @@
       </HorizontalPagination>
 
       <div v-else class="no-items-message">
-        {{ t('homeView.No-recommendet-items-found') }}
+        {{ t('homeView.No-recommended-items-found') }}
       </div>
     </section>
 
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import DetailedItemCard from "@/components/DetailedItemCard.vue"
 import CardGrid from '@/components/CardGrid.vue'
 import CompactItemCard from "@/components/CompactItemCard.vue"
