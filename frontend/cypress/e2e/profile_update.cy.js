@@ -1,8 +1,3 @@
-// cypress/e2e/profile_update.cy.js
-
-// If you use the cypress-file-upload plugin, uncomment the following line:
-// import 'cypress-file-upload';
-
 describe('Profile View', () => {
   const fakeUser = {
     id: 1,

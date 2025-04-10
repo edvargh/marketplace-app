@@ -1,5 +1,6 @@
 <template>
-  <LoadingState :loading="loading" :error="error" loadingMessage="Loading your profile..."/>
+  <LoadingState :loading="loading" :error="error" :loadingMessage="t('profile.LoadingProfile')" />
+  <ErrorMessage v-if="!loading && errorMessage" :message="errorMessage" />
 
   <div class="profile-view">
     <h1>{{ t("profile.Profile") }}</h1>
@@ -27,19 +28,40 @@
 
     <form @submit.prevent="handleUpdateProfile">
       <label for="fullName">{{ t('profile.fullName') }}</label>
-      <InputBox id="fullName" v-model="fullName" :placeholder="t('profile.placeholderName')" :disabled="isSubmitting"/>
+      <InputBox 
+      id="fullName"
+      v-model="fullName" 
+      :placeholder="t('profile.placeholderName')" 
+      :disabled="isSubmitting"/>
       <p v-if="fullNameError" class="error-message">{{ fullNameError }}</p>
 
       <label for="email">{{ t('profile.email') }}</label>
-      <InputBox id="email" type="email" v-model="email" :placeholder="t('profile.placeholderEmail')" :disabled="isSubmitting"/>
+      <InputBox 
+        id="email" 
+        type="email" 
+        v-model="email" 
+        :placeholder="t('profile.placeholderEmail')" 
+        :disabled="isSubmitting"
+      />
       <p v-if="emailError" class="error-message">{{ emailError }}</p>
 
       <label for="phoneNumber">{{ t('profile.phoneNumber') }}</label>
-      <InputBox id="phoneNumber" type="number" v-model="phoneNumber" :placeholder="t('profile.placeholderPhone')" :disabled="isSubmitting"/>
+      <InputBox 
+        id="phoneNumber" 
+        type="number" 
+        v-model="phoneNumber" 
+        :placeholder="t('profile.placeholderPhone')" 
+        :disabled="isSubmitting"
+      />
       <p v-if="phoneError" class="error-message">{{ phoneError }}</p>
 
       <label for="password">{{ t('profile.password') }}</label>
-      <InputBox id="password" type="password" v-model="password" :placeholder="t('profile.placeholderPass')" :disabled="isSubmitting"/>
+      <InputBox id="password" 
+        type="password" 
+        v-model="password" 
+        :placeholder="t('profile.placeholderPass')" 
+        :disabled="isSubmitting"
+      />
       <p v-if="passwordTooShort" class="error-message">{{ t('profile.passwordTooShort') }}</p>
 
       <label for="confirmPassword">{{ t('profile.confirmPassword') }}</label>
@@ -56,6 +78,7 @@
 
       <label for="language">{{ t('profile.language') }}</label>
       <SelectBox
+        id="language"
         v-model="language"
         :options="languageOptions"
       />
@@ -70,23 +93,20 @@
         type="success"
         @close="showPopup = false"
       />
-
-      <div v-if="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
     </form>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useUserStore } from '@/stores/userStore'
+import { useUserStore } from '@/stores/userStore.js'
 import { useI18n } from 'vue-i18n'
 import InputBox from '@/components/InputBox.vue'
 import EditIcon from '@/components/EditIcon.vue'
 import NotificationBanner from '@/components/NotificationBanner.vue'
 import LoadingState from '@/components/LoadingState.vue'
 import SelectBox from '@/components/SelectBox.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
 
 const userStore = useUserStore()
 const { t, locale } = useI18n()
@@ -117,19 +137,19 @@ const languageOptions = [
 ]
 
 const fullNameError = computed(() => {
-  if (fullName.value === "") return t("profile.fullNameRequired") || "Full name is required"
+  if (fullName.value === "") return t("profile.fullNameRequired")
   if (fullName.value.length > maxFullNameLength)
-    return t("profile.fullNameTooLong") || `Full name cannot exceed ${maxFullNameLength} characters`
+    return t("profile.fullNameTooLong", { maxLength: maxFullNameLength });
   return ""
 })
 
 const emailError = computed(() => {
   if (email.value === "") {
-    return t("profile.emailRequired") || "Email is required"
+    return t("profile.emailRequired")
   } else {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(email.value)) {
-      return t("profile.emailInvalid") || "Please enter a valid email address"
+      return t("profile.emailInvalid")
     }
   }
   return ""
@@ -137,10 +157,10 @@ const emailError = computed(() => {
 
 const phoneError = computed(() => {
   if (phoneNumber.value === "") {
-    return t("profile.phoneRequired") || "Phone number is required"
+    return t("profile.phoneRequired")
   }
   if (phoneNumber.value.length !== phoneNumberLength) {
-    return t("profile.phoneLength") || "Phone number must be 8 digits"
+    return t("profile.phoneLength", { length: phoneNumberLength });
   }
   return ""
 })
@@ -186,10 +206,9 @@ const handleFileChange = (e) => {
 
 const handleUpdateProfile = async () => {
   if (!canSubmit.value) {
-    errorMessage.value = 'Please fill in all required fields correctly.'
+    errorMessage.value = t("profile.errorRequiredFields");
     return
   }
-
   isSubmitting.value = true
   errorMessage.value = ''
 
@@ -202,12 +221,13 @@ const handleUpdateProfile = async () => {
       preferredLanguage: language.value,
       profilePicture: selectedImageFile.value
     }
-
     await userStore.updateUser(updateData)
     locale.value = language.value
     showPopup.value = true
+
   } catch (err) {
     errorMessage.value = err.message
+    setTimeout(() => {errorMessage.value = '';}, 5000);
   } finally {
     isSubmitting.value = false
   }
@@ -223,5 +243,5 @@ const canSubmit = computed(() =>
 </script>
 
 <style scoped>
-@import '../styles/users/ProfileView.css';
+@import '../../styles/views/users/ProfileView.css';
 </style>

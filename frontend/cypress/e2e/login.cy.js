@@ -1,5 +1,3 @@
-// cypress/e2e/auth/login.cy.js
-
 describe('E2E - Authentication', () => {
   let user;
   

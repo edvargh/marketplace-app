@@ -56,6 +56,7 @@
 
   /* MESSAGES + RESERVE BOX */
   --reserve-background: #CEEBF4;
+  --received-message-background:  #8dcc84;
   --message: #e0f7fa;
   --message-name: #666;
   --message-input-top-border: #6b7280;

@@ -8,6 +8,7 @@
           class="card-image"
           @error="handleImageError" 
         />
+        <ErrorMessage v-if="errorMessage" :message="errorMessage" />
       </div>
       
       <div class="card-content">
@@ -42,7 +43,9 @@
 import StatusBanner from "@/components/StatusBanner.vue";
 import { ref, onMounted, watch } from 'vue';
 import { useUserStore } from "@/stores/userStore";
+import ErrorMessage from "./ErrorMessage.vue";
 
+const errorMessage = ref('');
 const userStore = useUserStore();
 const sellerProfilePicture = ref('/default-picture.jpg');
 
@@ -83,7 +86,7 @@ const fetchSellerData = async () => {
         sellerProfilePicture.value = seller.profilePicture;
       }
     } catch (err) {
-      console.warn('Could not fetch seller profile picture:', err);
+      errorMessage.value = 'Could not fetch the sellers profile picture';
     }
   }
 };
