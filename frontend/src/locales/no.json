@@ -156,8 +156,8 @@
   "title": "Skriv inn en tittel",
   "description": "Skriv en beskrivelse...",
   "price": "Skriv inn pris i kr",
-  "category": "Velg en kategori",
-  "status": "Velg en status"
+  "category": "Trykk for å velge en kategori",
+  "status": "Trykk for å velge status"
   },
   "statusOptions": {
   "forSale": "Til salgs",

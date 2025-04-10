@@ -11,7 +11,7 @@
     width: 250px;
     border-radius: 16px;
     position: relative;
-    border: 2px solid var(--item-card-border);
+    border: 2px solid var(--dark-blue);
     transition: transform 0.3s ease;
   }
   

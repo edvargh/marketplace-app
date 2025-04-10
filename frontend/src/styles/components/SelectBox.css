@@ -13,8 +13,8 @@
     padding: 1rem 2rem;
     border: 1px solid transparent;
     background:
-        linear-gradient(to right, var(--light-blue), var(--light-blue-cold)) padding-box,
-        linear-gradient(to right, var(--sky-blue), var(--turquoise)) border-box;
+        linear-gradient(to right, var(--box-background), var(--box-background)) padding-box,
+        linear-gradient(to right, var(--dark-blue), var(--mid-blue)) border-box;
     background-clip: padding-box, border-box;
     width: 100%;
     box-sizing: border-box;
@@ -52,7 +52,7 @@
     position: absolute;
     width: 100%;
     margin-top: 0.5rem;
-    background: linear-gradient(to bottom right, var(--component-half-1), var(--component-half-2));
+    background-color: var(--box-background);
     border: 1px solid var(--select-border-shadow);
     border-radius: 16px;
     padding: 1rem;

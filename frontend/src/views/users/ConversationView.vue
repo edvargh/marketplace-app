@@ -5,8 +5,6 @@
     :loadingMessage="t('ConversationView.loadingMessage')"
   />
 
-  <ErrorMessage v-if="!isLoading && hasError" :message="errorMessage" />
-
   <div v-if="!isLoading && !hasError" class="conversation-container">
     <!-- Participant info -->
     <div class="participant-info">
@@ -80,7 +78,7 @@
         </div>
       </template>
     </div>
-
+    <ErrorMessage v-if="!isLoading && hasError" :message="errorMessage" />
     <div class="message-input-wrapper">
       <div class="message-input-container">
         <ReserveBox

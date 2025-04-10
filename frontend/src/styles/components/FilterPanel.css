@@ -40,7 +40,7 @@
   .price-input input {
     width: 100%;
     padding: 0.5rem 1rem;
-    background: var(--light-gray);
+    background: var(--box-background);
     border: 1px solid var(--dark-gray);
     border-radius: 0.5rem;
     font-size: 1rem;
@@ -92,7 +92,7 @@ input[type="number"] {
   .geo-input {
     width: 100%;
     padding: 0.5rem 1rem;
-    background: var(--geo-input);
+    background: var(--box-background);
     border: 1px solid var(--geo-input-border);
     border-radius: 0.5rem;
     font-size: 1rem;

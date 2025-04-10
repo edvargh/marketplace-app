@@ -68,18 +68,18 @@
 }
 
 .message-btn {
-    background: var(--button-message);
-    color: var(--button-text-message);
+    background: var(--real-box-background);
+    color: var(--darker-blue);
 }
 
 .reserve-btn {
     background: var(--button-reserve) ;
-    color: var(--button-text-reserve) ;
+    color: var(--button-primary) ;
 }
 
 .blue-btn {
-    background: var(--button-blue);
-    color: var(--button-text-blue);
+    background: var(--mid-blue);
+    color: var(--white);
 }
 
 .description {
@@ -124,7 +124,7 @@
     height: 36px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid var(--profile-border);
+    border: 2px solid var(--darker-blue);
 }
 
 .profile-image {

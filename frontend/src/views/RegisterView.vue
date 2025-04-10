@@ -68,12 +68,10 @@
       <div v-if="errorMessage" class="error-message">
         {{ errorMessage }}
       </div>
-      <div>
-        <p class="AlreadyHaveAccountText">
-          Already have an account? <router-link to="/login">Login here</router-link>
-        </p>
-      </div>
     </form>
+    <p class="AlreadyHaveAccountText">
+      Already have an account? <router-link to="/login">Login here</router-link>
+    </p>
   </div>
 </template>
   

@@ -33,6 +33,11 @@
     text-align: center;
 }
 
+.categories li:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(var(--shadow-soft));
+}
+
 ::v-deep(.circle-button) {
     width: clamp(60px, 15vw, 120px);
     height: clamp(60px, 15vw, 120px);
@@ -47,6 +52,12 @@
     white-space: normal;
     text-align: center;
     word-break: break-word;
+}
+
+::v-deep(.circle-button.custom-button) {
+    border: none !important;
+    background: var(--box-background) !important;
+    background-clip: padding-box !important;
 }
 
 ::v-deep(.circle-button span) {

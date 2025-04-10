@@ -1,11 +1,11 @@
 .conversation-preview-card {
-    border: 2px solid #4facfe;
+    border: 2px solid var(--dark-blue);
     padding: 1rem;
     border-radius: 8px;
     cursor: pointer;
     background:
-            linear-gradient(to right, #e0f0ff, #e8f0ff) padding-box,
-            linear-gradient(to right, #4facfe, #00f2fe) border-box;
+            linear-gradient(to right, var(--box-background), var(--box-background)) padding-box,
+            linear-gradient(to right, var(--dark-blue), var(--mid-blue)) border-box;
 }
 
 .conversation-card {
@@ -55,7 +55,6 @@
 }
 
 .latest-message {
-    color: var(--conv-card-latest-msg);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

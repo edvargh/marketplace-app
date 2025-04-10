@@ -23,7 +23,7 @@
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 0.5rem;
-  border: 2px solid var(--profile-border);
+  border: 2px solid var(--dark-blue);
 }
 
 .item-preview {
@@ -32,8 +32,8 @@
   gap: 1rem;
   border: 2px solid transparent;
   background:
-        linear-gradient(to right, var(--light-blue), var(--light-blue-cold)) padding-box,
-        linear-gradient(to right, var(--sky-blue), var(--turquoise)) border-box;
+          linear-gradient(to right, var(--box-background), var(--box-background)) padding-box,
+          linear-gradient(to right, var(--dark-blue), var(--mid-blue)) border-box;
   background-origin: border-box;
   background-clip: padding-box, border-box;
   border-radius: 24px;
@@ -122,7 +122,7 @@
 
 .sent {
   align-self: flex-end;
-  background: var(--message);
+  background: var(--real-box-background);
   flex-direction: row-reverse;
   margin-left: auto;
 }
@@ -165,7 +165,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  border: 2px solid #a0c4ff;
+  border: 2px solid var(--dark-blue);
   border-radius: 20px;
   overflow: hidden;
   background: var(--message-input);
@@ -200,7 +200,7 @@
 }
 
 .send-button {
-  background: linear-gradient(to right, var(--turquoise), var(--sky-blue));
+  background: linear-gradient(to right, var(--mid-blue), var(--dark-blue));
   border: none;
   border-radius: 999px;
   padding: 0.75rem 1.5rem;

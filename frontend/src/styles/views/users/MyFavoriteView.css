@@ -7,7 +7,7 @@
 .no-favorite-items-message {
     text-align: center;
     font-size: 1.2rem;
-    color: var(--message-empty);
+    color: var(--dark-gray);
     padding: 2rem;
 }
 
