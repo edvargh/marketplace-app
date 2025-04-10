@@ -1,8 +1,8 @@
 <template>
   <div class="payment-complete-container box">
-    <h1>{{ t('PaymentCompleteView.title') }}</h1>
-    <p>{{ t('PaymentCompleteView.message') }}</p>
-    <CustomButton @click="goHome">{{ t('PaymentCompleteView.returnHome') }}</CustomButton>
+    <h1>{{ $t('PaymentFailView.title') }}</h1>
+    <p>{{ $t('PaymentFailView.message') }}</p>
+    <CustomButton @click="goHome">{{ $t('PaymentFailView.returnHome') }}</CustomButton>
   </div>
 </template>
 
@@ -10,7 +10,7 @@
 import CustomButton from '@/components/CustomButton.vue'
 
 export default {
-  name: "UserPaymentComplete",
+  name: "UserPaymentFail",
   components: { CustomButton },
   methods: {
     goHome() {
