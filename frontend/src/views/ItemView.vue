@@ -240,16 +240,8 @@ const handleBuyNow = async () => {
 
 const checkPendingReservation = async () => {
   try {
-    const itemId = item.value.id;
-    const sellerId = item.value.sellerId;
+    hasPendingRes.value = item.value.reservedById === userStore.user?.id;
 
-    const messages = await messageStore.fetchConversationWithUser(itemId, sellerId);
-
-    hasPendingRes.value = messages.some(
-      msg =>
-        msg.reservationStatus === 'PENDING' &&
-        msg.fromYou === true
-    );
   } catch (err) {
     showWarning(t('itemView.errors.reservationCheckFailed'));
   }
