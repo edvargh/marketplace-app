@@ -10,10 +10,10 @@
 
     <!-- Show use-my-location button in edit mode only -->
     <CustomButton
-        v-if="isEditMode"
-        type="button"
-        @click="useCurrentLocation"
-        class="my-location-button"
+      v-if="isEditMode"
+      type="button"
+      @click="useCurrentLocation"
+      class="my-location-button"
     >
       {{ t('locationDisplay.useCurrentLocation') }}
     </CustomButton>
@@ -69,7 +69,10 @@ function initMap() {
       scrollWheelZoom: true,
       doubleClickZoom: true,
       zoomControl: true
-    }).setView([currentLat.value || DEFAULT_LAT, currentLng.value || DEFAULT_LNG], DEFAULT_ZOOM);
+    }).setView(
+      [currentLat.value || DEFAULT_LAT, currentLng.value || DEFAULT_LNG],
+      DEFAULT_ZOOM
+    );
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapInstance.value);
 
@@ -84,14 +87,13 @@ function initMap() {
     mapInstance.value.invalidateSize();
 
   } catch (error) {
-    console.error("Map initialization error:", error);
+    handleGeolocationError(error);
   }
 }
 
 function createMarker(lat, lng) {
   if (markerInstance.value) {
     markerInstance.value.setLatLng([lat, lng]);
-
   } else {
     markerInstance.value = L.marker([lat, lng], {
       draggable: props.isEditMode,
@@ -100,8 +102,9 @@ function createMarker(lat, lng) {
 
     if (!props.isEditMode) {
       markerInstance.value.bindPopup("Location of the advertisement").openPopup();
-
-      setTimeout(() => {markerInstance.value.closePopup();}, 3000);
+      setTimeout(() => {
+        markerInstance.value.closePopup();
+      }, 3000);
     }
 
     if (props.isEditMode) {
@@ -139,13 +142,15 @@ async function useCurrentLocation() {
     });
 
     updateLocation(
-        position.coords.latitude,
-        position.coords.longitude
+      position.coords.latitude,
+      position.coords.longitude
     );
-    mapInstance.value.setView([position.coords.latitude, position.coords.longitude], USER_LOCATION_ZOOM);
+    mapInstance.value.setView(
+      [position.coords.latitude, position.coords.longitude],
+      USER_LOCATION_ZOOM
+    );
 
   } catch (error) {
-    console.error("Error getting location:", error);
     handleGeolocationError(error);
   }
 }
@@ -169,7 +174,7 @@ function handleGeolocationError(error) {
 }
 
 onMounted(() => {
-  initMap()
+  initMap();
 });
 
 watch(() => [props.lat, props.lng], ([newLat, newLng]) => {
@@ -179,7 +184,6 @@ watch(() => [props.lat, props.lng], ([newLat, newLng]) => {
     createMarker(Number(newLat), Number(newLng));
   }
 });
-
 </script>
 
 <style scoped>
