@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.stream.Collectors;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class ItemService {
+
+  private static final Logger logger = LoggerFactory.getLogger(ItemService.class);
 
   private final ItemRepository itemRepository;
   private final UserRepository userRepository;
@@ -64,6 +68,7 @@ public class ItemService {
    * @return an optional item if found
    */
   public Optional<Item> findById(Long id) {
+    logger.debug("Finding item with ID: {}", id);
     return itemRepository.findById(id);
   }
 
@@ -77,8 +82,8 @@ public class ItemService {
    * @param latitude    the latitude
    * @param longitude   the longitude
    * @param distanceKm  the distance in kilometers
-   * @param page
-   * @param size
+   * @param page        the page number
+   * @param size        the page size
    * @return a list of items as DTOs
    */
   public List<ItemResponseDto> getFilteredItems(Double minPrice, Double maxPrice,
@@ -87,25 +92,26 @@ public class ItemService {
                                                 Double distanceKm,
                                                 int page, int size) {
 
-    String email = getAuthenticatedEmail();
-    User currentUser = userRepository.findByEmail(email).orElseThrow();
-    Pageable pageable = PageRequest.of(page, size);
+    try {
+      String email = getAuthenticatedEmail();
+      User currentUser = userRepository.findByEmail(email).orElseThrow();
+      Pageable pageable = PageRequest.of(page, size);
 
-    Page<Item> itemsPage = itemRepository.findFilteredItems(
-            currentUser.getId(),
-            minPrice,
-            maxPrice,
-            categoryIds != null && !categoryIds.isEmpty() ? categoryIds : null,
-            (searchQuery != null && !searchQuery.isBlank()) ? searchQuery : null,
-            latitude,
-            longitude,
-            distanceKm,
-            pageable
-    );
+      logger.info("Fetching filtered items for user: {}", currentUser.getEmail());
 
-    return itemsPage.getContent().stream()
-            .map(item -> ItemResponseDto.fromEntity(item, currentUser))
-            .toList();
+      Page<Item> itemsPage = itemRepository.findFilteredItems(
+          currentUser.getId(), minPrice, maxPrice,
+          (categoryIds != null && !categoryIds.isEmpty()) ? categoryIds : null,
+          (searchQuery != null && !searchQuery.isBlank()) ? searchQuery : null,
+          latitude, longitude, distanceKm, pageable);
+
+      return itemsPage.getContent().stream()
+          .map(item -> ItemResponseDto.fromEntity(item, currentUser))
+          .toList();
+    } catch (Exception e) {
+      logger.error("Failed to fetch filtered items: {}", e.getMessage(), e);
+      throw e;
+    }
   }
 
 
@@ -116,17 +122,18 @@ public class ItemService {
    * @return an optional item DTO if found
    */
   public Optional<ItemResponseDto> getItemById(Long id) {
+    logger.info("Fetching item with ID: {}", id);
     Optional<Item> itemOpt = itemRepository.findById(id);
-    if (itemOpt.isEmpty()) return Optional.empty();
-
-    String email = getAuthenticatedEmail();
-    Optional<User> userOpt = userRepository.findByEmail(email);
-
-    if (userOpt.isPresent()) {
-      return Optional.of(ItemResponseDto.fromEntity(itemOpt.get(), userOpt.get()));
-    } else {
-      return Optional.of(ItemResponseDto.fromEntity(itemOpt.get()));
+    if (itemOpt.isEmpty()) {
+      logger.warn("Item with ID {} not found", id);
+      return Optional.empty();
     }
+    String email = getAuthenticatedEmail();
+    User user = userRepository.findByEmail(email).orElseThrow(() ->
+        new RuntimeException("Authenticated user not found in database")
+    );
+
+    return Optional.of(ItemResponseDto.fromEntity(itemOpt.get(), user));
   }
 
   /**
@@ -136,13 +143,17 @@ public class ItemService {
    */
   public List<ItemResponseDto> getItemsForCurrentUser(int page, int size) {
     String email = getAuthenticatedEmail();
-    User user = userRepository.findByEmail(email).orElseThrow();
-    Pageable pageable = PageRequest.of(page, size);
+    logger.info("Fetching items for current user: {}", email);
+    try {
+      User user = userRepository.findByEmail(email).orElseThrow();
+      Pageable pageable = PageRequest.of(page, size);
 
-    Page<Item> paged = itemRepository.findBySeller(user, pageable);
-    return paged.getContent().stream()
-            .map(ItemResponseDto::fromEntity)
-            .collect(Collectors.toList());
+      Page<Item> paged = itemRepository.findBySeller(user, pageable);
+      return paged.getContent().stream().map(ItemResponseDto::fromEntity).collect(Collectors.toList());
+    } catch (Exception e) {
+      logger.error("Failed to fetch items for user {}: {}", email, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -152,13 +163,19 @@ public class ItemService {
    */
   public List<ItemResponseDto> getFavoriteItemsForCurrentUser(int page, int size) {
     String email = getAuthenticatedEmail();
-    User user = userRepository.findByEmail(email).orElseThrow();
-    Pageable pageable = PageRequest.of(page, size);
+    logger.info("Fetching favorite items for user: {}", email);
+    try {
+      User user = userRepository.findByEmail(email).orElseThrow();
+      Pageable pageable = PageRequest.of(page, size);
 
-    Page<Item> paged = itemRepository.findFavoritesByUser(user, pageable);
-    return paged.getContent().stream()
-            .map(item -> ItemResponseDto.fromEntity(item, user))
-            .toList();
+      Page<Item> paged = itemRepository.findFavoritesByUser(user, pageable);
+      return paged.getContent().stream()
+          .map(item -> ItemResponseDto.fromEntity(item, user))
+          .toList();
+    } catch (Exception e) {
+      logger.error("Failed to fetch favorite items for user {}: {}", email, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -169,22 +186,31 @@ public class ItemService {
    */
   public boolean toggleFavoriteItem(Long itemId) {
     String email = getAuthenticatedEmail();
-    Optional<User> userOpt = userRepository.findByEmail(email);
-    Optional<Item> itemOpt = itemRepository.findById(itemId);
+    logger.info("Toggling favorite status for item {} by user {}", itemId, email);
+    try {
+      Optional<User> userOpt = userRepository.findByEmail(email);
+      Optional<Item> itemOpt = itemRepository.findById(itemId);
 
-    if (userOpt.isEmpty() || itemOpt.isEmpty()) return false;
+      if (userOpt.isEmpty() || itemOpt.isEmpty()) {
+        logger.warn("User or item not found. user: {}, item: {}", email, itemId);
+        return false;
+      }
 
-    User user = userOpt.get();
-    Item item = itemOpt.get();
+      User user = userOpt.get();
+      Item item = itemOpt.get();
 
-    if (user.getFavoriteItems().contains(item)) {
-      user.getFavoriteItems().remove(item);
-    } else {
-      user.getFavoriteItems().add(item);
+      if (user.getFavoriteItems().contains(item)) {
+        user.getFavoriteItems().remove(item);
+      } else {
+        user.getFavoriteItems().add(item);
+      }
+
+      userRepository.save(user);
+      return true;
+    } catch (Exception e) {
+      logger.error("Failed to toggle favorite item {}: {}", itemId, e.getMessage(), e);
+      throw e;
     }
-
-    userRepository.save(user);
-    return true;
   }
 
 
@@ -197,31 +223,39 @@ public class ItemService {
    */
   public ItemResponseDto createItem(ItemCreateDto dto) throws IOException {
     String email = getAuthenticatedEmail();
-    User seller = userRepository.findByEmail(email).orElseThrow();
-    Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow();
+    logger.info("Creating item '{}' for user {}", dto.getTitle(), email);
+    try {
+      User seller = userRepository.findByEmail(email).orElseThrow();
+      Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow();
 
-    Item item = new Item();
-    item.setSeller(seller);
-    item.setCategory(category);
-    item.setTitle(dto.getTitle());
-    item.setDescription(dto.getDescription());
-    item.setPrice(dto.getPrice());
-    item.setLatitude(dto.getLatitude());
-    item.setLongitude(dto.getLongitude());
-    item.setPublishedDate(LocalDateTime.now());
-    item.setStatus(ItemStatus.FOR_SALE);
+      Item item = new Item();
+      item.setSeller(seller);
+      item.setCategory(category);
+      item.setTitle(dto.getTitle());
+      item.setDescription(dto.getDescription());
+      item.setPrice(dto.getPrice());
+      item.setLatitude(dto.getLatitude());
+      item.setLongitude(dto.getLongitude());
+      item.setPublishedDate(LocalDateTime.now());
+      item.setStatus(ItemStatus.FOR_SALE);
 
-    if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-      Long userId = seller.getId();
-      for (MultipartFile imageFile : dto.getImages()) {
-        String url = cloudinaryService.uploadImage(userId, imageFile);
-        Image image = new Image(item, url);
-        item.addImage(image);
+      if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+        logger.debug("Uploading {} images to Cloudinary", dto.getImages().size());
+        Long userId = seller.getId();
+        for (MultipartFile imageFile : dto.getImages()) {
+          String url = cloudinaryService.uploadImage(userId, imageFile);
+          Image image = new Image(item, url);
+          item.addImage(image);
+        }
       }
-    }
 
-    itemRepository.save(item);
-    return ItemResponseDto.fromEntity(item);
+      itemRepository.save(item);
+      logger.info("Item '{}' created successfully", dto.getTitle());
+      return ItemResponseDto.fromEntity(item);
+    } catch (Exception e) {
+      logger.error("Failed to create item '{}': {}", dto.getTitle(), e.getMessage(), e);
+      throw e;
+    }
   }
 
 
@@ -233,41 +267,51 @@ public class ItemService {
    * @return an optional updated item DTO if found
    */
   public Optional<ItemResponseDto> updateItem(Long id, ItemUpdateDto dto) {
-    return itemRepository.findById(id).map(item -> {
-      if (dto.getTitle() != null) item.setTitle(dto.getTitle());
-      if (dto.getDescription() != null) item.setDescription(dto.getDescription());
-      if (dto.getPrice() != null) item.setPrice(dto.getPrice());
-      if (dto.getLatitude() != null) item.setLatitude(dto.getLatitude());
-      if (dto.getLongitude() != null) item.setLongitude(dto.getLongitude());
-      if (dto.getStatus() != null) item.setStatus(dto.getStatus());
+    logger.info("Updating item with ID: {}", id);
+    try {
+      return itemRepository.findById(id).map(item -> {
+        if (dto.getTitle() != null) item.setTitle(dto.getTitle());
+        if (dto.getDescription() != null) item.setDescription(dto.getDescription());
+        if (dto.getPrice() != null) item.setPrice(dto.getPrice());
+        if (dto.getLatitude() != null) item.setLatitude(dto.getLatitude());
+        if (dto.getLongitude() != null) item.setLongitude(dto.getLongitude());
+        if (dto.getStatus() != null) item.setStatus(dto.getStatus());
 
-      item.getImages().forEach(image -> {
-        image.setItem(null);
-        try {
-          String publicId = extractPublicIdFromUrl(image.getImageUrl());
-          cloudinaryService.deleteImage(publicId);
-        } catch (IOException e) {
-          throw new RuntimeException("Failed to delete old image from Cloudinary", e);
-        }
-      });
-      item.getImages().clear();
-
-      if (dto.getImages() != null && !dto.getImages().isEmpty()) {
-        Long userId = item.getSeller().getId();
-        for (MultipartFile imageFile : dto.getImages()) {
+        logger.debug("Replacing {} existing images", item.getImages().size());
+        item.getImages().forEach(image -> {
+          image.setItem(null);
           try {
-            String url = cloudinaryService.uploadImage(userId, imageFile);
-            Image image = new Image(item, url);
-            item.addImage(image);
+            String publicId = extractPublicIdFromUrl(image.getImageUrl());
+            cloudinaryService.deleteImage(publicId);
           } catch (IOException e) {
-            throw new RuntimeException("Failed to upload image", e);
+            logger.error("Failed to delete image from Cloudinary: {}", e.getMessage(), e);
+            throw new RuntimeException("Failed to delete old image from Cloudinary", e);
+          }
+        });
+        item.getImages().clear();
+
+        if (dto.getImages() != null && !dto.getImages().isEmpty()) {
+          Long userId = item.getSeller().getId();
+          for (MultipartFile imageFile : dto.getImages()) {
+            try {
+              String url = cloudinaryService.uploadImage(userId, imageFile);
+              Image image = new Image(item, url);
+              item.addImage(image);
+            } catch (IOException e) {
+              logger.error("Failed to upload image to Cloudinary: {}", e.getMessage(), e);
+              throw new RuntimeException("Failed to upload image", e);
+            }
           }
         }
-      }
 
-      Item updated = itemRepository.save(item);
-      return ItemResponseDto.fromEntity(updated);
-    });
+        Item updated = itemRepository.save(item);
+        logger.info("Item with ID {} updated successfully", id);
+        return ItemResponseDto.fromEntity(updated);
+      });
+    } catch (Exception e) {
+      logger.error("Failed to update item {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 
 
@@ -279,20 +323,31 @@ public class ItemService {
    */
   public boolean deleteItem(Long id) {
     String email = getAuthenticatedEmail();
-    Optional<User> userOpt = userRepository.findByEmail(email);
-    Optional<Item> itemOpt = itemRepository.findById(id);
+    logger.info("Deleting item with ID {} by user {}", id, email);
+    try {
+      Optional<User> userOpt = userRepository.findByEmail(email);
+      Optional<Item> itemOpt = itemRepository.findById(id);
 
-    if (userOpt.isEmpty() || itemOpt.isEmpty()) return false;
+      if (userOpt.isEmpty() || itemOpt.isEmpty()) {
+        logger.warn("Item or user not found for deletion. user: {}, item: {}", email, id);
+        return false;
+      }
 
-    User user = userOpt.get();
-    Item item = itemOpt.get();
+      User user = userOpt.get();
+      Item item = itemOpt.get();
 
-    if (!item.getSeller().getId().equals(user.getId())) {
-      return false;
+      if (!item.getSeller().getId().equals(user.getId())) {
+        logger.warn("User {} tried to delete item {} not owned by them", email, id);
+        return false;
+      }
+
+      itemRepository.delete(item);
+      logger.info("Item {} deleted successfully", id);
+      return true;
+    } catch (Exception e) {
+      logger.error("Failed to delete item {}: {}", id, e.getMessage(), e);
+      throw e;
     }
-
-    itemRepository.delete(item);
-    return true;
   }
 
   /**
@@ -304,32 +359,48 @@ public class ItemService {
    */
   public boolean updateItemStatus(Long itemId, ItemStatus newStatus, Long buyerId) {
     String email = getAuthenticatedEmail();
-    Optional<User> sellerOpt = userRepository.findByEmail(email);
-    Optional<Item> itemOpt = itemRepository.findById(itemId);
+    logger.info("Updating status of item {} to {} by user {}", itemId, newStatus, email);
+    try {
+      Optional<User> sellerOpt = userRepository.findByEmail(email);
+      Optional<Item> itemOpt = itemRepository.findById(itemId);
 
-    if (sellerOpt.isEmpty() || itemOpt.isEmpty()) return false;
+      if (sellerOpt.isEmpty() || itemOpt.isEmpty()) {
+        logger.warn("Seller or item not found. seller: {}, item: {}", email, itemId);
+        return false;
+      }
 
-    User seller = sellerOpt.get();
-    Item item = itemOpt.get();
+      User seller = sellerOpt.get();
+      Item item = itemOpt.get();
 
-    if (!item.getSeller().getId().equals(seller.getId())) {
-      return false;
+      if (!item.getSeller().getId().equals(seller.getId())) {
+        logger.warn("User {} is not the seller of item {}", email, itemId);
+        return false;
+      }
+
+      item.setStatus(newStatus);
+
+      if (newStatus == ItemStatus.RESERVED) {
+        if (buyerId == null) {
+          logger.warn("Cannot reserve item {}: buyerId is null", itemId);
+          return false;
+        }
+        Optional<User> buyerOpt = userRepository.findById(buyerId);
+        if (buyerOpt.isEmpty()) {
+          logger.warn("Cannot reserve item {}: buyer not found", itemId);
+          return false;
+        }
+        item.setReservedBy(buyerOpt.get());
+      } else {
+        item.setReservedBy(null);
+      }
+
+      itemRepository.save(item);
+      logger.info("Item {} status updated to {}", itemId, newStatus);
+      return true;
+    } catch (Exception e) {
+      logger.error("Failed to update status of item {}: {}", itemId, e.getMessage(), e);
+      throw e;
     }
-
-    item.setStatus(newStatus);
-
-    if (newStatus == ItemStatus.RESERVED) {
-      if (buyerId == null) return false;
-      Optional<User> buyerOpt = userRepository.findById(buyerId);
-      if (buyerOpt.isEmpty()) return false;
-
-      item.setReservedBy(buyerOpt.get());
-    } else {
-      item.setReservedBy(null);
-    }
-
-    itemRepository.save(item);
-    return true;
   }
 
 
@@ -352,8 +423,9 @@ public class ItemService {
   private String extractPublicIdFromUrl(String imageUrl) {
     try {
       String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-      return filename.substring(0, filename.lastIndexOf(".")); // remove file extension
+      return filename.substring(0, filename.lastIndexOf("."));
     } catch (Exception e) {
+      logger.error("Failed to extract public ID from URL: {}", imageUrl, e);
       throw new IllegalArgumentException("Invalid Cloudinary URL: " + imageUrl, e);
     }
   }

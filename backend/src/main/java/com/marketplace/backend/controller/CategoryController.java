@@ -2,6 +2,8 @@ package com.marketplace.backend.controller;
 
 import com.marketplace.backend.model.Category;
 import com.marketplace.backend.service.CategoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,8 @@ import java.util.Optional;
 @RequestMapping("/api/categories")
 @CrossOrigin(origins = "http://localhost:5173")
 public class CategoryController {
+
+  private static final Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
   private final CategoryService categoryService;
 
@@ -35,6 +39,7 @@ public class CategoryController {
    */
   @GetMapping
   public List<Category> getAllCategories() {
+    logger.info("Fetching all categories");
     return categoryService.getAllCategories();
   }
 
@@ -46,9 +51,15 @@ public class CategoryController {
    */
   @GetMapping("/{id}")
   public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+    logger.info("Fetching category with ID: {}", id);
     Optional<Category> category = categoryService.getCategoryById(id);
-    return category.map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    if (category.isPresent()) {
+      logger.debug("Found category: {}", category.get().getName());
+      return ResponseEntity.ok(category.get());
+    } else {
+      logger.warn("Category with ID {} not found", id);
+      return ResponseEntity.notFound().build();
+    }
   }
 
   /**
@@ -60,8 +71,15 @@ public class CategoryController {
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping
   public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-    Category created = categoryService.createCategory(category);
-    return ResponseEntity.ok(created);
+    logger.info("Creating new category: {}", category.getName());
+    try {
+      Category created = categoryService.createCategory(category);
+      logger.info("Category created successfully with ID: {}", created.getId());
+      return ResponseEntity.ok(created);
+    } catch (Exception e) {
+      logger.error("Failed to create category {}: {}", category.getName(), e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -77,9 +95,20 @@ public class CategoryController {
       @PathVariable Long id,
       @RequestBody Category category
   ) {
-    return categoryService.updateCategory(id, category)
-        .map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    logger.info("Updating category with ID: {}", id);
+    try {
+      Optional<Category> updated = categoryService.updateCategory(id, category);
+      if (updated.isPresent()) {
+        logger.info("Category {} updated successfully", id);
+        return ResponseEntity.ok(updated.get());
+      } else {
+        logger.warn("Category with ID {} not found for update", id);
+        return ResponseEntity.notFound().build();
+      }
+    } catch (Exception e) {
+      logger.error("Failed to update category {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -91,7 +120,14 @@ public class CategoryController {
   @PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-    categoryService.deleteCategory(id);
-    return ResponseEntity.noContent().build();
+    logger.info("Deleting category with ID: {}", id);
+    try {
+      categoryService.deleteCategory(id);
+      logger.info("Category {} deleted successfully", id);
+      return ResponseEntity.noContent().build();
+    } catch (Exception e) {
+      logger.error("Failed to delete category {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 }

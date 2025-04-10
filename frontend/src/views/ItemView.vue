@@ -143,6 +143,7 @@ onMounted(async () => {
     }
 
     item.value = itemData;
+    isFavorite.value = itemData.favoritedByCurrentUser;
     isMyItem.value = userStore.user?.id === itemData.sellerId;
 
     if (itemData.sellerId) {

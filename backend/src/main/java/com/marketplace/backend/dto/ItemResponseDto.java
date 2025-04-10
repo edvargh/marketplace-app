@@ -1,5 +1,6 @@
 package com.marketplace.backend.dto;
 
+import com.marketplace.backend.model.Image;
 import com.marketplace.backend.model.Item;
 import com.marketplace.backend.model.ItemStatus;
 
@@ -58,7 +59,7 @@ public class ItemResponseDto {
     dto.setSellerId(item.getSeller() != null ? item.getSeller().getId() : null);
     dto.setSellerName(item.getSeller() != null ? item.getSeller().getFullName() : null);
     dto.setImageUrls(item.getImages() != null
-        ? item.getImages().stream().map(img -> img.getImageUrl()).collect(Collectors.toList())
+        ? item.getImages().stream().map(Image::getImageUrl).collect(Collectors.toList())
         : null);
 
     boolean isFavorited = currentUser != null &&

@@ -6,6 +6,8 @@ import com.marketplace.backend.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
+  private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
   private final UserService userService;
 
@@ -37,6 +40,7 @@ public class UserController {
    */
   @GetMapping
   public List<UserResponseDto> getAllUsers() {
+    logger.info("Fetching all users");
     return userService.getAllUsers();
   }
 
@@ -48,9 +52,19 @@ public class UserController {
    */
   @GetMapping("/{id}")
   public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
-    Optional<UserResponseDto> user = userService.getUserById(id);
-    return user.map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+    logger.info("Fetching user by ID: {}", id);
+    try {
+      Optional<UserResponseDto> user = userService.getUserById(id);
+      if (user.isPresent()) {
+        return ResponseEntity.ok(user.get());
+      } else {
+        logger.warn("User with ID {} not found", id);
+        return ResponseEntity.notFound().build();
+      }
+    } catch (Exception e) {
+      logger.error("Error fetching user {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -66,10 +80,22 @@ public class UserController {
       @RequestPart("dto") UserUpdateDto dto,
       @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
   ) {
+    logger.info("Updating user with ID: {}", id);
     dto.setProfilePicture(profilePicture);
-    Optional<UserResponseDto> updatedUser = userService.updateUser(id, dto);
-    return updatedUser.map(ResponseEntity::ok)
-        .orElseGet(() -> ResponseEntity.notFound().build());
+
+    try {
+      Optional<UserResponseDto> updatedUser = userService.updateUser(id, dto);
+      if (updatedUser.isPresent()) {
+        logger.info("User with ID {} updated successfully", id);
+        return ResponseEntity.ok(updatedUser.get());
+      } else {
+        logger.warn("User with ID {} not found for update", id);
+        return ResponseEntity.notFound().build();
+      }
+    } catch (Exception e) {
+      logger.error("Failed to update user {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -79,7 +105,13 @@ public class UserController {
    */
   @GetMapping("/me")
   public ResponseEntity<UserResponseDto> getCurrentUser() {
-    UserResponseDto user = userService.getCurrentUser();
-    return ResponseEntity.ok(user);
+    logger.info("Fetching current authenticated user");
+    try {
+      UserResponseDto user = userService.getCurrentUser();
+      return ResponseEntity.ok(user);
+    } catch (Exception e) {
+      logger.error("Failed to fetch current user: {}", e.getMessage(), e);
+      throw e;
+    }
   }
 }

@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class UserService {
+  private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
   private final UserRepository userRepository;
   private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -42,6 +45,7 @@ public class UserService {
    * @return an optional user if found
    */
   public Optional<User> findByEmail(String email) {
+    logger.debug("Finding user by email: {}", email);
     return userRepository.findByEmail(email);
   }
 
@@ -51,9 +55,17 @@ public class UserService {
    * @return a list of all users as DTOs
    */
   public List<UserResponseDto> getAllUsers() {
-    return userRepository.findAll().stream()
-        .map(UserResponseDto::fromEntity)
-        .collect(Collectors.toList());
+    logger.info("Fetching all users");
+    try {
+      List<UserResponseDto> users = userRepository.findAll().stream()
+          .map(UserResponseDto::fromEntity)
+          .collect(Collectors.toList());
+      logger.debug("Found {} users", users.size());
+      return users;
+    } catch (Exception e) {
+      logger.error("Failed to fetch all users: {}", e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -63,7 +75,13 @@ public class UserService {
    * @return an optional user DTO if found
    */
   public Optional<UserResponseDto> getUserById(Long id) {
-    return userRepository.findById(id).map(UserResponseDto::fromEntity);
+    logger.info("Fetching user by ID: {}", id);
+    try {
+      return userRepository.findById(id).map(UserResponseDto::fromEntity);
+    } catch (Exception e) {
+      logger.error("Error fetching user with ID {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -74,31 +92,38 @@ public class UserService {
    * @return an optional updated user DTO if found
    */
   public Optional<UserResponseDto> updateUser(Long id, UserUpdateDto dto) {
-    return userRepository.findById(id).map(user -> {
-      if (dto.getFullName() != null) user.setFullName(dto.getFullName());
-      if (dto.getEmail() != null) user.setEmail(dto.getEmail());
-      if (dto.getPassword() != null) user.setPassword(passwordEncoder.encode(dto.getPassword()));
-      if (dto.getPhoneNumber() != null) user.setPhoneNumber(dto.getPhoneNumber());
-      if (dto.getPreferredLanguage() != null) user.setPreferredLanguage(dto.getPreferredLanguage());
+    logger.info("Updating user with ID: {}", id);
+    try {
+      return userRepository.findById(id).map(user -> {
+        if (dto.getFullName() != null) user.setFullName(dto.getFullName());
+        if (dto.getEmail() != null) user.setEmail(dto.getEmail());
+        if (dto.getPassword() != null) user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        if (dto.getPhoneNumber() != null) user.setPhoneNumber(dto.getPhoneNumber());
+        if (dto.getPreferredLanguage() != null) user.setPreferredLanguage(dto.getPreferredLanguage());
 
-      // 🌤 Upload new profile picture if present
-      MultipartFile picture = dto.getProfilePicture();
-      if (picture != null && !picture.isEmpty()) {
-        try {
-          if (user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
-            String publicId = extractPublicIdFromUrl(user.getProfilePicture());
-            cloudinaryService.deleteImage(publicId);
+        MultipartFile picture = dto.getProfilePicture();
+        if (picture != null && !picture.isEmpty()) {
+          try {
+            if (user.getProfilePicture() != null && !user.getProfilePicture().isEmpty()) {
+              String publicId = extractPublicIdFromUrl(user.getProfilePicture());
+              cloudinaryService.deleteImage(publicId);
+            }
+            String url = cloudinaryService.uploadImage(user.getId(), picture);
+            user.setProfilePicture(url);
+          } catch (IOException e) {
+            logger.error("Failed to upload profile picture for user {}: {}", user.getId(), e.getMessage(), e);
+            throw new RuntimeException("Failed to upload profile picture", e);
           }
-          String url = cloudinaryService.uploadImage(user.getId(), picture);
-          user.setProfilePicture(url);
-        } catch (IOException e) {
-          throw new RuntimeException("Failed to upload profile picture", e);
         }
-      }
 
-      User updated = userRepository.save(user);
-      return UserResponseDto.fromEntity(updated);
-    });
+        User updated = userRepository.save(user);
+        logger.info("User with ID {} updated successfully", updated.getId());
+        return UserResponseDto.fromEntity(updated);
+      });
+    } catch (Exception e) {
+      logger.error("Failed to update user {}: {}", id, e.getMessage(), e);
+      throw e;
+    }
   }
 
 
@@ -109,8 +134,15 @@ public class UserService {
    */
   public UserResponseDto getCurrentUser() {
     String email = getAuthenticatedEmail();
-    User user = userRepository.findByEmail(email).orElseThrow();
-    return UserResponseDto.fromEntity(user);
+    logger.info("Fetching current user with email: {}", email);
+    try {
+      User user = userRepository.findByEmail(email).orElseThrow();
+      logger.debug("Found current user: {}", user.getId());
+      return UserResponseDto.fromEntity(user);
+    } catch (Exception e) {
+      logger.error("Failed to fetch current user {}: {}", email, e.getMessage(), e);
+      throw e;
+    }
   }
 
   /**
@@ -120,13 +152,13 @@ public class UserService {
    */
   private String getAuthenticatedEmail() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    return authentication.getName(); // Spring extracts username from token
+    return authentication.getName();
   }
 
   private String extractPublicIdFromUrl(String imageUrl) {
     try {
       String filename = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-      return filename.substring(0, filename.lastIndexOf(".")); // remove file extension
+      return filename.substring(0, filename.lastIndexOf("."));
     } catch (Exception e) {
       throw new IllegalArgumentException("Invalid Cloudinary URL: " + imageUrl, e);
     }

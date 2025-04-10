@@ -125,9 +125,6 @@ public class PaymentControllerTest {
     String orderId = "error-order";
     String url = "/api/payments/vipps-callback/v2/payments/" + orderId;
 
-    Map<String, Object> payload = Map.of(
-        "transactionInfo", Map.of("status", "SALE")
-    );
     String payloadJson = objectMapper.writeValueAsString(Map.of());
 
     doThrow(new RuntimeException("Something went wrong"))
