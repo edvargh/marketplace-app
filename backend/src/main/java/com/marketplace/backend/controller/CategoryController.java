@@ -110,24 +110,4 @@ public class CategoryController {
       throw e;
     }
   }
-
-  /**
-   * Delete a category by ID.
-   *
-   * @param id the category ID to delete
-   * @return HTTP 204 No Content if deleted
-   */
-  @PreAuthorize("hasRole('ADMIN')")
-  @DeleteMapping("/{id}")
-  public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-    logger.info("Deleting category with ID: {}", id);
-    try {
-      categoryService.deleteCategory(id);
-      logger.info("Category {} deleted successfully", id);
-      return ResponseEntity.noContent().build();
-    } catch (Exception e) {
-      logger.error("Failed to delete category {}: {}", id, e.getMessage(), e);
-      throw e;
-    }
-  }
 }

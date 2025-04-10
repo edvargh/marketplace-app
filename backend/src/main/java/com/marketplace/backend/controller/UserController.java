@@ -1,15 +1,16 @@
 package com.marketplace.backend.controller;
 
+import com.marketplace.backend.dto.UserPublicDto;
 import com.marketplace.backend.dto.UserResponseDto;
 import com.marketplace.backend.dto.UserUpdateDto;
 import com.marketplace.backend.service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Optional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,27 +35,16 @@ public class UserController {
   }
 
   /**
-   * Get all users.
-   *
-   * @return a list of all users (DTOs)
-   */
-  @GetMapping
-  public List<UserResponseDto> getAllUsers() {
-    logger.info("Fetching all users");
-    return userService.getAllUsers();
-  }
-
-  /**
-   * Get a user by ID.
+   * Get public information about a user.
    *
    * @param id the ID of the user
    * @return the user if found, otherwise a 404 response
    */
   @GetMapping("/{id}")
-  public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
+  public ResponseEntity<UserPublicDto> getUserPublicInfo(@PathVariable Long id) {
     logger.info("Fetching user by ID: {}", id);
     try {
-      Optional<UserResponseDto> user = userService.getUserById(id);
+      Optional<UserPublicDto> user = userService.getUserPublicInfo(id);
       if (user.isPresent()) {
         return ResponseEntity.ok(user.get());
       } else {
@@ -80,6 +70,13 @@ public class UserController {
       @RequestPart("dto") UserUpdateDto dto,
       @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
   ) {
+
+    Long currentUserId = userService.getCurrentUserId();
+    if (!id.equals(currentUserId)) {
+      logger.warn("Unauthorized attempt to update user ID {}", id);
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
     logger.info("Updating user with ID: {}", id);
     dto.setProfilePicture(profilePicture);
 
