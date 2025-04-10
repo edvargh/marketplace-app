@@ -35,12 +35,12 @@ h3 {
 }
 
 .accepted-notice {
-    color: var(--button-primary);
+    color: var(--success-msg);
     font-weight: 500;
 }
 
 .declined-notice {
-    color: var(--button-danger);
+    color: var(--error-msg);
     font-weight: 500;
 }
 
@@ -51,11 +51,11 @@ h3 {
 }
 
 .status-indicator.accepted {
-    color: var(--button-primary);
+    color: var(--success-msg);
 }
 
 .status-indicator.declined {
-    color: var(--button-danger);
+    color: var(--error-msg);
 }
 
 .in-message p {

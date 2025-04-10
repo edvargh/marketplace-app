@@ -33,6 +33,11 @@
     text-align: center;
 }
 
+.categories li:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(var(--shadow-soft));
+}
+
 ::v-deep(.circle-button) {
     width: clamp(60px, 15vw, 120px);
     height: clamp(60px, 15vw, 120px);

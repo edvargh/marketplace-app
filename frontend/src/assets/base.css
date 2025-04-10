@@ -1,140 +1,133 @@
-/* Colors here */
 :root {
+  /* === BASE COLORS === */
   --black: #000;
   --white: #f5f5f5;
-  --light-gray: #cccccc;
-  --medium-gray: #555;
   --dark-gray: #333;
-  --bright-red: red;
+  --medium-gray: #555;
+  --light-green: #e8f5e9;
+  --sky-blue: #4facfe;
+  --turquoise: #00f2fe;
 
-  /* ERROR/SUCCESS MESSAGE */
-  --error-msg: #d32f2f;
+  /* === TEXT COLORS === */
+  --button-text: #ffffff;
+  --button-text-favorite: #444444;
+  --button-text-message: #1565c0;
+  --button-text-nav: #ffffff;
+
+  /* === STATUS COLORS === */
+  --red: #9e1515;
+  --red-hover: #c01616;
+  --green: #33741e;
+  --green-hover: #398721;
+
+  /* === BLUE SHADES === */
+  --darker-blue: #00396b;
+  --dark-blue: #0062b8;
+  --mid-blue: #007ae6;
+  --mid-light-blue: #a0c4ff;
+  --light-blue: #e0f0ff;
+  --light-blue-cold: #e8f0ff;
+  --box-background: #ebf5ff;
+  --real-box-background: #e1f0ff;
+
+  /* === SHADOW === */
+  --shadow-soft: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  /* === ERROR / SUCCESS MESSAGES === */
+  --error-msg: var(--red);
   --error-msg-background: #fee2e2;
-  --success-msg: #2e7d15;
+  --success-msg: var(--green);
 
-  /* BUTTONS */
-  --buttton-diabled: #cccccc;
-  --button-text: white;
-  --button-primary: #33741e;
-  --button-primary-hover: #398721;
+  /* === BUTTONS === */
+  --button-primary: var(--green);
+  --button-primary-hover: var(--green-hover);
   --button-cancel: #444444;
   --button-cancel-hover: #555555;
-  --button-danger: #9e1515;
-  --button-danger-hover: #c01616;
-  --button-blue: #4facfe;
-  --button-text-blue: white;
-  --button-reserve: #e8f5e9;
+  --button-danger: var(--red);
+  --button-danger-hover: var(--red-hover);
+  --button-disabled: #cccccc;
+  --button-favorite-icon: var(--red);
+  --button-message: var(--real-box-background);
+  --button-nav: var(--dark-gray);
+  --button-nav-hover: var(--black);
+  --button-reserve: var(--light-green);
   --button-text-reserve: #2e7d15;
-  --button-message: #e3f2fd;
-  --button-text-message: #1565c0;
-  --button-favorite-icon: #9e1515;
-  --button-text-favorite: #444444;
-  --button-nav: #333;
-  --button-nav-hover: black;
-  --button-text-nav: white;
 
-  /* APP BACKGROUND COLORS */
-  --bg-light-blue: rgba(173, 216, 230, 0.4); /* #ADD8E6 */
-  --bg-light-purple: rgba(221, 160, 221, 0.4); /* #DDA0DD */
-  --bg-light-green: rgba(144, 238, 144, 0.4); /* #90EE90 */
-  --bg-base: #fefefe;
-
-  /* LOADING */
-  --loading-wheel: var(--medium-gray);
-  --loading-spin: var(--sky-blue);
-  --loading-border: var(--white);
-
-  /* NAVBAR */
-  --navbar-shadow: var(--light-gray);
+  /* === NAVBAR === */
   --navbar-border: rgba(0, 0, 0, 0.1);
   --navbar-hover: rgba(79, 172, 254, 0.15);
   --navbar-link: var(--dark-gray);
   --navbar-text: var(--dark-gray);
 
-  /* NOTIFICATION BANNER */
+  /* === LOADING === */
+  --loading-wheel: var(--medium-gray);
+  --loading-spin: var(--sky-blue);
+  --loading-border: var(--white);
+
+  /* === NOTIFICATION BANNER === */
   --notification-overlay: rgba(0, 0, 0, 0.5);
-  --notification-shadow: rgb(0, 0, 0, 0.1);
-  --notification-content-background: white;
+  --notification-shadow: rgba(0, 0, 0, 0.1);
+  --notification-content-background: var(--white);
   --notification-success: #f0fdf4;
   --notification-error: #fef2f2;
   --notification-warning: #fffbeb;
   --notification-info: #eff6ff;
 
-  /* MESSAGES + RESERVE BOX */
-  --reserve-background: #CEEBF4;
-  --received-message-background:  #8dcc84;
+  /* === MESSAGES + RESERVE BOX === */
+  --reserve-background: #ceebf4;
+  --received-message-background: #8dcc84;
   --message: #e0f7fa;
   --message-name: #666;
+  --message-input: var(--white);
+  --message-input-border: var(--mid-light-blue);
   --message-input-top-border: #6b7280;
-  --message-input-border: #a0c4ff;
-  --message-input: white;
-  --message-send: white;
+  --message-send: var(--white);
+  --date-divider: #b9d9eb;
   --date-divider-text: #666;
-  --date-divider: #B9D9EB;
   --message-empty: #666;
 
-  /* SPECIAL CUSTOM BOX/BUTTON */
-  --light-blue: #e0f0ff;
-  --light-blue-cold: #e8f0ff;
-  --sky-blue: #4facfe;
-  --turquoise: #00f2fe;
-  --component-half-1: #e0f7ff;
-  --component-half-2: #f0f8ff;
-  --component-border-bottom: #d0e0f0;
+  /* === CATEGORIES ADMIN === */
+  --category-admin-border-top: #888888;
 
-  /* INPUT */
+  /* === ITEM VIEW === */
+  --item-view-desc-border: #aaa;
+  --img-gallery-border: var(--sky-blue);
+  --img-gallery-background: var(--dark-gray);
+  --coordinates: var(--medium-gray);
+
+  /* === PROFILE === */
+  --profile-border: var(--sky-blue);
+  --profile-edit-icon: var(--white);
+  --profile-edit-icon-shadow: var(--shadow-soft);
+
+  /* === SELECT BOX === */
+  --select-border-shadow: rgba(0, 0, 0, 0.1);
+  --select-hover: rgba(79, 172, 254, 0.15);
+
+  /* === INPUT === */
   --input-placeholder: #aaa;
 
-  /* FILTER */
+  /* === FILTER / CHECKBOX === */
   --checkbox-border: rgba(0, 255, 255, 0.4);
   --checkbox-background: rgba(255, 255, 255, 0.05);
   --checkbox-label-hover: var(--sky-blue);
   --geo-input: #cccccc;
-  --geo-input-border: #333;
+  --geo-input-border: var(--dark-gray);
 
-  /* SELECT BOX */
-  --select-border-shadow: rgba(0, 0, 0, 0.1);
-  --select-hover: rgba(79, 172, 254, 0.15);
+  /* === AUTH === */
+  --log-in-register-link: var(--dark-blue);
+  --log-in-register-button-text: #ffffff;
 
-  /* STATUS BANNER */
-  --status-background: #cccccc;
-
-  /* PROFILE */
-  --profile-border: #4facfe;
-  --profile-edit-icon: white;
-  --profile-edit-icon-shadow: rgba(0, 0, 0, 0.15);
-
-  /* CATEGORIES ADMIN */
-  --category-admin-border-top: 888888;
-
-  /* ITEM VIEW */
-  --item-view-desc-border: #aaa;
-  --img-gallery-border: #4facfe;
-  --img-gallery-background: #333;
-  --coordinates: var(--medium-gray);
-
-  /* LOG IN + REGISTER */
-  --log-in-register-link: #0062b8;
-  --log-in-register-button-text: #FFFF;
-
-  /* CARDS */
-  --item-card-border: #4facfe;
+  /* === CARDS === */
+  --item-card-border: var(--sky-blue);
   --item-card-border-top: #cccccc;
-  --conv-card-latest-msg: #555;
+  --conv-card-latest-msg: var(--medium-gray);
+  --card-gradient-light: #f0f0f0;
+  --card-gradient-mid: #e0e0e0;
 
-
-
-
-  /* NEW COLORS */
-  --darker-blue: #00396b;
-  --dark-blue: #0062b8;
-  --mid-blue: #007ae6;
-  --mid-light-blue: #a0c4ff;
-  --box-background: #ebf5ff;
-  --real-box-background: #e1f0ff;
-
+  /* === STATUS BANNER === */
+  --status-background: #cccccc;
 }
-
 
 *,
 *::before,
@@ -145,7 +138,6 @@
 }
 
 body {
-  /* Colors here */
   color: var(--dark-gray);
 
   background-repeat: no-repeat;
