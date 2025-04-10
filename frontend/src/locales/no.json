@@ -181,5 +181,17 @@
   },
   "DetailedItemCard":{
     "price": "pris"
+  },
+  "ReserveBox":{
+    "reservation-request": "Reservasjonsforespørsel",
+    "wants-to-reserve": "ønsker å reservere",
+    "accept": "Godta",
+    "decline": "Avslå",
+    "reservation-accepted": "✓ Reservasjon akseptert",
+    "reservation-declined": "✗ Reservasjon avslått",
+    "waiting": "Venter på selgerens svar...",
+    "seller-accepted": "Selgeren har akseptert reservasjonsforespørselen din!",
+    "seller-declined": "Selgeren har avslått reservasjonsforespørselen din.",
+    "cancel": "Avbryt"
   }
 }

@@ -181,6 +181,18 @@
   },
    "DetailedItemCard":{
     "price": "Price"
+   },
+   "ReserveBox":{
+    "reservation-request": "Reservation request",
+    "wants-to-reserve": "wants to reserve",
+    "accept": "Accept",
+    "decline": "Decline",
+    "reservation-accepted": "✓ Reservation accepted",
+    "reservation-declined": "✗ Reservation declined",
+    "waiting": "Waiting for seller's response...",
+    "seller-accepted": "The seller has accepted your reservation request!",
+    "seller-declined": "The seller has declined your reservation request.",
+    "cancel": "Cancel"
    }
 }
 

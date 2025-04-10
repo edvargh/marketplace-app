@@ -56,6 +56,8 @@
 
       <label for="language">{{ t('profile.language') }}</label>
       <SelectBox
+        id="language"
+        
         v-model="language"
         :options="languageOptions"
       />
