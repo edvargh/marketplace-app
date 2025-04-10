@@ -28,29 +28,6 @@
   font-weight: 600;
 }
 
-.RegisterPage button[type='submit'] {
-  width: 100%;
-  padding: 0.75rem;
-  margin-top: 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--log-in-register-button-text);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  background: linear-gradient(to right, var(--sky-blue), var(--turquoise));
-  transition: background 0.3s ease;
-}
-
-.RegisterPage button[type='submit']:hover {
-  background: linear-gradient(to right, var(--turquoise), var(--sky-blue));
-}
-
-.RegisterPage button[type='submit']:disabled {
-  background: var(--buttton-diabled);
-  cursor: not-allowed;
-}
-
 .AlreadyHaveAccountText {
   text-align: center;
   margin-top: 1.5rem;

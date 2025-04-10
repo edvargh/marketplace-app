@@ -3,6 +3,8 @@
     <label class="checkbox-label select-all">
       <input
         type="checkbox"
+        id ="select-all"
+        name ="select-all"
         :checked="allSelected"
         @change="toggleAll"
       />
@@ -15,6 +17,8 @@
       class="checkbox-label"
     >
       <input
+        :id="getValue(option)"
+        :name="getValue(option)"
         type="checkbox"
         :value="getValue(option)"
         v-model="localValue"

@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * Repository for handling category related requests.
  */
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+  boolean existsByName(String name);
+
 }

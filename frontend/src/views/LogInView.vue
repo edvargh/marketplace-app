@@ -26,7 +26,7 @@
           :disabled="isSubmitting"
         />
 
-        <button type="submit" :disabled="isSubmitting">
+        <button type="submit" :disabled="isSubmitting" class="custom-button-filled">
           {{ isSubmitting ? 'Logging in...' : 'Log In' }}
         </button>
 
@@ -43,7 +43,7 @@
 
       <div>
         <p class="home-page">
-        Back to main page here: <router-link to="/">Main page</router-link>
+        Back to main welcome <router-link to="/">here</router-link>
         </p>
       </div>
 

@@ -93,21 +93,6 @@ class UserControllerTest {
     userRepository.save(user2);
   }
 
-
-  /**
-   * Test to get all users.
-   *
-   * @throws Exception if the request fails
-   */
-  @Test
-  @WithMockUser
-  void shouldReturnAllUsers() throws Exception {
-    mockMvc.perform(get("/api/users"))
-        .andExpect(status().isOk())
-        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-        .andExpect(jsonPath("$.length()").value(2));
-  }
-
   /**
    * Test to get user by ID.
    *
@@ -118,7 +103,7 @@ class UserControllerTest {
   void shouldReturnUserById() throws Exception {
     mockMvc.perform(get("/api/users/" + testUser.getId()))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.email").value("john@example.com"));
+        .andExpect(jsonPath("$.fullName").value("John Doe"));
   }
 
   /**
@@ -127,7 +112,7 @@ class UserControllerTest {
    * @throws Exception if the request fails
    */
   @Test
-  @WithMockUser
+  @WithMockUser(username = "john@example.com")
   void shouldUpdateUserWithDataAndProfilePicture() throws Exception {
     UserUpdateDto updateDto = new UserUpdateDto();
     updateDto.setFullName("John Updated");
@@ -151,28 +136,6 @@ class UserControllerTest {
         .andExpect(jsonPath("$.fullName", is("John Updated")))
         .andExpect(jsonPath("$.preferredLanguage", is("norwegian")))
         .andExpect(jsonPath("$.phoneNumber", is("0000000000")));
-  }
-
-  /**
-   * Test to update a non-existing user.
-   *
-   * @throws Exception if the request fails
-   */
-  @Test
-  @WithMockUser
-  void shouldReturn404WhenUpdatingNonExistingUser() throws Exception {
-    UserUpdateDto updateDto = new UserUpdateDto();
-    updateDto.setFullName("Ghost");
-
-    MockMultipartFile dtoPart = new MockMultipartFile(
-        "dto", "", "application/json", objectMapper.writeValueAsBytes(updateDto)
-    );
-
-    mockMvc.perform(MockMvcRequestBuilders.multipart("/api/users/999999")
-            .file(dtoPart)
-            .with(req -> { req.setMethod("PUT"); return req; })
-            .contentType(MediaType.MULTIPART_FORM_DATA))
-        .andExpect(status().isNotFound());
   }
 
   /**

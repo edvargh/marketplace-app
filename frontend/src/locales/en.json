@@ -5,6 +5,7 @@
     "logout": "Log Out",
     "profile": "Profile",
     "account": "Account",
+    "categories": "Categories",
     "create-listing": "Create Listing",
     "my-items": "My Items",
     "favorites": "Favorites",
@@ -40,7 +41,7 @@
   },
   "homeView": {
     "Your-recommendations": "Your recommendations",
-    "No-recommendet-items-found": "No recommended items found",
+    "No-recommended-items-found": "No recommended items found",
     "Most-popular-items": "Most popular items",
     "No-popular-items-found": "No popular items found",
     "Market": "Market",
@@ -49,7 +50,8 @@
     "Show-filters": "Show filters",
     "Load-more": "Load more",
     "Loading": "Loading...",
-    "Loading-homeView": "Loading home page..."
+    "Loading-homeView": "Loading home page...",
+    "ErrorLoading": "Something wrong happened while loading Home Page. Please try again."
   },
     "categories":{
     "Most-popular-categories": "Most popular categories"
@@ -168,7 +170,17 @@
     "unavailable": "Location information is unavailable. Please check your network connection.",
     "timeout": "The request to get your location timed out. Please try again."
   }
-}
-
+  },
+  "searchResultView": {
+    "resultsForSearch": "Results for \"{search}\"",
+    "resultsForCategory": "Results for category \"{category}\"",
+    "loadingMessage": "Searching for items...",
+    "noItemsFound": "No items found.",
+    "initFailed": "Failed to initialize search. Please try again.",
+    "loadFailed": "Failed to load items. Please try again."
+  },
+   "DetailedItemCard":{
+    "price": "Price"
+   }
 }
 

@@ -1,5 +1,6 @@
 package com.marketplace.backend.service;
 
+import com.marketplace.backend.dto.RegisterRequestDto;
 import com.marketplace.backend.model.User;
 import com.marketplace.backend.model.Role;
 import com.marketplace.backend.repository.UserRepository;
@@ -28,14 +29,29 @@ public class AuthService {
   /**
    * Registers a new user and generates a JWT token.
    *
-   * @param user the user to register
+   * @param request the user to register
    * @return a JWT token
    */
-  public String registerUser(User user) {
-    logger.info("Registering new user with email: {}", user.getEmail());
+  public String registerUser(RegisterRequestDto request) {
+    logger.info("Registering new user with email: {}", request.getEmail());
 
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    if (userRepository.existsByEmail(request.getEmail())) {
+      logger.warn("Email already in use: {}", request.getEmail());
+      throw new IllegalArgumentException("Email already in use");
+    }
+
+    if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+      logger.warn("Phone number already in use: {}", request.getPhoneNumber());
+      throw new IllegalArgumentException("Phone number already in use");
+    }
+
+    User user = new User();
+    user.setFullName(request.getFullName());
+    user.setEmail(request.getEmail());
+    user.setPhoneNumber(request.getPhoneNumber());
+    user.setPassword(passwordEncoder.encode(request.getPassword()));
     user.setRole(Role.USER);
+
     userRepository.save(user);
 
     String token = jwtService.generateToken(user.getEmail());

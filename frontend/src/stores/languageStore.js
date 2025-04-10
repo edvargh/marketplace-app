@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { i18n } from '@/i18n' 
 
 export const useI18nStore = defineStore('i18n', () => {

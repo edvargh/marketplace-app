@@ -27,7 +27,7 @@
         
         <div class="card-footer">
           <div class="price-frame">
-            <label class="price-label">Price</label>
+            <span class="price-label">Price</span>
             <span class="price">{{ item.price }} kr</span>
           </div>
           
@@ -51,7 +51,6 @@ const props = defineProps({
     type: Object,
     required: true
   },
-  // Optional pre-fetched seller - can be passed from parent
   seller: {
     type: Object,
     default: null

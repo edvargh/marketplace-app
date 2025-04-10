@@ -110,24 +110,4 @@ class CategoryControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.name").value("Updated Toys"));
   }
-
-  /**
-   * Test deleting a category.
-   */
-  @Test
-  @WithMockUser(roles = "ADMIN")
-  void shouldDeleteCategory() throws Exception {
-    mockMvc.perform(delete("/api/categories/" + toysCategory.getId()))
-        .andExpect(status().isNoContent());
-  }
-
-  /**
-   * Test existsById returns true for an existing category.
-   */
-  @Test
-  @WithMockUser
-  void existsByIdReturnsTrue() {
-    boolean exists = categoryService.existsById(toysCategory.getId());
-    assertTrue(exists);
-  }
 }

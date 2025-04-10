@@ -21,7 +21,7 @@
           <router-link to="/messages/conversations" class="navbar-button">{{ t('navbar.messages') }}</router-link>
         </CustomButton>
         <CustomButton v-if="userStore.role === 'ADMIN'">
-          <router-link to="/categories" class="navbar-button">Categories</router-link>
+          <router-link to="/categories" class="navbar-button">{{ t('navbar.categories') }}</router-link>
         </CustomButton>
         <li class="account-dropdown" ref="dropdownRef">
           <div class = "dropdown-wrapper">
@@ -65,7 +65,7 @@
           <router-link to="/messages/conversations" @click="showMobileMenu = false">{{ t('navbar.messages') }}</router-link>
         </li>
         <li v-if="userStore.role === 'ADMIN'">
-          <router-link to="/categories" @click="showMobileMenu = false">Categories</router-link>
+          <router-link to="/categories" @click="showMobileMenu = false">{{ t('navbar.categories') }} </router-link>
         </li>
         <li v-if="isAuthenticated">
           <router-link to="/profile" @click="showMobileMenu = false">{{ t('navbar.profile') }}</router-link>
@@ -89,7 +89,6 @@ import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import CustomButton from '@/components/CustomButton.vue'
 import { useI18n } from 'vue-i18n'
-import { Teleport } from 'vue'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -102,7 +101,7 @@ const isAuthenticated = computed(() => userStore.isAuthenticated)
 
 const handleLogout = async () => {
   userStore.logout()
-  router.push('/login')
+  await router.push('/login')
 }
 
 const dropdownOpen = ref(false)

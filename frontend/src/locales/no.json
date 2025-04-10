@@ -5,6 +5,7 @@
     "logout": "Logg ut",
     "profile": "Profil",
     "account": "Konto",
+    "categories": "Kategorier",
     "create-listing": "Opprett Annonse",
     "my-items": "Mine Gjenstander",
     "favorites": "Favoritter",
@@ -40,7 +41,7 @@
   },
   "homeView":{
     "Your-recommendations": "Dine anbefalinger",
-    "No-recommendet-items-found": "Ingen anbefalte gjenstander funnet",
+    "No-recommended-items-found": "Ingen anbefalte gjenstander funnet",
     "Most-popular-items": "Mest populære gjenstander",
     "No-popular-items-found": "Ingen populære gjenstander funnet",
     "Market": "Marked",
@@ -49,7 +50,8 @@
     "Show-filters": "Vis filtere",
     "Load-more": "Last inn flere gjenstander",
     "Loading": "Laster...",
-    "Loading-homeView": "Laster hjemsiden..."
+    "Loading-homeView": "Laster hjemsiden...",
+    "ErrorLoading": "Noe gikk galt under lasting av hjemmesiden. Vennligst prøv igjen."
   },
   "categories":{
     "Most-popular-categories": "Mest populære kategorier"
@@ -168,5 +170,16 @@
     "unavailable": "Posisjonsinformasjon er utilgjengelig. Sjekk nettverkstilkoblingen din.",
     "timeout": "Forespørselen om å hente posisjon tok for lang tid. Prøv igjen."
   }
-}
+  },
+  "searchResultView": {
+    "resultsForSearch": "Resultater for \"{search}\"",
+    "resultsForCategory": "Resultater for kategori \"{category}\"",
+    "loadingMessage": "Søker etter annonser...",
+    "noItemsFound": "Ingen annonser funnet.",
+    "initFailed": "Kunne ikke starte søket. Vennligst prøv igjen.",
+    "loadFailed": "Kunne ikke laste inn annonser. Vennligst prøv igjen."
+  },
+  "DetailedItemCard":{
+    "price": "pris"
+  }
 }

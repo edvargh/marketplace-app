@@ -16,8 +16,10 @@
       <h3 class="filter-headers">{{ t("FilterPanel.Price-range") }}</h3>
       <div class="price-inputs">
         <div class="price-input">
-          <label>{{ t("FilterPanel.Min-price") }}</label>
+          <label for="min-price">{{ t("FilterPanel.Min-price") }}</label>
           <input
+            id = "min-price"
+            name = "min-price"
             type="number"
             v-model.number="priceMin"
             min="0"
@@ -27,8 +29,10 @@
         </div>
 
         <div class="price-input">
-          <label>{{ t("FilterPanel.Max-price") }}</label>
+          <label for="max-price">{{ t("FilterPanel.Max-price") }}</label>
           <input
+            id = "max-price"
+            name = "max-price"
             type="number"
             v-model.number="priceMax"
             min="0"
@@ -44,6 +48,8 @@
     <div class="distance-section">
       <h3 class="filter-headers">{{ t("FilterPanel.Distance") }}</h3>
       <input
+        id = "distance-km"
+        name = "distance-km"
         type="number"
         v-model.number="distanceKm"
         min="0"
@@ -57,8 +63,10 @@
       <h3 class="filter-headers">Latitude & Longitude</h3>
       <div class="geo-inputs">
         <div class="geo-input-wrapper">
-          <label>Latitude</label>
+          <label for="latitude">Latitude</label>
           <input
+            id = "latitude"
+            name = "latitude"
             type="number"
             v-model="latitudeInput"
             placeholder="Latitude"
@@ -68,8 +76,10 @@
           />
         </div>
         <div class="geo-input-wrapper">
-          <label>Longitude</label>
+          <label for="longitude">Longitude</label>
           <input
+            id = "longitude"
+            name = "longitude"
             type="number"
             v-model="longitudeInput"
             placeholder="Longitude"

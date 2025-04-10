@@ -1,6 +1,8 @@
 <template>
   <div class="search-bar box">
     <input
+      id ="search-input"
+      name ="search-input"
       type="text"
       placeholder="Search..."
       class="search-input"

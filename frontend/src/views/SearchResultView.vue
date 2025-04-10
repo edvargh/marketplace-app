@@ -13,13 +13,13 @@
       @applyFilters="handleApplyFilters"
     />
 
-    <h2 v-if="search">Results for "{{ search }}"</h2>
-    <h2 v-else-if="selectedCategoryName">Results for category "{{ selectedCategoryName }}"</h2>
+    <h2 v-if="search">{{ t('searchResultView.resultsForSearch', { search }) }}</h2>
+    <h2 v-else-if="selectedCategoryName">{{ t('searchResultView.resultsForCategory', { category: selectedCategoryName }) }}</h2>
 
     <LoadingState
       :loading="isLoading"
       :error="error"
-      loadingMessage="Searching for items..."
+      :loadingMessage="t('searchResultView.loadingMessage')"
       @retry="loadMore"
     />
 
@@ -37,12 +37,12 @@
         class="action-button button-cancel"
         :disabled="loadingMore"
       >
-        {{ loadingMore ? 'Loading...' : 'Load More' }}
+        {{ loadingMore ? t('homeView.Loading') : t('homeView.Load-more') }}
       </button>
     </div>
 
     <div v-if="!isLoading && !error && items.length === 0" class="no-items-message">
-      <p>No items found.</p>
+      <p>{{ t('searchResultView.noItemsFound') }}</p>
     </div>
 
   </div>
@@ -52,12 +52,10 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-
 import { useItemStore } from '@/stores/itemStore'
 import { useCategoryStore } from '@/stores/categoryStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { usePaginatedLoader } from '@/usePaginatedLoader.js'
-
 import CompactItemCard from '@/components/CompactItemCard.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import FilterPanel from '@/components/FilterPanel.vue'
@@ -141,7 +139,7 @@ onMounted(async () => {
 
     await loadMore();
   } catch (err) {
-    error.value = "Failed to initialize search. Please try again.";
+    error.value = t('searchResultView.initFailed');
   }
 })
 
@@ -168,8 +166,7 @@ watch(
     try {
       await loadMore();
     } catch (err) {
-      console.error('Error loading items:', err);
-      error.value = "Failed to load items. Please try again.";
+      error.value = t('searchResultView.loadFailed');
     }
   },
   { deep: true }

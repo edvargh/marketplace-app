@@ -62,7 +62,7 @@
       </HorizontalPagination>
 
       <div v-else class="no-items-message">
-        {{ t('homeView.No-recommendet-items-found') }}
+        {{ t('homeView.No-recommended-items-found') }}
       </div>
     </section>
 
@@ -90,7 +90,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import DetailedItemCard from "@/components/DetailedItemCard.vue"
 import CardGrid from '@/components/CardGrid.vue'
 import CompactItemCard from "@/components/CompactItemCard.vue"
@@ -155,7 +155,6 @@ const fetchAllSellers = async (items) => {
       try {
         return { id: sellerId, data: await userStore.getUserById(sellerId) };
       } catch (err) {
-        console.warn(`Could not fetch seller ${sellerId}:`, err);
         return { id: sellerId, data: null };
       }
     });
@@ -171,14 +170,14 @@ const fetchAllSellers = async (items) => {
 
     sellerMap.value = newSellerMap;
   } catch (err) {
-    console.error('Error fetching sellers:', err);
+    error.value = t('homeView.ErrorLoading')
   }
 };
 
 onMounted(async () => {
   try {
     loadingRecommended.value = true;
-    
+
     const categoriesPromise = categoryStore.fetchCategories()
       .then(cats => {
         categories.value = cats;
@@ -205,8 +204,7 @@ onMounted(async () => {
       await fetchAllSellers(marketItems.value);
     }
   } catch (e) {
-    console.error("Error loading home page:", e);
-    error.value = "Something wrong happened while loading Home Page. Please try again.";
+    error.value = t('homeView.ErrorLoading')
     loadingRecommended.value = false;
   }
 });
@@ -219,7 +217,6 @@ function handleApplyFilters() {
   const query = filterStore.buildFiltersQuery({
     searchQuery: route.query.searchQuery || ''
   });
-
   router.push({ path: '/items', query });
 }
 

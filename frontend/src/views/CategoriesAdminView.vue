@@ -159,7 +159,7 @@ const updateCategory = async () => {
     showUpdateSuccess.value = true;
 
   } catch (err) {
-    showErrorNotification(e.value);
+    showErrorNotification(err.value);
   }
 };
 </script>

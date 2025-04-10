@@ -1,5 +1,11 @@
 <template>
-  <LoadingState :loading="isLoading" :error="hasError" loadingMessage="Loading conversation..."/>
+  <LoadingState
+    :loading="isLoading"
+    :error="hasError ? 'An error occurred while loading the conversation.' : ''"
+    loadingMessage="Loading conversation..."
+  />
+
+  <ErrorMessage v-if="!isLoading && hasError" :message="errorMessage" />
 
   <div v-if="!isLoading && !hasError" class="conversation-container">
     <!-- Participant info -->
@@ -23,14 +29,16 @@
         <h3 class="item-title">{{ item.title }}</h3>
         <div class="price-status-wrapper">
           <p class="price">{{ item.price }} kr</p>
-          <StatusBanner :status="item.status" class="status-banner"></StatusBanner>
+          <StatusBanner :status="item.status" class="status-banner" />
         </div>
       </div>
     </RouterLink>
 
     <!-- Messages -->
     <div class="messages-section">
-      <div v-if="messages.length === 0" class="empty-state">No messages here yet</div>
+      <div v-if="messages.length === 0" class="empty-state">
+        No messages here yet
+      </div>
       <template v-else>
         <div v-for="msg in messages" :key="msg.id">
           <div v-if="msg.isDateDivider" class="date-divider">
@@ -84,7 +92,6 @@
           :showCancel="true"
           @cancel="showReserveInput = false"
         />
-
         <input
           v-model="newMessage"
           @keyup.enter="sendMessage"
@@ -92,7 +99,6 @@
           class="message-input"
         />
       </div>
-
       <button
         @click="sendMessage"
         :disabled="isSending"
@@ -104,16 +110,16 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, onMounted, watch, nextTick, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMessageStore } from '@/stores/messageStore'
 import { useUserStore } from '@/stores/userStore'
 import { useItemStore } from '@/stores/itemStore'
-import LoadingState from "@/components/LoadingState.vue";
+import LoadingState from "@/components/LoadingState.vue"
 import ReserveBox from '@/components/ReserveBox.vue'
 import StatusBanner from '@/components/StatusBanner.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue' 
 
 const route = useRoute()
 const itemId = Number(route.query.itemId)
@@ -129,13 +135,14 @@ const messages = ref([])
 const newMessage = ref('')
 const isLoading = ref(true)
 const hasError = ref(false)
+const errorMessage = ref('')
 const isSending = ref(false)
 const isReserveMode = ref(route.query.reserve === 'true')
 const showReserveInput = ref(isReserveMode.value)
 const currentUserProfileImage = ref(userStore.getCurrentUserProfileImageUrl())
 const participantProfileImage = ref('/default-picture.jpg')
 const otherUser = ref(null)
-const processingReservation = ref(null);
+const processingReservation = ref(null)
 
 const isSeller = computed(() => {
   return item.value?.sellerId === currentUserId
@@ -151,14 +158,12 @@ const otherUserName = computed(() => {
 
 const getProfileImageForUser = (userId, isFromCurrentUser) => {
   if (isFromCurrentUser) {
-    return currentUserProfileImage.value;
+    return currentUserProfileImage.value
   }
-  
   if (userId === withUserId && participantProfileImage.value) {
-    return participantProfileImage.value;
+    return participantProfileImage.value
   }
-  
-  return '/default-picture.jpg';
+  return '/default-picture.jpg'
 }
 
 const fetchConversation = async () => {
@@ -186,43 +191,45 @@ const fetchConversation = async () => {
       grouped.push(msg)
     }
     messages.value = grouped
-
   } catch (err) {
     hasError.value = true
+    errorMessage.value = 'An error occurred while loading the conversation.'
   }
 }
 
 const fetchItem = async () => {
   try {
     item.value = await itemStore.fetchItemById(itemId)
-    
     otherUser.value = await userStore.getUserById(withUserId)
-    
+
     if (otherUser.value && otherUser.value.profilePicture) {
-      participantProfileImage.value = otherUser.value.profilePicture;
+      participantProfileImage.value = otherUser.value.profilePicture
     } else if (otherUser.value && otherUser.value.profileImage) {
-      participantProfileImage.value = userStore.getProfileImageUrl(otherUser.value.profileImage);
+      participantProfileImage.value = userStore.getProfileImageUrl(otherUser.value.profileImage)
     } else {
-      participantProfileImage.value = '/default-picture.jpg';
+      participantProfileImage.value = '/default-picture.jpg'
     }
-    
+
     if (isSeller.value) {
-      currentUserProfileImage.value = userStore.getCurrentUserProfileImageUrl();
+      currentUserProfileImage.value = userStore.getCurrentUserProfileImageUrl()
     } else if (item.value?.sellerId) {
       try {
         const sellerData = await userStore.getUserById(item.value.sellerId)
         if (sellerData) {
           if (sellerData.profilePicture) {
-            participantProfileImage.value = sellerData.profilePicture;
+            participantProfileImage.value = sellerData.profilePicture
           } else if (sellerData.profileImage) {
-            participantProfileImage.value = userStore.getProfileImageUrl(sellerData.profileImage);
+            participantProfileImage.value = userStore.getProfileImageUrl(sellerData.profileImage)
           }
         }
       } catch (err) {
+        errorMessage.value = 'An error occurred while loading the seller data.'
+        hasError.value = true
       }
     }
   } catch (err) {
     hasError.value = true
+    errorMessage.value = 'An error occurred while loading the conversation.'
   }
 }
 
@@ -234,19 +241,17 @@ const sendMessage = async () => {
   try {
     if (showReserveInput.value) {
       const messageText = newMessage.value.trim() || "I would like to reserve this item"
-      await messageStore.sendReservationRequest(
-        itemId,
-        withUserId,
-        messageText
-      )
-      showReserveInput.value = false 
-      newMessage.value = '' 
+      await messageStore.sendReservationRequest(itemId, withUserId, messageText)
+      showReserveInput.value = false
+      newMessage.value = ''
     } else {
       await messageStore.sendMessage(itemId, withUserId, newMessage.value)
       newMessage.value = ''
     }
     await fetchConversation()
   } catch (err) {
+    errorMessage.value = 'An error occurred while sending the message.'
+    hasError.value = true
   } finally {
     isSending.value = false
   }
@@ -255,10 +260,12 @@ const sendMessage = async () => {
 const handleAcceptReservation = async (messageId) => {
   processingReservation.value = true
   try {
-    await messageStore.updateReservationStatus(messageId, 'ACCEPTED');
-    await itemStore.updateItemStatus(itemId, 'RESERVED', withUserId);
-    await Promise.all([fetchConversation(), fetchItem()]);
+    await messageStore.updateReservationStatus(messageId, 'ACCEPTED')
+    await itemStore.updateItemStatus(itemId, 'RESERVED', withUserId)
+    await Promise.all([fetchConversation(), fetchItem()])
   } catch (err) {
+    errorMessage.value = 'An error occurred while accepting the reservation.'
+    hasError.value = true
   } finally {
     processingReservation.value = false
   }
@@ -270,6 +277,8 @@ const handleDeclineReservation = async (messageId) => {
     await messageStore.updateReservationStatus(messageId, 'DECLINED')
     await fetchConversation()
   } catch (err) {
+    errorMessage.value = 'An error occurred while declining the reservation.'
+    hasError.value = true
   } finally {
     processingReservation.value = false
   }
@@ -279,11 +288,9 @@ const getSenderName = (senderId) => {
   if (senderId === currentUserId) {
     return userStore.user.fullName
   }
-  
   if (otherUser.value?.fullName) {
     return otherUser.value.fullName
   }
-  
   return item.value?.sellerName || 'Unknown User'
 }
 
@@ -296,12 +303,14 @@ watch(messages, async () => {
 onMounted(async () => {
   isLoading.value = true
   hasError.value = false
+  errorMessage.value = ''
 
   try {
     await fetchItem()
     await fetchConversation()
   } catch (err) {
     hasError.value = true
+    errorMessage.value = 'An error occurred while loading the conversation.'
   } finally {
     isLoading.value = false
   }
