@@ -27,19 +27,40 @@
 
     <form @submit.prevent="handleUpdateProfile">
       <label for="fullName">{{ t('profile.fullName') }}</label>
-      <InputBox id="fullName" v-model="fullName" :placeholder="t('profile.placeholderName')" :disabled="isSubmitting"/>
+      <InputBox 
+      id="fullName"
+      v-model="fullName" 
+      :placeholder="t('profile.placeholderName')" 
+      :disabled="isSubmitting"/>
       <p v-if="fullNameError" class="error-message">{{ fullNameError }}</p>
 
       <label for="email">{{ t('profile.email') }}</label>
-      <InputBox id="email" type="email" v-model="email" :placeholder="t('profile.placeholderEmail')" :disabled="isSubmitting"/>
+      <InputBox 
+        id="email" 
+        type="email" 
+        v-model="email" 
+        :placeholder="t('profile.placeholderEmail')" 
+        :disabled="isSubmitting"
+      />
       <p v-if="emailError" class="error-message">{{ emailError }}</p>
 
       <label for="phoneNumber">{{ t('profile.phoneNumber') }}</label>
-      <InputBox id="phoneNumber" type="number" v-model="phoneNumber" :placeholder="t('profile.placeholderPhone')" :disabled="isSubmitting"/>
+      <InputBox 
+        id="phoneNumber" 
+        type="number" 
+        v-model="phoneNumber" 
+        :placeholder="t('profile.placeholderPhone')" 
+        :disabled="isSubmitting"
+      />
       <p v-if="phoneError" class="error-message">{{ phoneError }}</p>
 
       <label for="password">{{ t('profile.password') }}</label>
-      <InputBox id="password" type="password" v-model="password" :placeholder="t('profile.placeholderPass')" :disabled="isSubmitting"/>
+      <InputBox id="password" 
+        type="password" 
+        v-model="password" 
+        :placeholder="t('profile.placeholderPass')" 
+        :disabled="isSubmitting"
+      />
       <p v-if="passwordTooShort" class="error-message">{{ t('profile.passwordTooShort') }}</p>
 
       <label for="confirmPassword">{{ t('profile.confirmPassword') }}</label>
@@ -57,7 +78,6 @@
       <label for="language">{{ t('profile.language') }}</label>
       <SelectBox
         id="language"
-        
         v-model="language"
         :options="languageOptions"
       />

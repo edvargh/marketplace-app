@@ -53,6 +53,7 @@ import ErrorMessage from "./ErrorMessage.vue";
 const { t } = useI18n();
 const userStore = useUserStore();
 const sellerProfilePicture = ref('/default-picture.jpg');
+const sellerErrorMessage = ref('');
 
 const props = defineProps({
   item: {
