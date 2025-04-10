@@ -9,6 +9,7 @@
 
   /* ERROR/SUCCESS MESSAGE */
   --error-msg: #d32f2f;
+  --error-msg-background: #fee2e2;
   --success-msg: #2e7d15;
 
   /* BUTTONS */

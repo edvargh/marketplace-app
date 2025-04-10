@@ -52,12 +52,10 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-
 import { useItemStore } from '@/stores/itemStore'
 import { useCategoryStore } from '@/stores/categoryStore'
 import { useFilterStore } from '@/stores/filterStore'
 import { usePaginatedLoader } from '@/usePaginatedLoader.js'
-
 import CompactItemCard from '@/components/CompactItemCard.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import FilterPanel from '@/components/FilterPanel.vue'
@@ -168,7 +166,6 @@ watch(
     try {
       await loadMore();
     } catch (err) {
-      console.error('Error loading items:', err);
       error.value = "Failed to load items. Please try again.";
     }
   },
