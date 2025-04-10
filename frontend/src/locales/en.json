@@ -50,7 +50,8 @@
     "Show-filters": "Show filters",
     "Load-more": "Load more",
     "Loading": "Loading...",
-    "Loading-homeView": "Loading home page..."
+    "Loading-homeView": "Loading home page...",
+    "ErrorLoading": "Something wrong happened while loading Home Page. Please try again."
   },
     "categories":{
     "Most-popular-categories": "Most popular categories"
