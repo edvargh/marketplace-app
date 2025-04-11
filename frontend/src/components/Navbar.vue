@@ -1,37 +1,57 @@
 <template>
   <nav class="navbar">
+    <!-- Left Side: Home Button -->
     <div class="nav-left">
-      <CustomButton>
-        <router-link to="/" class ="navbar-home-link">{{t('navbar.home')}}</router-link>
-      </CustomButton>
+      <router-link to="/" class="navbar-home-link">
+        <CustomButton>
+          {{ t('navbar.home') }}
+        </CustomButton>
+      </router-link>
     </div>
-      <!-- Desktop Nav -->
+
+    <!-- Desktop Nav -->
     <ul class="nav-right" v-if="!isMobile">
       <template v-if="isAuthenticated">
-        <CustomButton>
-          <router-link to="/favorites" class="navbar-button">{{ t('navbar.favorites') }}</router-link>
-        </CustomButton>
-        <CustomButton>
-          <router-link to ="/my-items" class="navbar-button">{{ t('navbar.my-items') }}</router-link>
-        </CustomButton>
-        <CustomButton>
-          <router-link to="/create" class="navbar-button">{{ t('navbar.create-listing') }}</router-link>
-        </CustomButton>
-        <CustomButton>
-          <router-link to="/messages/conversations" class="navbar-button">{{ t('navbar.messages') }}</router-link>
-        </CustomButton>
-        <CustomButton v-if="userStore.role === 'ADMIN'">
-          <router-link to="/categories" class="navbar-button">{{ t('navbar.categories') }}</router-link>
-        </CustomButton>
+        <li>
+          <router-link to="/favorites">
+            <CustomButton>{{ t('navbar.favorites') }}</CustomButton>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/my-items">
+            <CustomButton>{{ t('navbar.my-items') }}</CustomButton>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/create">
+            <CustomButton>{{ t('navbar.create-listing') }}</CustomButton>
+          </router-link>
+        </li>
+        <li>
+          <router-link to="/messages/conversations">
+            <CustomButton>{{ t('navbar.messages') }}</CustomButton>
+          </router-link>
+        </li>
+        <li v-if="userStore.role === 'ADMIN'">
+          <router-link to="/categories">
+            <CustomButton>{{ t('navbar.categories') }}</CustomButton>
+          </router-link>
+        </li>
         <li class="account-dropdown" ref="dropdownRef">
-          <div class = "dropdown-wrapper">
-            <CustomButton @click="toggleDropdown">{{ t('navbar.account') }}</CustomButton>
+          <div class="dropdown-wrapper">
+            <CustomButton @click="toggleDropdown">
+              {{ t('navbar.account') }}
+            </CustomButton>
             <ul v-if="dropdownOpen" class="dropdown-menu">
               <li>
-                <router-link to="/profile" class="dropdown-profile-link">{{ t('navbar.profile') }}</router-link>
+                <router-link to="/profile" class="dropdown-profile-link">
+                  {{ t('navbar.profile') }}
+                </router-link>
               </li>
               <li>
-                <button @click.stop="handleLogout" class="logout-button">{{ t('navbar.logout') }}</button>
+                <button @click.stop="handleLogout" class="logout-button">
+                  {{ t('navbar.logout') }}
+                </button>
               </li>
             </ul>
           </div>
@@ -39,49 +59,63 @@
       </template>
       <template v-else>
         <li>
-          <CustomButton>
-            <router-link to="/login" class="navbar-login-button">
+          <router-link to="/login">
+            <CustomButton class="navbar-login-button">
               {{ t('navbar.login') }}
+            </CustomButton>
           </router-link>
-        </CustomButton>
         </li>
       </template>
     </ul>
+
     <!-- Mobile Nav -->
     <div class="hamburger-menu" v-if="isMobile" ref="mobileMenuRef">
       <CustomButton @click="toggleMobileMenu">☰</CustomButton>
       <Teleport to="body">
-      <ul v-if="showMobileMenu" class="mobile-dropdown">
-        <li v-if="isAuthenticated">
-        <router-link to="/favorites" class="navbar-favorites">{{ t('navbar.favorites') }}</router-link>
-        </li>
-        <li v-if="isAuthenticated">
-          <router-link to="/my-items" @click="showMobileMenu = false">{{ t('navbar.my-items') }}</router-link>
-        </li>
-        <li v-if="isAuthenticated">
-          <router-link to="/create" @click="showMobileMenu = false">{{ t('navbar.create-listing') }}</router-link>
-        </li>
-        <li v-if="isAuthenticated">
-          <router-link to="/messages/conversations" @click="showMobileMenu = false">{{ t('navbar.messages') }}</router-link>
-        </li>
-        <li v-if="userStore.role === 'ADMIN'">
-          <router-link to="/categories" @click="showMobileMenu = false">{{ t('navbar.categories') }} </router-link>
-        </li>
-        <li v-if="isAuthenticated">
-          <router-link to="/profile" @click="showMobileMenu = false">{{ t('navbar.profile') }}</router-link>
-        </li>
-        <li v-if="isAuthenticated">
-          <button @click="handleLogout" class="logout-button">{{ t('navbar.logout') }}</button>
-        </li>
-        <li v-else>
-          <router-link to="/login" @click="showMobileMenu = false">{{ t('navbar.login') }}</router-link>
-        </li>
-      </ul>
+        <ul v-if="showMobileMenu" class="mobile-dropdown">
+          <li v-if="isAuthenticated">
+            <router-link to="/favorites" @click="showMobileMenu = false">
+              <CustomButton>{{ t('navbar.favorites') }}</CustomButton>
+            </router-link>
+          </li>
+          <li v-if="isAuthenticated">
+            <router-link to="/my-items" @click="showMobileMenu = false">
+              <CustomButton>{{ t('navbar.my-items') }}</CustomButton>
+            </router-link>
+          </li>
+          <li v-if="isAuthenticated">
+            <router-link to="/create" @click="showMobileMenu = false">
+              <CustomButton>{{ t('navbar.create-listing') }}</CustomButton>
+            </router-link>
+          </li>
+          <li v-if="isAuthenticated">
+            <router-link to="/messages/conversations" @click="showMobileMenu = false">
+              <CustomButton>{{ t('navbar.messages') }}</CustomButton>
+            </router-link>
+          </li>
+          <li v-if="userStore.role === 'ADMIN'">
+            <router-link to="/categories" @click="showMobileMenu = false">
+              <CustomButton>{{ t('navbar.categories') }}</CustomButton>
+            </router-link>
+          </li>
+          <li v-if="isAuthenticated">
+            <router-link to="/profile" @click="showMobileMenu = false">
+              <CustomButton>{{ t('navbar.profile') }}</CustomButton>
+            </router-link>
+          </li>
+          <li v-if="isAuthenticated">
+            <button @click="handleLogout" class="logout-button">{{ t('navbar.logout') }}</button>
+          </li>
+          <li v-else>
+            <router-link to="/login" @click="showMobileMenu = false">
+              <CustomButton>{{ t('navbar.login') }}</CustomButton>
+            </router-link>
+          </li>
+        </ul>
       </Teleport>
     </div>
   </nav>
 </template>
-
 
 <script setup>
 import { useUserStore } from '@/stores/userStore'
@@ -93,6 +127,7 @@ import { useI18n } from 'vue-i18n'
 const userStore = useUserStore()
 const router = useRouter()
 const { t } = useI18n()
+
 const mobileMenuRef = ref(null)
 const showMobileMenu = ref(false)
 const isMobile = ref(false)
@@ -145,7 +180,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', checkScreenSize)
 })
-
 </script>
 
 <style scoped>
