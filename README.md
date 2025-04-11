@@ -107,7 +107,7 @@ To download and use vipps in the project follow the link below and follow the in
 2. **Unzip the downloaded file**
 3. **Open a terminal in the folder where ngrok is located.**
 To test vipps payments in this application, you must use a preregistered ngrok domain:
-<pre>https://mentally-crucial-quagga.ngrok-free.app</pre>
+- https://mentally-crucial-quagga.ngrok-free.app
 This domain is tied to a specific ngrok account.
 
 4. **Ask the project owner for the ngrok authtoken**
@@ -123,17 +123,24 @@ This domain is tied to a specific ngrok account.
 <br>
 
 # Getting Started
+<br>
 Follow these steps to set up and run the project on your local machine:
+<br></br>
 1. Clone the Repository
+
+
 Clone the project repository to your local machine using Git. 
 <pre>git clone https://github.com/edvargh/marketplace-app.git </pre>
 
 Then navigate into the project directory:
 <pre>cd marketplace-app</pre>
-
+<br></br>
 2. Set Up Environment Variables
-NB: Remember to replace the .env.example with the correct env file
-Backend:Follow the back end set up 
+<br>
+
+***NB: Remember to replace the .env.example with the correct env file***
+
+Backend: Follow the back end set up
 
 Frontend: Follow front end set up 
 
@@ -154,7 +161,6 @@ Frontend: Follow front end set up
 
 
 # Frontend set up
-
 1. **Navigate to frontend**
 <pre>cd frontend </pre>
 
