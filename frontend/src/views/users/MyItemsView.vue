@@ -19,7 +19,7 @@
     </div>
 
     <div v-else-if="myItems.length === 0" class="no-items-message">
-      {{ t('myItemsView.noItems') }}
+      {{ t('myItemsView.no-items') }}
     </div>
   </div>
 </template>

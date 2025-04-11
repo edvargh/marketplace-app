@@ -1,5 +1,4 @@
 import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
@@ -13,9 +12,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      'leaflet/dist/images': fileURLToPath(
-          new URL('./node_modules/leaflet/dist/images', import.meta.url)
-      )
+      'leaflet/dist/images': fileURLToPath(new URL('./node_modules/leaflet/dist/images', import.meta.url))
     },
   },
+  preview: {
+    port: 5173,  
+  }
 })

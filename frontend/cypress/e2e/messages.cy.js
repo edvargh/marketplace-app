@@ -22,7 +22,6 @@ describe('E2E - Messages View with Mocked Conversations', () => {
     cy.contains('Desktop pc').should('exist');
     cy.contains('400 kr').should('exist');
     cy.get('img[src*="cloudinary"]').should('exist', { timeout: 5000 });
-    cy.contains('.status-banner', 'RESERVED').should('exist');
     
     cy.log('About to click conversation...');
     

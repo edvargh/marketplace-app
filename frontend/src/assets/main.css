@@ -8,7 +8,8 @@
   overflow: auto;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   overflow: auto;
 }
@@ -70,11 +71,9 @@ html, body {
 }
 
 .custom-button-filled:disabled {
-  background: var(--buttton-diabled);
+  background: var(--button-disabled);
   cursor: not-allowed;
 }
-
-
 
 .item-card-link {
   display: block;
@@ -138,7 +137,7 @@ html, body {
 }
 
 .button-primary:disabled {
-  background-color: var(--buttton-diabled);
+  background: var(--button-disabled);
   cursor: not-allowed;
   transform: none;
 }
@@ -152,7 +151,7 @@ html, body {
 }
 
 .button-cancel:disabled {
-  background-color: var(--buttton-diabled);
+  background: var(--button-disabled);
   cursor: not-allowed;
   transform: none;
 }
@@ -166,7 +165,7 @@ html, body {
 }
 
 .button-danger:disabled {
-  background-color: var(--buttton-diabled);
+  background: var(--button-disabled);
 }
 
 .user-warning {
@@ -187,6 +186,3 @@ html, body {
     flex-direction: column;
   }
 }
-
-
-
