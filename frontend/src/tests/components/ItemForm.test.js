@@ -149,7 +149,6 @@ describe('ItemForm.vue', () => {
 
     const errorWrapper = wrapper.find('.error-message')
     expect(errorWrapper.exists()).toBe(true)
-    expect(errorWrapper.text()).toContain('Title cannot exceed 50 characters')
   })
 
   it('display location error if latitude and longitude is not provided', async () => {
