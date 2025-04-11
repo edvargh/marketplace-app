@@ -1,0 +1,267 @@
+{
+  "navbar": {
+    "home": "Hjem",
+    "login": "Logg inn",
+    "logout": "Logg ut",
+    "profile": "Profil",
+    "account": "Konto",
+    "categories": "Kategorier",
+    "create-listing": "Opprett Annonse",
+    "my-items": "Mine Gjenstander",
+    "favorites": "Favoritter",
+    "messages": "Meldinger"
+  },
+  "register": {
+    "title": "Registrer ny konto"
+  },
+  "profile": {
+    "LoadingProfile": "Laster inn profilen din...",
+    "Profile": "Min Profil",
+    "fullName": "Fullt navn",
+    "email": "E-post",
+    "phoneNumber": "Telefonnummer",
+    "password": "Nytt passord",
+    "confirmPassword": "Bekreft nytt passord",
+    "language": "Språk",
+    "successMessage": "Profilen ble oppdatert",
+    "Passwords-do-not-match": "Passordene stemmer ikke overens",
+    "updating": "Oppdaterer...",
+    "updateProfile": "Oppdater profil",
+    "fullNameRequired": "Fullt navn er påkrevd",
+    "emailRequired": "E-post er påkrevd",
+    "phoneRequired": "Telefonnummer er påkrevd",
+    "fullNameTooLong": "Fullt navn kan ikke være lengre enn {maxLength} tegn",
+    "emailInvalid": "Vennligst skriv inn en gyldig e-postadresse",
+    "phoneLength": "Telefonnummer må være på {length} sifre",
+    "placeholderName": "Skriv inn ditt fulle navn",
+    "placeholderEmail": "Skriv inn e-posten din",
+    "placeholderPhone": "Skriv inn telefonnummeret ditt",
+    "placeholderPass": "Skriv inn nytt passord",
+    "placeholderConfirmPass": "Bekreft nytt passord",
+    "passwordTooShort": "Nytt passord må være minst {minLength} karakterer",
+    "errorRequiredFields": "Vennligst fyll ut alle påkrevde felt riktig."
+  },
+  "homeView": {
+    "Your-recommendations": "Dine anbefalinger",
+    "No-recommended-items-found": "Ingen anbefalte gjenstander funnet",
+    "No-popular-items-found": "Ingen populære gjenstander funnet",
+    "Market": "Marked",
+    "No-market-items-found": "Ingen markedsvarer funnet",
+    "Hide-filters": "Skjul filtere",
+    "Show-filters": "Vis filtere",
+    "Load-more": "Last inn flere gjenstander",
+    "Loading": "Laster...",
+    "Loading-homeView": "Laster hjemsiden...",
+    "ErrorLoading": "Noe gikk galt under lasting av hjemmesiden. Vennligst prøv igjen."
+  },
+  "categories": {
+    "Most-popular-categories": "Kategorier"
+  },
+  "FilterPanel": {
+    "Categories": "Kategorier",
+    "Locations": "Steder",
+    "Price-range": "Prisområde",
+    "Min-price": "Min pris (kr)",
+    "Max-price": "Maks pris (kr)",
+    "Apply-filters": "Bruk filtre",
+    "Distance": "Max avstand fra din posisjon",
+    "Select-all": "Velg alle",
+    "choosePosition": "Velg din posisjon"
+  },
+  "ConversationPreviewCard": {
+    "itemImageAlt": "Varebilde"
+  },
+  "MessagesView": {
+    "title": "Meldinger",
+    "loadingMessage": "Laster meldinger...",
+    "noMessages": "Ingen meldinger ennå.",
+    "errorLoadingMessages": "Kunne ikke laste meldinger."
+  },
+  "ConversationView": {
+    "loadingMessage": "Laster samtale...",
+    "noMessages": "Ingen meldinger her ennå",
+    "messagePlaceholder": "Skriv her...",
+    "sending": "Sender...",
+    "send": "Send",
+    "unknownUser": "Ukjent Bruker",
+    "errorLoadingConversation": "En feil oppstod under lastingen av samtalen.",
+    "errorLoadingSellerData": "En feil oppstod under lastingen av selgerdata.",
+    "errorSendingMessage": "En feil oppstod under sendingen av meldingen.",
+    "errorAcceptingReservation": "En feil oppstod under aksept av reservasjonen.",
+    "errorDecliningReservation": "En feil oppstod under avslåelse av reservasjonen."
+  },
+  "MyFavouriteView": {
+    "My-favorite-items": "Mine favoritter",
+    "Loading": "Laster...",
+    "Load-more": "Last inn flere gjenstander",
+    "No-favorites": "Du har ikke lagt til noen favoritter ennå.",
+    "Loading-favorites": "Laster dine favorittannonser...",
+    "Error-loading": "Noe gikk galt ved lasting av dine favorittannonser. Vennligst prøv igjen."
+  },
+  "itemView": {
+    "loadingItem": "Laster annonse...",
+    "sendMessage": "Send melding",
+    "reserveItem": "Reserver vare",
+    "buyNow": "Kjøp nå",
+    "pendingReservationTooltip": "Du har allerede en ventende reservasjonsforespørsel.",
+    "soldTooltip": "Denne varen har blitt solgt.",
+    "reservedByOtherTooltip": "Reservert av en annen bruker.",
+    "editItem": "Rediger annonse",
+    "descriptionOfItem": "Beskrivelse av varen",
+    "seller": "Selger",
+    "loading-seller": "Laster inn selger informasjon...",
+    "errors": {
+      "invalidId": "Ugyldig annonse-ID.",
+      "itemNotFound": "Annonse ikke funnet.",
+      "sellerInfoFailed": "Selgerinformasjon kunne ikke lastes inn.",
+      "viewCountFailed": "Visningsteller kunne ikke oppdateres.",
+      "loadFailed": "Kunne ikke laste inn denne annonsen. Vennligst prøv igjen.",
+      "conversationFailed": "Kunne ikke starte en samtale med selgeren.",
+      "reservationFailed": "Kunne ikke reservere varen. Vennligst prøv igjen.",
+      "paymentInitFailed": "Kunne ikke starte betaling.",
+      "paymentProcessFailed": "Kunne ikke behandle betalingen. Vennligst prøv igjen.",
+      "reservationCheckFailed": "Kunne ikke sjekke ventende reservasjon."
+    }
+  },
+  "myItemsView": {
+  "title": "Mine gjenstander",
+  "Loading-my-items": "Laster dine annonser...",
+  "loadingMore": "Laster...",
+  "loadMore": "Last inn mer",
+  "no-items": "Du har ikke lagt ut noen gjenstander ennå.",
+  "loadingError": "Noe gikk galt ved lasting av dine annonser. Vennligst prøv igjen."
+  },
+  "createItemView": {
+    "title": "Opprett ny annonse",
+    "create": "Opprett",
+    "creating": "Oppretter...",
+    "successMessage": "Annonse opprettet!",
+    "errorCreate": "Kunne ikke lage annonse. Vennligst prøv igjen."
+  },
+  "itemFormComponent": {
+    "importImages": "Importer bilder",
+    "removeCurrentImage": "Fjern nåværende bilde",
+    "status": "Status",
+    "category": "Kategori",
+    "title": "Tittel",
+    "description": "Beskrivelse",
+    "price": "Pris",
+    "selectLocation": "Vennligst velg en plassering på kartet",
+    "priceValidation": {
+      "invalid": "Vennligst oppgi et gyldig tall",
+      "negative": "Pris kan ikke være negativ",
+      "tooHigh": "Pris kan ikke overstige 10 000 000 kr"
+    },
+    "placeholders": {
+      "title": "Skriv inn en tittel",
+      "description": "Skriv en beskrivelse...",
+      "price": "Skriv inn pris i kr",
+      "category": "Trykk for å velge en kategori",
+      "status": "Trykk for å velge status"
+    },
+    "statusOptions": {
+      "forSale": "Til salgs",
+      "reserved": "Reservert",
+      "sold": "Solgt"
+    },
+    "validation": {
+      "invalidNumber": "Vennligst skriv inn et gyldig tall",
+      "negativePrice": "Pris kan ikke være et negativt tall",
+      "tooHighPrice": "Prisen kan ikke overstige 10 000 000 kr",
+      "titleTooLong": "Tittelen kan ikke være lengre enn {max} tegn",
+      "descriptionTooLong": "Beskrivelsen kan ikke være lengre enn {max} tegn"
+    },
+    "errors": {
+      "fetchCategories": "Feil ved henting av kategorier: {error}",
+      "submitForm": "Feil ved innsending av skjema: {error}",
+      "failedToPrepare": "Kunne ikke forberede skjema-data"
+    }
+  },
+  "locationDisplay": {
+    "title": "Plassering",
+    "latitude": "Breddegrad",
+    "longitude": "Lengdegrad",
+    "useCurrentLocation": "Bruk min nåværende posisjon",
+    "errors": {
+      "unsupported": "Geolokasjon støttes ikke av nettleseren din",
+      "general": "Kunne ikke hente din nåværende posisjon. Sørg for at posisjonstjenester er aktivert.",
+      "denied": "Tilgang til posisjon ble nektet. Aktiver posisjonstillatelser i nettleserens innstillinger.",
+      "unavailable": "Posisjonsinformasjon er utilgjengelig. Sjekk nettverkstilkoblingen din.",
+      "timeout": "Forespørselen om å hente posisjon tok for lang tid. Prøv igjen."
+    }
+  },
+  "searchResultView": {
+    "resultsForSearch": "Resultater for \"{search}\"",
+    "resultsForCategory": "Resultater for kategori \"{category}\"",
+    "loadingMessage": "Søker etter annonser...",
+    "noItemsFound": "Ingen annonser funnet.",
+    "initFailed": "Kunne ikke starte søket. Vennligst prøv igjen.",
+    "loadFailed": "Kunne ikke laste inn annonser. Vennligst prøv igjen."
+  },
+  "DetailedItemCard": {
+    "price": "Pris"
+  },
+  "CompactItemCard": {
+    "price": "Pris"
+  },
+  "EditItemView": {
+    "loadingMessage": "Laster annonse...",
+    "successUpdate": "Annonsen ble oppdatert!",
+    "successDelete": "Annonsen ble slettet!",
+    "title": "Rediger annonse",
+    "save": "Lagre",
+    "saving": "Lagrer...",
+    "delete": "Slett",
+    "deleting": "Sletter...",
+    "confirmDelete": "Er du sikker på at du vil slette denne annonsen?",
+    "errorUpdate": "Kunne ikke oppdatere annonsen.",
+    "errorDelete": "Kunne ikke slette annonsen.",
+    "errorLoad": "Noe gikk galt under innlasting av siden. Vennligst prøv igjen."
+  },
+  "categoriesAdmin": {
+    "loadingCategories": "Laster inn kategorier...",
+    "successCreate": "Kategori opprettet!",
+    "successUpdate": "Kategori oppdatert!",
+    "allCategories": "Alle kategorier",
+    "createNewCategory": "Opprett ny kategori",
+    "edit": "Rediger",
+    "createCategory": "Opprett kategori",
+    "updateCategory": "Oppdater kategori",
+    "categoryName": "Navn på kategori",
+    "create": "Opprett",
+    "update": "Oppdater",
+    "cancel": "Avbryt",
+    "categoryNameError": "Kategorinavnet kan ikke overskride {maxLength} tegn",
+    "errorLoad": "Noe gikk galt mens kategoriene ble lastet. Vennligst prøv igjen.",
+    "errorCreate": "Feil ved oppretting av kategori.",
+    "errorUpdate": "Feil ved oppdatering av kategori."
+  },
+  "ReserveBox": {
+    "reservation-request": "Reservasjonsforespørsel",
+    "wants-to-reserve": "ønsker å reservere",
+    "accept": "Godta",
+    "decline": "Avslå",
+    "reservation-accepted": "✓ Reservasjon akseptert",
+    "reservation-declined": "✗ Reservasjon avslått",
+    "waiting": "Venter på selgerens svar...",
+    "seller-accepted": "Selgeren har akseptert reservasjonsforespørselen din!",
+    "seller-declined": "Selgeren har avslått reservasjonsforespørselen din.",
+    "cancel": "Avbryt"
+  },
+  "PaymentFailView": {
+    "title": "Oi, noe gikk galt",
+    "message": "Din Vipps betaling har ikke blitt behandlet",
+    "returnHome": "Tilbake til Hjem"
+  },
+  "PaymentCompleteView": {
+    "title": "Takk!",
+    "message": "Din Vipps betaling har blitt behandlet vellykket.",
+    "returnHome": "Tilbake til hjem",
+    "order": "Din bestillings-ID er:"
+  },
+  "status": {
+    "sold": "Solgt",
+    "reserved": "Reservert",
+    "forSale": "Til salgs"
+  }
+}

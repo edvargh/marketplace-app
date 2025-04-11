@@ -1,0 +1,188 @@
+@import './base.css';
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+  overflow: auto;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: auto;
+}
+
+.box {
+  /* For container. not for input itself*/
+  display: flex;
+  align-items: center;
+  border-radius: 40px;
+  padding: 1rem 2rem;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(to right, var(--box-background), var(--box-background)) padding-box,
+    linear-gradient(to right, var(--dark-blue), var(--mid-blue)) border-box;
+  background-clip: padding-box, border-box;
+  width: 100%;
+  max-width: 600px;
+  margin: 1rem auto;
+  box-sizing: border-box;
+}
+
+.box input,
+.box textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 1rem;
+  font-family: 'Abel', sans-serif;
+  padding: 0;
+}
+
+.box input::placeholder {
+  color: #aaa;
+  opacity: 1;
+}
+
+.box input:focus::placeholder {
+  color: transparent;
+}
+
+.custom-button-filled {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(to right, var(--mid-blue), var(--dark-blue));
+  color: var(--log-in-register-button-text);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.custom-button-filled:hover {
+  background: linear-gradient(to right, var(--dark-blue), var(--mid-blue));
+}
+
+.custom-button-filled:disabled {
+  background: var(--button-disabled);
+  cursor: not-allowed;
+}
+
+.item-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.load-more-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  margin-bottom: 60px;
+}
+
+.search-filter-container {
+  display: flex;
+  justify-content: center;
+  max-width: 800px;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.no-items-message {
+  text-align: center;
+  padding: 40px;
+  color: var(--message-empty);
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+.error-message {
+  color: var(--error-msg);
+}
+
+.action-button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  text-align: center;
+  color: var(--white);
+}
+
+.action-button:hover {
+  transform: scale(1.03);
+}
+
+.button-primary {
+  background-color: var(--button-primary);
+}
+
+.button-primary:hover {
+  background-color: var(--button-primary-hover);
+}
+
+.button-primary:disabled {
+  background: var(--button-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-cancel {
+  background-color: var(--button-cancel);
+}
+
+.button-cancel:hover {
+  background-color: var(--button-cancel-hover);
+}
+
+.button-cancel:disabled {
+  background: var(--button-disabled);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-danger {
+  background-color: var(--button-danger);
+}
+
+.button-danger:hover {
+  background-color: var(--button-danger-hover);
+}
+
+.button-danger:disabled {
+  background: var(--button-disabled);
+}
+
+.user-warning {
+  color: var(--error-msg);
+  background-color: var(--error-msg-background);
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+@media (max-width: 600px), (max-height: 800px) {
+  #app {
+    padding: 0.5rem;
+  }
+  .search-filter-container {
+    gap: 0.1rem;
+    flex-direction: column;
+  }
+}

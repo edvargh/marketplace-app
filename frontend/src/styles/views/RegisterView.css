@@ -1,0 +1,73 @@
+.RegisterPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 6rem 2rem 2rem;
+  box-sizing: border-box;
+}
+
+.RegisterPage form {
+  width: 100%;
+  max-width: 500px;
+  padding: 2rem;
+  font-family: 'Abel', sans-serif;
+}
+
+.RegisterPage h1 {
+  margin: 0 auto 2rem;
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-align: center;
+  font-family: 'Montagu Slab', serif;
+}
+
+.RegisterPage label {
+  display: block;
+  margin: 1rem 0 0.3rem;
+  font-weight: 600;
+}
+
+.AlreadyHaveAccountText {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.AlreadyHaveAccountText a {
+  color: var(--log-in-register-link);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.AlreadyHaveAccountText a:hover {
+  text-decoration: underline;
+}
+
+.success-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--success-msg);
+  color: var(--white);
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px var(--notification-shadow);
+  z-index: 1000;
+  animation: slideDown 0.5s ease-out forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes slideDown {
+  from {
+    top: -50px;
+    opacity: 0;
+  }
+  to {
+    top: 20px;
+    opacity: 1;
+  }
+}

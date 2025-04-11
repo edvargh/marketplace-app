@@ -1,0 +1,19 @@
+.my-items-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.no-items-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--dark-gray);
+    padding: 2rem;
+}
+
+.my-items-title {
+    font-size: 2rem;
+    font-family: 'Abel', sans-serif;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}

@@ -1,0 +1,11 @@
+.edit-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    filter: drop-shadow(1px 1px 2px var(--profile-edit-icon-shadow));
+  }
+  
+  .edit-icon:hover {
+    transform: scale(1.1);
+  }

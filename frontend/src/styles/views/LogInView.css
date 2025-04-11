@@ -1,0 +1,63 @@
+.logInPage {
+  max-width: 400px;
+  margin: 4rem auto;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.logInPage h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.4rem;
+  font-weight: bold;
+  font-family: 'Montagu Slab', serif;
+}
+
+.logInPage label {
+  display: block;
+  margin: 1rem 0 0.25rem;
+  font-weight: 500;
+  font-family: 'Abel', sans-serif;
+  font-size: 1rem;
+}
+
+.logInWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  padding: 2rem;
+}
+
+.noAccountText {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.noAccountText a {
+  color: var(--log-in-register-link);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.noAccountText a:hover {
+  text-decoration: underline;
+}
+
+.home-page {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.home-page a {
+  color: var(--log-in-register-link);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.home-page a:hover {
+  text-decoration: underline;
+}

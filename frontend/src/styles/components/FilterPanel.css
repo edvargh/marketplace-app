@@ -1,0 +1,106 @@
+.FilterPanel {
+    padding: 2rem;
+    border-radius: 1rem;
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; 
+    max-width: 500px;
+    margin: 0 auto; 
+  }
+
+.expand-enter-active, .expand-leave-active {
+    transition: all 0.3s ease;
+  }
+  .expand-enter-from, .expand-leave-to {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+  .expand-enter-to, .expand-leave-from {
+    max-height: 1000px; 
+    opacity: 1;
+  }
+  
+  .price-inputs {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .price-input {
+    flex: 1;
+  }
+  
+  .price-input label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .price-input input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: var(--box-background);
+    border: 1px solid var(--dark-gray);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .price-input input:focus {
+    outline: none;
+  }
+  
+.filter-headers{
+    margin-bottom: 15px;
+    font-family: 'Abel', sans-serif;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.price-error {
+    color: var(--error-msg);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  
+  .geo-inputs {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .geo-input-wrapper {
+    flex: 1;
+  }
+  
+  .geo-input-wrapper label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .geo-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background: var(--box-background);
+    border: 1px solid var(--geo-input-border);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .geo-input:focus {
+    outline: none;
+  }
+  
+  

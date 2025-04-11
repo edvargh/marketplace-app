@@ -1,0 +1,167 @@
+:root {
+  /* === BASE COLORS === */
+  --black: #000;
+  --white: #f5f5f5;
+  --dark-gray: #333;
+  --medium-gray: #555;
+  --light-green: #e8f5e9;
+  --sky-blue: #4facfe;
+  --turquoise: #00f2fe;
+
+  /* === TEXT COLORS === */
+  --button-text: #ffffff;
+  --button-text-favorite: #444444;
+  --button-text-message: #1565c0;
+  --button-text-nav: #ffffff;
+
+  /* === STATUS COLORS === */
+  --red: #9e1515;
+  --red-hover: #c01616;
+  --green: #33741e;
+  --green-hover: #398721;
+
+  /* === BLUE SHADES === */
+  --darker-blue: #00396b;
+  --dark-blue: #0062b8;
+  --mid-blue: #007ae6;
+  --mid-light-blue: #a0c4ff;
+  --light-blue: #e0f0ff;
+  --light-blue-cold: #e8f0ff;
+  --box-background: #ebf5ff;
+  --real-box-background: #e1f0ff;
+
+  /* === SHADOW === */
+  --shadow-soft: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  /* === ERROR / SUCCESS MESSAGES === */
+  --error-msg: var(--red);
+  --error-msg-background: #fee2e2;
+  --success-msg: var(--green);
+
+  /* === BUTTONS === */
+  --button-primary: var(--green);
+  --button-primary-hover: var(--green-hover);
+  --button-cancel: #444444;
+  --button-cancel-hover: #555555;
+  --button-danger: var(--red);
+  --button-danger-hover: var(--red-hover);
+  --button-disabled: #cccccc;
+  --button-favorite-icon: var(--red);
+  --button-message: var(--real-box-background);
+  --button-nav: var(--dark-gray);
+  --button-nav-hover: var(--black);
+  --button-reserve: var(--light-green);
+  --button-text-reserve: #2e7d15;
+
+  /* === NAVBAR === */
+  --navbar-border: rgba(0, 0, 0, 0.1);
+  --navbar-hover: rgba(79, 172, 254, 0.15);
+  --navbar-link: var(--dark-gray);
+  --navbar-text: var(--dark-gray);
+
+  /* === LOADING === */
+  --loading-wheel: var(--medium-gray);
+  --loading-spin: var(--sky-blue);
+  --loading-border: var(--white);
+
+  /* === NOTIFICATION BANNER === */
+  --notification-overlay: rgba(0, 0, 0, 0.5);
+  --notification-shadow: rgba(0, 0, 0, 0.1);
+  --notification-content-background: var(--white);
+  --notification-success: #f0fdf4;
+  --notification-error: #fef2f2;
+  --notification-warning: #fffbeb;
+  --notification-info: #eff6ff;
+
+  /* === MESSAGES + RESERVE BOX === */
+  --reserve-background: #ceebf4;
+  --received-message-background: #8dcc84;
+  --message: #e0f7fa;
+  --message-name: #666;
+  --message-input: var(--white);
+  --message-input-border: var(--mid-light-blue);
+  --message-input-top-border: #6b7280;
+  --message-send: var(--white);
+  --date-divider: #b9d9eb;
+  --date-divider-text: #666;
+  --message-empty: #666;
+
+  /* === CATEGORIES ADMIN === */
+  --category-admin-border-top: #888888;
+
+  /* === ITEM VIEW === */
+  --item-view-desc-border: #aaa;
+  --img-gallery-border: var(--sky-blue);
+  --img-gallery-background: var(--dark-gray);
+  --coordinates: var(--medium-gray);
+
+  /* === PROFILE === */
+  --profile-border: var(--sky-blue);
+  --profile-edit-icon: var(--white);
+  --profile-edit-icon-shadow: var(--shadow-soft);
+
+  /* === SELECT BOX === */
+  --select-border-shadow: rgba(0, 0, 0, 0.1);
+  --select-hover: rgba(79, 172, 254, 0.15);
+
+  /* === INPUT === */
+  --input-placeholder: #aaa;
+
+  /* === FILTER / CHECKBOX === */
+  --checkbox-border: rgba(0, 255, 255, 0.4);
+  --checkbox-background: rgba(255, 255, 255, 0.05);
+  --checkbox-label-hover: var(--sky-blue);
+  --geo-input: #cccccc;
+  --geo-input-border: var(--dark-gray);
+
+  /* === AUTH === */
+  --log-in-register-link: var(--dark-blue);
+  --log-in-register-button-text: #ffffff;
+
+  /* === CARDS === */
+  --item-card-border: var(--sky-blue);
+  --item-card-border-top: #cccccc;
+  --conv-card-latest-msg: var(--medium-gray);
+  --card-gradient-light: #f0f0f0;
+  --card-gradient-mid: #e0e0e0;
+
+  /* === STATUS BANNER === */
+  --status-background: #cccccc;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  color: var(--dark-gray);
+
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

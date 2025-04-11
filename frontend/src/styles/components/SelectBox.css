@@ -1,0 +1,75 @@
+.InputBox-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 1rem auto;
+}
+
+.InputBox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 9999px;
+    padding: 1rem 2rem;
+    border: 1px solid transparent;
+    background:
+        linear-gradient(to right, var(--box-background), var(--box-background)) padding-box,
+        linear-gradient(to right, var(--dark-blue), var(--mid-blue)) border-box;
+    background-clip: padding-box, border-box;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.InputBox-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 1rem;
+    font-family: 'Abel', sans-serif;
+    padding: 0;
+    cursor: pointer;
+}
+
+.InputBox-input::placeholder {
+    color: var(--input-placeholder);
+    opacity: 1;
+}
+
+.dropdown-arrow {
+    margin-left: 1rem;
+    transition: transform 0.3s ease;
+    font-size: 0.8rem;
+}
+
+.InputBox:hover .dropdown-arrow {
+    transform: translateY(2px);
+}
+
+.custom-dropdown-menu {
+    position: absolute;
+    width: 100%;
+    margin-top: 0.5rem;
+    background-color: var(--box-background);
+    border: 1px solid var(--select-border-shadow);
+    border-radius: 16px;
+    padding: 1rem;
+    box-shadow: 0 8px 20px var(--select-border-shadow);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    list-style: none;
+}
+
+.custom-dropdown-menu li {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: 'Abel', sans-serif;
+    font-weight: bold;
+}
+
+.custom-dropdown-menu li:hover {
+    background: var(--select-hover);
+}

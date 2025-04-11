@@ -1,0 +1,69 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  min-height: 100vh;
+  margin-top: 70px;
+  margin-bottom: 5px;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+.recommendations, .most-liked, .market {
+  width: 100%;
+}
+
+.section-header {
+  width: 100%;
+}
+
+.no-items-message {
+  text-align: center;
+  padding: 40px;
+  color: var(--message-empty);
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+@media (max-width: 600px) or (max-height: 800px) {
+  .home-container {
+    margin-top: 20px;
+  }
+}
+
+.recommendation-skeleton {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  overflow-x: hidden;
+  padding: 10px 0;
+}
+
+.skeleton-card {
+  flex: 0 0 250px;
+  height: 300px;
+  background: linear-gradient(
+          90deg,
+          var(--card-gradient-light) 25%,
+          var(--card-gradient-mid) 50%,
+          var(--card-gradient-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+
+
+

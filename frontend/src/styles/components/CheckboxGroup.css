@@ -1,0 +1,26 @@
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid var(--dark-blue);
+  border-radius: 2rem;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.select-all {
+  font-weight: bold;
+}
+
+.checkbox-label:hover {
+    color: var(--checkbox-label-hover);
+}
+  

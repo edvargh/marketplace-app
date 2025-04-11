@@ -1,0 +1,25 @@
+.favorite-btn {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.favorite-btn:hover {
+    transform: scale(1.01);
+}
+
+.favorite-btn span {
+    color: var(--button-text-favorite);
+    font-size: 20px;
+}
+
+.favorite-btn .favorite {
+    color: var(--button-favorite-icon);
+}
+
+

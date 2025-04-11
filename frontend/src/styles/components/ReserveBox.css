@@ -1,0 +1,111 @@
+.reserve-box {
+    border-radius: 8px;
+    padding: 16px;
+    background-color: var(--real-box-background);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--black);
+    margin-bottom: 10px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.reserve-box.in-message {
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 0;
+}
+
+h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.this-cancel {
+    padding: 0.5rem 1.1rem;
+    margin-top: 10px;
+}
+
+.accepted-notice {
+    color: var(--success-msg);
+    font-weight: 500;
+}
+
+.declined-notice {
+    color: var(--error-msg);
+    font-weight: 500;
+}
+
+.status-indicator {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.status-indicator.accepted {
+    color: var(--success-msg);
+}
+
+.status-indicator.declined {
+    color: var(--error-msg);
+}
+
+.in-message p {
+    font-size: 0.9rem;
+    margin: 4px 0;
+}
+
+@media (max-width: 710px) {
+    .reserve-box.in-message {
+        min-width: 0;
+        padding: 8px;
+    }
+    .button-group {
+        flex-direction: column;
+        gap: 4px;
+    }
+    .in-message h3,
+    .in-message p {
+        word-wrap: break-word;
+    }
+}
+
+@media (max-width: 490px) {
+    .reserve-box :deep(.action-button) {
+        padding: 0.3rem 0 !important;
+        font-size: 0.85rem !important;
+        min-width: 70px !important;
+        width: auto;
+    }
+
+    h3 {
+        font-size: 0.9rem !important;
+    }
+}
+
+@media (max-width: 430px) {
+    .reserve-box :deep(.action-button) {
+        font-size: 0.7rem !important;
+        max-width: 50px !important;
+    }
+
+    h3 {
+        font-size: 0.8rem !important;
+    }
+
+    .status-indicator {
+        font-size: 0.8rem !important;
+    }
+
+    .in-message p {
+        font-size: 0.8rem;
+    }
+}
