@@ -36,9 +36,6 @@ describe('E2E - Authentication', () => {
       win.localStorage.setItem('token', 'fake-jwt-token');
     });
     
-    // Give the app a moment to process the login
-    cy.wait(100);
-    
     // Now verify the token is set
     cy.window().then((win) => {
       expect(win.localStorage.getItem('token')).to.equal('fake-jwt-token');
